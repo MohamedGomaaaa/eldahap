@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, maximum-scale=3.0, minimum-scale=0.5">
+    <style>
+html, body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  background-color: #0f0f0f;
+  overflow: hidden;
+  touch-action: auto;
+}
+
+.tradingview-widget-container {
+  touch-action: auto !important;
+  -webkit-overflow-scrolling: touch;
+}
+
+.tradingview-widget-container iframe {
+  touch-action: auto !important;
+  pointer-events: auto !important;
+}
+</style>
+</head>
+<body>
+<!-- TradingView Widget BEGIN -->
+<div class="tradingview-widget-container" style="height:100%;width:100%">
+    <div class="tradingview-widget-container__widget" style="height:calc(100% - 32px);width:100%"></div>
+    <div class="tradingview-widget-copyright">
+        <a href="https://www.tradingview.com/symbols/OANDA-XAUUSD/?exchange=OANDA" rel="noopener nofollow" target="_blank">
+            <span class="blue-text">XAUUSD chart by TradingView</span>
+        </a>
+    </div>
+    <script type="text/javascript" src="https://s3.tradingview.com/external-embedding/embed-widget-advanced-chart.js" async>
+  {
+    "calendar": false,
+    "details": false,
+    "hide_side_toolbar": true,
+    "hide_top_toolbar": true,
+    "hide_legend": false,
+    "hide_volume": false,
+    "hotlist": false,
+    "interval": "D",
+    "locale": "en",
+    "save_image": true,
+    "style": "1",
+    "symbol": "OANDA:XAUUSD",
+    "theme": "dark",
+    "timezone": "Europe/Vienna",
+    "backgroundColor": "rgba(15, 15, 15, 1)",
+    "gridColor": "rgba(74, 74, 74, 0.08)",
+    "watchlist": [],
+    "withdateranges": true,
+    "compareSymbols": [],
+    "studies": [],
+    "scalePriceChartOnly": false,
+    "allow_symbol_change": true,
+    "autosize": true,
+    "allow_vertical_scroll": true,
+    "enable_publishing": false,
+    "withdateranges": true,
+    "range": "12M",
+    "style": "1",
+    "toolbar_bg": "#0f0f0f",
+    "enable_publishing": false,
+    "hide_legend": false,
+    "save_image": false
+  }
+  </script>
+</div>
+<!-- TradingView Widget END -->
+
+<script>
+// Additional script to ensure proper touch handling
+document.addEventListener('DOMContentLoaded', function() {
+  // Prevent default touch behaviors that might interfere with chart interaction
+  document.body.addEventListener('touchstart', function(e) {
+    e.stopPropagation();
+  }, { passive: true });
+
+  document.body.addEventListener('touchmove', function(e) {
+    e.stopPropagation();
+  }, { passive: true });
+
+  document.body.addEventListener('touchend', function(e) {
+    e.stopPropagation();
+  }, { passive: true });
+});
+</script>
+</body>
+</html>

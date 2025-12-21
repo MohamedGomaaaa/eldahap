@@ -1,0 +1,36 @@
+part of 'trades_cubit.dart';
+
+@immutable
+sealed class TradesState {}
+
+final class TradesInitial extends TradesState {}
+
+final class GetTradesLoadingState extends TradesState {}
+
+final class GetTradesSuccessState extends TradesState {}
+
+final class GetTradesErrorState extends TradesState {}
+
+final class GetOrdersLoadingState extends TradesState {}
+
+final class GetOrdersSuccessState extends TradesState {}
+
+final class GetOrdersErrorState extends TradesState {}
+
+final class UpdateTradeLoadingState extends TradesState {}
+
+final class UpdateTradeSuccessState extends TradesState {}
+
+final class UpdateTradeErrorState extends TradesState {}
+
+final class DeleteTradeLoadingState extends TradesState {}
+
+final class DeleteTradeSuccessState extends TradesState {}
+
+final class DeleteTradeErrorState extends TradesState {}
+
+final class SellTradeLoadingState extends TradesState {}
+
+final class SellTradeSuccessState extends TradesState {}
+
+final class SellTradeErrorState extends TradesState {}

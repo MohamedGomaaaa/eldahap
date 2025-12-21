@@ -1,0 +1,1364 @@
+// // import 'package:easy_localization/easy_localization.dart';
+// // import 'package:flutter/material.dart';
+// // import 'package:flutter_bloc/flutter_bloc.dart';
+// // import 'package:flutter_screenutil/flutter_screenutil.dart';
+// // import 'package:official_gold/l10n/locale_keys.g.dart';
+// // import 'package:official_gold/view/components/gradient_widget.dart';
+// // import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
+// // import 'package:official_gold/view/screen/home/profile/components/profile_tile_widget.dart';
+// // import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
+// // import '../../../../../view_model/utils/colors.dart';
+// // import '../../../../../view_model/utils/navigation.dart';
+// // import 'deposit_screen.dart';
+// // import 'withdraw_screen.dart';
+// //
+// // class WalletScreen extends StatelessWidget {
+// //   const WalletScreen({super.key});
+// //
+// //   @override
+// //   Widget build(BuildContext context) {
+// //     return Scaffold(
+// //       body: GradientWidget(
+// //         child: SafeArea(
+// //           child: RefreshIndicator(
+// //             onRefresh: () async {
+// //               await WalletCubit.get(context).getWallet();
+// //             },
+// //             backgroundColor: AppColors.yellow2,
+// //             color: AppColors.black,
+// //             child: ListView(
+// //               padding: EdgeInsets.all(12.sp),
+// //               children: [
+// //                 const AppBarCustom(),
+// //                 SizedBox(
+// //                   height: 12.h,
+// //                 ),
+// //                 Text(
+// //                   LocaleKeys.wallet.tr(),
+// //                   textAlign: TextAlign.center,
+// //                   style: Theme.of(context).textTheme.headlineMedium?.copyWith(
+// //                       // color: AppColors.textYellow,
+// //                       ),
+// //                 ),
+// //                 SizedBox(
+// //                   height: 6.h,
+// //                 ),
+// //                 const Divider(
+// //                   color: AppColors.textYellow,
+// //                 ),
+// //                 SizedBox(
+// //                   height: 6.h,
+// //                 ),
+// //                 Container(
+// //                   padding: EdgeInsets.all(12.sp),
+// //                   decoration: BoxDecoration(
+// //                     borderRadius: BorderRadius.circular(12.r),
+// //                     border: Border.all(
+// //                       color: AppColors.yellowBorder,
+// //                       width: 0.5.w,
+// //                     ),
+// //                   ),
+// //                   child: Column(
+// //                     children: [
+// //                       BlocBuilder<WalletCubit, WalletState>(
+// //                         buildWhen: (previous, current) {
+// //                           return current is GetWalletSuccessState || current is GetWalletLoadingState || current is GetWalletErrorState;
+// //                         },
+// //                         builder: (context, state) {
+// //                           return Text(
+// //                             '\$ ${WalletCubit.get(context).wallet}',
+// //                             style: Theme.of(context)
+// //                                 .textTheme
+// //                                 .headlineLarge
+// //                                 ?.copyWith(
+// //                                   color: AppColors.textYellow,
+// //                                   fontWeight: FontWeight.bold,
+// //                                 ),
+// //                           );
+// //                         },
+// //                       ),
+// //                       SizedBox(
+// //                         height: 6.h,
+// //                       ),
+// //                       Text(
+// //                         LocaleKeys.currentBalance.tr(),
+// //                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+// //                               color: AppColors.textYellow,
+// //                             ),
+// //                       ),
+// //                     ],
+// //                   ),
+// //                 ),
+// //                 SizedBox(
+// //                   height: 12.h,
+// //                 ),
+// //                 ProfileTileWidget(
+// //                   title: LocaleKeys.deposit.tr(),
+// //                   onTap: () {
+// //                     Navigation.push(
+// //                       context,
+// //                       const DepositScreen(),
+// //                     );
+// //                   },
+// //                 ),
+// //                 ProfileTileWidget(
+// //                   title: LocaleKeys.withdraw.tr(),
+// //                   onTap: () {
+// //                     Navigation.push(
+// //                       context,
+// //                       const WithdrawScreen(),
+// //                     );
+// //                   },
+// //                 ),
+// //               ],
+// //             ),
+// //           ),
+// //         ),
+// //       ),
+// //     );
+// //   }
+// // }
+// import 'package:easy_localization/easy_localization.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
+// import 'package:flutter_screenutil/flutter_screenutil.dart';
+// import 'package:official_gold/l10n/locale_keys.g.dart';
+// import 'package:official_gold/view/screen/home/profile/wallet/recharge/recharge_amount_screen.dart';
+// import 'package:official_gold/view/screen/home/profile/wallet/withdraw/withdraw_alAmount_page.dart';
+// import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
+//
+// import '../../../../../view_model/utils/colors.dart';
+// import '../../../../../view_model/utils/navigation.dart';
+//
+// class WalletScreen extends StatelessWidget {
+//   const WalletScreen({super.key});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       backgroundColor: AppColors.background,
+//       appBar: AppBar(
+//         backgroundColor: AppColors.background,
+//         elevation: 0,
+//         leading: IconButton(
+//           icon: const Icon(Icons.arrow_back_ios, color: AppColors.yellow),
+//           onPressed: () => Navigator.of(context).pop(),
+//         ),
+//         title: Text(
+//           LocaleKeys.wallet.tr(),
+//           style: const TextStyle(
+//             color: AppColors.textYellow,
+//             fontWeight: FontWeight.w600,
+//           ),
+//         ),
+//         centerTitle: false,
+//       ),
+//       body: RefreshIndicator(
+//         onRefresh: () async {
+//           await WalletCubit.get(context).getWallet();
+//         },
+//         backgroundColor: AppColors.yellow2,
+//         color: AppColors.black,
+//         child: SingleChildScrollView(
+//           padding: EdgeInsets.all(16.sp),
+//           child: Column(
+//             crossAxisAlignment: CrossAxisAlignment.start,
+//             children: [
+//               // Total Portfolio
+//               Center(
+//                 child: Column(
+//                   children: [
+//                     Text(
+//                       LocaleKeys.currentBalance.tr().toUpperCase(),
+//                       style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+//                     ),
+//                     SizedBox(height: 8.h),
+//                     BlocBuilder<WalletCubit, WalletState>(
+//                       buildWhen: (previous, current) {
+//                         return current is GetWalletSuccessState ||
+//                             current is GetWalletLoadingState ||
+//                             current is GetWalletErrorState;
+//                       },
+//                       builder: (context, state) {
+//                         if (state is GetWalletLoadingState) {
+//                           return const CircularProgressIndicator(
+//                             color: AppColors.yellow,
+//                           );
+//                         }
+//                         return Text(
+//                           '\$ ${WalletCubit.get(context).wallet}',
+//                           style: const TextStyle(
+//                             fontSize: 34,
+//                             fontWeight: FontWeight.bold,
+//                             color: AppColors.textYellow,
+//                           ),
+//                         );
+//                       },
+//                     ),
+//                     const Text(
+//                       "USD",
+//                       style: TextStyle(color: AppColors.greyText, fontSize: 14),
+//                     ),
+//                     SizedBox(height: 4.h),
+//                     // You can add portfolio change percentage here if available from cubit
+//                     // Text(
+//                     //   "+ 20.4% (24h change)",
+//                     //   style: TextStyle(
+//                     //     color: AppColors.green,
+//                     //     fontSize: 14,
+//                     //   ),
+//                     // ),
+//                   ],
+//                 ),
+//               ),
+//
+//               SizedBox(height: 20.h),
+//
+//               // Balance Cards (can be expanded to show gold balance if available)
+//               Row(
+//                 children: [
+//                   Expanded(
+//                     child: _balanceCard(
+//                       icon: Icons.account_balance_wallet_outlined,
+//                       title: LocaleKeys.currentBalance.tr(),
+//                       value: BlocBuilder<WalletCubit, WalletState>(
+//                         builder: (context, state) {
+//                           return Text(
+//                             '\$ ${WalletCubit.get(context).wallet}',
+//                             style: const TextStyle(
+//                               color: AppColors.white,
+//                               fontWeight: FontWeight.w600,
+//                               fontSize: 16,
+//                             ),
+//                           );
+//                         },
+//                       ),
+//                     ),
+//                   ),
+//                   SizedBox(width: 12.w),
+//                   Expanded(
+//                     child: _balanceCard(
+//                       icon: Icons.account_balance,
+//                       title: "Gold Balance", // You can localize this if needed
+//                       value: const Text(
+//                         "0 Grams", // Replace with actual gold balance from cubit if available
+//                         style: TextStyle(
+//                           color: AppColors.white,
+//                           fontWeight: FontWeight.w600,
+//                           fontSize: 16,
+//                         ),
+//                       ),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//
+//               SizedBox(height: 20.h),
+//
+//               // Invest Your Money
+//               Text(
+//                 "Invest Your Money", // You can localize this if needed
+//                 style: const TextStyle(
+//                   color: AppColors.greyText,
+//                   fontWeight: FontWeight.w500,
+//                 ),
+//               ),
+//               SizedBox(height: 10.h),
+//               Row(
+//                 children: [
+//                   _actionButton(
+//                     Icons.add_circle_outline,
+//                     LocaleKeys.deposit.tr(),
+//                     onTap: () {
+//                       Navigation.push(
+//                         context,
+//                         const RechargeAmountScreen(),
+//                       );
+//                       // Navigation.push(
+//                       //   context,
+//                       //   const DepositScreen(),
+//                       // );
+//                     },
+//                   ),
+//                   SizedBox(width: 12.w),
+//                   _actionButton(
+//                     Icons.download_rounded,
+//                     LocaleKeys.withdraw.tr(),
+//                     onTap: () {
+//                       Navigation.push(
+//                         context,
+//                         const WithdrawalAmountPage(),
+//                       );
+//                       // Navigation.push(
+//                       //   context,
+//                       //   const WithdrawScreen(),
+//                       // );
+//                     },
+//                   ),
+//                 ],
+//               ),
+//
+//               SizedBox(height: 25.h),
+//
+//               // Recent Transactions
+//               Row(
+//                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                 children: [
+//                   const Text(
+//                     "Recent Transactions", // You can localize this if needed
+//                     style: TextStyle(
+//                         color: AppColors.greyText, fontWeight: FontWeight.w500),
+//                   ),
+//                   GestureDetector(
+//                     onTap: () {
+//                       // Navigate to full transactions list
+//                     },
+//                     child: const Text(
+//                       "See All", // You can localize this if needed
+//                       style: TextStyle(color: AppColors.yellow, fontSize: 14),
+//                     ),
+//                   ),
+//                 ],
+//               ),
+//               SizedBox(height: 15.h),
+//
+//               // Transaction items - you can replace this with actual transaction data from cubit
+//               _transactionItem(
+//                 title: LocaleKeys.deposit.tr(),
+//                 subtitle: "via InstaPay",
+//                 amount: "+ 20,000 USD",
+//                 amountColor: AppColors.green,
+//                 status: "Pending",
+//                 statusColor: AppColors.yellow,
+//                 icon: Icons.upload_rounded,
+//                 dateTime: "Jan 2, 9:12 AM",
+//                 isPositive: true,
+//               ),
+//               _transactionItem(
+//                 title: LocaleKeys.withdraw.tr(),
+//                 subtitle: "via InstaPay",
+//                 amount: "- 20,000 USD",
+//                 amountColor: AppColors.red,
+//                 status: "Pending",
+//                 statusColor: AppColors.yellow,
+//                 icon: Icons.download_rounded,
+//                 dateTime: "Jan 2, 9:12 AM",
+//                 isPositive: false,
+//               ),
+//               _transactionItem(
+//                 title: LocaleKeys.deposit.tr(),
+//                 subtitle: "via InstaPay",
+//                 amount: "+ 20,000 USD",
+//                 amountColor: AppColors.green,
+//                 status: "Approved",
+//                 statusColor: AppColors.green,
+//                 icon: Icons.upload_rounded,
+//                 dateTime: "Jan 2, 9:12 AM",
+//                 isPositive: true,
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // Balance Card Widget
+//   static Widget _balanceCard({
+//     required IconData icon,
+//     required String title,
+//     required Widget value
+//   }) {
+//     return Container(
+//       padding: EdgeInsets.all(16.sp),
+//       decoration: BoxDecoration(
+//         color: AppColors.backgroundGrey,
+//         border: Border.all(color: AppColors.yellowBorder),
+//         borderRadius: BorderRadius.circular(12.r),
+//       ),
+//       child: Column(
+//         crossAxisAlignment: CrossAxisAlignment.start,
+//         children: [
+//           Icon(icon, color: AppColors.yellow, size: 28.sp),
+//           SizedBox(height: 8.h),
+//           Text(
+//             title,
+//             style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+//           ),
+//           SizedBox(height: 6.h),
+//           value,
+//         ],
+//       ),
+//     );
+//   }
+//
+//   // Action Button Widget
+//   static Widget _actionButton(IconData icon, String text, {required VoidCallback onTap}) {
+//     return Expanded(
+//       child: GestureDetector(
+//         onTap: onTap,
+//         child: Container(
+//           padding: EdgeInsets.symmetric(vertical: 18.h),
+//           decoration: BoxDecoration(
+//             color: AppColors.backgroundGrey,
+//             border: Border.all(color: AppColors.yellowBorder),
+//             borderRadius: BorderRadius.circular(12.r),
+//           ),
+//           child: Column(
+//             children: [
+//               Icon(icon, color: AppColors.yellow, size: 26.sp),
+//               SizedBox(height: 8.h),
+//               Text(
+//                 text,
+//                 style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+//               ),
+//             ],
+//           ),
+//         ),
+//       ),
+//     );
+//   }
+//
+//   // Transaction Item Widget
+//   static Widget _transactionItem({
+//     required String title,
+//     required String subtitle,
+//     required String amount,
+//     required Color amountColor,
+//     required String status,
+//     required Color statusColor,
+//     required IconData icon,
+//     required String dateTime,
+//     required bool isPositive,
+//   }) {
+//     return Container(
+//       margin: EdgeInsets.only(bottom: 14.h),
+//       child: Row(
+//         children: [
+//           Container(
+//             padding: EdgeInsets.all(12.sp),
+//             decoration: BoxDecoration(
+//               color: AppColors.yellow.withOpacity(0.15),
+//               borderRadius: BorderRadius.circular(12.r),
+//             ),
+//             child: Icon(icon, color: AppColors.yellow, size: 26.sp),
+//           ),
+//           SizedBox(width: 12.w),
+//           Expanded(
+//             child: Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // First row: title + amount
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Text(title,
+//                         style: const TextStyle(
+//                             color: AppColors.white,
+//                             fontWeight: FontWeight.w600)),
+//                     Text(amount,
+//                         style: TextStyle(
+//                             color: amountColor, fontWeight: FontWeight.w600)),
+//                   ],
+//                 ),
+//                 SizedBox(height: 4.h),
+//                 // Second row: status + subtitle + date
+//                 Row(
+//                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                   children: [
+//                     Row(
+//                       children: [
+//                         Container(
+//                           padding: EdgeInsets.symmetric(
+//                               horizontal: 8.w, vertical: 2.h),
+//                           decoration: BoxDecoration(
+//                             color: statusColor.withOpacity(0.2),
+//                             borderRadius: BorderRadius.circular(12.r),
+//                           ),
+//                           child: Text(
+//                             status,
+//                             style: TextStyle(
+//                                 color: statusColor,
+//                                 fontSize: 12,
+//                                 fontWeight: FontWeight.w500),
+//                           ),
+//                         ),
+//                         SizedBox(width: 8.w),
+//                         Text(subtitle,
+//                             style: const TextStyle(
+//                                 color: AppColors.greyText, fontSize: 12)),
+//                       ],
+//                     ),
+//                     Text(
+//                       dateTime,
+//                       style: const TextStyle(
+//                         color: AppColors.greyText,
+//                         fontSize: 12,
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ],
+//             ),
+//           ),
+//         ],
+//       ),
+//     );
+//   }
+// }
+
+
+// new wallet page
+
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:official_gold/l10n/locale_keys.g.dart';
+import 'package:official_gold/view/screen/home/profile/wallet/recharge/recharge_amount_screen.dart';
+import 'package:official_gold/view/screen/home/profile/wallet/withdraw/withdraw_alAmount_page.dart';
+import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
+
+import '../../../../../view_model/models/wallet_models/transaction_model.dart';
+import '../../../../../view_model/utils/colors.dart';
+
+class WalletScreen extends StatefulWidget {
+  const WalletScreen({super.key});
+
+  @override
+  State<WalletScreen> createState() => _WalletScreenState();
+}
+
+class _WalletScreenState extends State<WalletScreen> {
+  final ScrollController _scrollController = ScrollController();
+  final ScrollController _modalScrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize wallet data when screen starts
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      WalletCubit.get(context).initializeWalletData();
+    });
+
+    // Add scroll listener for pagination in modal
+    _modalScrollController.addListener(_onModalScroll);
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    _modalScrollController.removeListener(_onModalScroll);
+    _modalScrollController.dispose();
+    super.dispose();
+  }
+
+  void _onModalScroll() {
+    if (_modalScrollController.position.pixels >=
+        _modalScrollController.position.maxScrollExtent - 200) {
+      // Load more when near bottom
+      WalletCubit.get(context).loadMoreTransactions();
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: AppColors.background,
+      appBar: AppBar(
+        backgroundColor: AppColors.background,
+        elevation: 0,
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.yellow),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        title: Text(
+          LocaleKeys.wallet.tr(),
+          style: const TextStyle(
+            color: AppColors.textYellow,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+        centerTitle: false,
+      ),
+      body: RefreshIndicator(
+        onRefresh: () async {
+          await WalletCubit.get(context).initializeWalletData();
+        },
+        backgroundColor: AppColors.yellow2,
+        color: AppColors.black,
+        child: SingleChildScrollView(
+          controller: _scrollController,
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.all(16.sp),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // Total Portfolio
+              _buildPortfolioSection(),
+
+              SizedBox(height: 20.h),
+
+              // Balance Cards
+              _buildBalanceCards(),
+
+              SizedBox(height: 20.h),
+
+              // Action Buttons
+              _buildActionButtons(),
+
+              SizedBox(height: 25.h),
+
+              // Recent Transactions Header
+              _buildTransactionsHeader(),
+
+              SizedBox(height: 15.h),
+
+              // Transaction List
+              _buildTransactionsList(),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Portfolio Section
+  Widget _buildPortfolioSection() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            LocaleKeys.currentBalance.tr().toUpperCase(),
+            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+          ),
+          SizedBox(height: 8.h),
+          BlocBuilder<WalletCubit, WalletState>(
+            buildWhen: (previous, current) {
+              return current is GetWalletSuccessState ||
+                  current is GetWalletLoadingState ||
+                  current is GetWalletErrorState;
+            },
+            builder: (context, state) {
+              if (state is GetWalletLoadingState) {
+                return const CircularProgressIndicator(
+                  color: AppColors.yellow,
+                );
+              }
+              if (state is GetWalletErrorState) {
+                return Text(
+                  'Error loading balance',
+                  style: const TextStyle(color: AppColors.red),
+                );
+              }
+              return Text(
+                '\$ ${WalletCubit.get(context).wallet.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textYellow,
+                ),
+              );
+            },
+          ),
+          // const Text(
+          //   "EGP",
+          //   style: TextStyle(color: AppColors.greyText, fontSize: 14),
+          // ),
+          // SizedBox(height: 4.h),
+          // // Portfolio change percentage (if available from API)
+          // BlocBuilder<WalletCubit, WalletState>(
+          //   builder: (context, state) {
+          //     final cubit = WalletCubit.get(context);
+          //     if (cubit.transactionModel?.result.summary != null) {
+          //       final summary = cubit.transactionModel!.result.summary;
+          //       final totalCredit = summary.totalCredit;
+          //       final totalDebit = summary.totalDebit;
+          //       final netChange = totalCredit - totalDebit;
+          //       if (netChange != 0) {
+          //         return Text(
+          //           "${netChange > 0 ? '+' : ''} ${netChange.toStringAsFixed(2)} USD (Total Change)",
+          //           style: TextStyle(
+          //             color: netChange > 0 ? AppColors.green : AppColors.red,
+          //             fontSize: 14,
+          //           ),
+          //         );
+          //       }
+          //     }
+          //     return const SizedBox.shrink();
+          //   },
+          // ),
+        ],
+      ),
+    );
+  }
+
+  // Balance Cards Section
+  Widget _buildBalanceCards() {
+    return Row(
+      children: [
+        Expanded(
+          child: _balanceCard(
+            icon: Icons.account_balance_wallet_outlined,
+            title: LocaleKeys.currentBalance.tr(),
+            value: BlocBuilder<WalletCubit, WalletState>(
+              builder: (context, state) {
+                return Text(
+                  '\$ ${WalletCubit.get(context).wallet.toStringAsFixed(2)}',
+                  style: const TextStyle(
+                    color: AppColors.yellow,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                );
+              },
+            ),
+          ),
+        ),
+        SizedBox(width: 12.w),
+        Expanded(
+          child: _balanceCard(
+            icon: Icons.account_balance,
+            title: "Gold Balance", // You can localize this if needed
+            value: const Text(
+              "0 Grams", // Replace with actual gold balance from cubit if available
+              style: TextStyle(
+                color: AppColors.yellow,
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            ),
+          ),
+        ),
+        // Expanded(
+        //   child: _balanceCard(
+        //     icon: Icons.account_balance,
+        //     title: "Transaction Count",
+        //     value: BlocBuilder<WalletCubit, WalletState>(
+        //       builder: (context, state) {
+        //         final count = WalletCubit.get(context).transactionModel?.result.summary.count ?? 0;
+        //         return Text(
+        //           "$count Transactions",
+        //           style: const TextStyle(
+        //             color: AppColors.white,
+        //             fontWeight: FontWeight.w600,
+        //             fontSize: 16,
+        //           ),
+        //         );
+        //       },
+        //     ),
+        //   ),
+        // ),
+      ],
+    );
+  }
+
+  // Action Buttons Section
+  Widget _buildActionButtons() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          "Manage Your Money",
+          style: TextStyle(
+            color: AppColors.greyText,
+            fontWeight: FontWeight.w500,
+          ),
+        ),
+        SizedBox(height: 10.h),
+        Row(
+          children: [
+            _actionButton(
+              Icons.add_circle_outline,
+              LocaleKeys.deposit.tr(),
+              onTap: () async {
+                // Navigation.push(
+                //   context,
+                //   const RechargeAmountScreen(),
+                // );
+
+
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => const RechargeAmountScreen()),
+                );
+                final cubit = WalletCubit.get(context);
+                cubit.getTransactions(refresh: true) ;
+              },
+            ),
+            SizedBox(width: 12.w),
+            _actionButton(
+              Icons.download_rounded,
+              LocaleKeys.withdraw.tr(),
+              onTap: () async {
+
+
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => WithdrawalAmountPage()),
+                );
+                final cubit = WalletCubit.get(context);
+                cubit.getTransactions(refresh: true) ;
+                },
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+
+  // Transactions Header Section
+  Widget _buildTransactionsHeader() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        const Text(
+          "Recent Transactions",
+          style: TextStyle(
+              color: AppColors.greyText, fontWeight: FontWeight.w500),
+        ),
+        BlocBuilder<WalletCubit, WalletState>(
+          builder: (context, state) {
+            final hasTransactions = WalletCubit.get(context).allTransactions.isNotEmpty;
+            if (!hasTransactions) return const SizedBox.shrink();
+
+            return GestureDetector(
+              onTap: () => _showAllTransactionsModal(),
+              child: const Text(
+                "See All",
+                style: TextStyle(color: AppColors.yellow, fontSize: 14),
+              ),
+            );
+          },
+        ),
+      ],
+    );
+  }
+
+  // Transactions List Section
+  Widget _buildTransactionsList() {
+    return BlocBuilder<WalletCubit, WalletState>(
+      buildWhen: (previous, current) {
+        return current is GetTransactionLoadingState ||
+            current is GetTransactionSuccessState ||
+            current is GetTransactionErrorState ||
+            current is LoadMoreTransactionsSuccessState;
+      },
+      builder: (context, state) {
+        final cubit = WalletCubit.get(context);
+
+        if (state is GetTransactionLoadingState && cubit.allTransactions.isEmpty) {
+          return SizedBox(
+            height: 200.h,
+            child: const Center(
+              child: CircularProgressIndicator(color: AppColors.yellow),
+            ),
+          );
+        }
+
+        if (state is GetTransactionErrorState && cubit.allTransactions.isEmpty) {
+          return SizedBox(
+            height: 200.h,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.error_outline,
+                    color: AppColors.red,
+                    size: 48,
+                  ),
+                  SizedBox(height: 16.h),
+                  Text(
+                    "Error loading transactions",
+                    style: const TextStyle(color: AppColors.greyText),
+                  ),
+                  SizedBox(height: 8.h),
+                  ElevatedButton(
+                    onPressed: () => cubit.getTransactions(refresh: true),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColors.yellow,
+                      foregroundColor: AppColors.black,
+                    ),
+                    child: const Text("Retry"),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        if (cubit.allTransactions.isEmpty) {
+          return SizedBox(
+            height: 200.h,
+            child: Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Icon(
+                    Icons.receipt_long_outlined,
+                    color: AppColors.greyText,
+                    size: 48,
+                  ),
+                  SizedBox(height: 16.h),
+                  const Text(
+                    "No transactions yet",
+                    style: TextStyle(color: AppColors.greyText, fontSize: 16),
+                  ),
+                  SizedBox(height: 8.h),
+                  const Text(
+                    "Your transaction history will appear here",
+                    style: TextStyle(color: AppColors.greyText, fontSize: 14),
+                  ),
+                ],
+              ),
+            ),
+          );
+        }
+
+        // Show only first 5 transactions on main screen
+        final displayTransactions = cubit.allTransactions.take(5).toList();
+
+        return Column(
+          children: displayTransactions.map((transaction) =>
+              _buildTransactionItem(transaction)).toList(),
+        );
+      },
+    );
+  }
+
+  // Build individual transaction item from TransactionData
+  Widget _buildTransactionItem(TransactionData transaction) {
+    final isCredit = transaction.credit > 0;
+    final amount = isCredit ? transaction.credit : transaction.debit;
+    final formattedDate = _formatDate(transaction.createdAt);
+
+    // Determine transaction type and icon
+    IconData icon;
+    String title;
+    Color iconBgColor;
+
+    if (transaction.type.toLowerCase().contains('deposit') ||
+        transaction.amountType.toLowerCase().contains('deposit') ||
+        isCredit) {
+      icon = Icons.upload_rounded;
+      title = LocaleKeys.deposit.tr();
+      iconBgColor = AppColors.green.withOpacity(0.15);
+    } else if (transaction.type.toLowerCase().contains('withdraw') ||
+        transaction.amountType.toLowerCase().contains('withdraw') ||
+        !isCredit) {
+      icon = Icons.download_rounded;
+      title = LocaleKeys.withdraw.tr();
+      iconBgColor = AppColors.red.withOpacity(0.15);
+    } else {
+      icon = Icons.swap_horiz;
+      title = transaction.type.isNotEmpty ? transaction.type : "Transaction";
+      iconBgColor = AppColors.yellow.withOpacity(0.15);
+    }
+print("transaction.isApproval. ${transaction.isApproval}");
+    // Status color based on approval
+    Color statusColor;
+    String status;
+    if (transaction.isApproval == '1' ||
+        transaction.isApproval.toLowerCase() == 'approved' ||
+        transaction.isApproval.toLowerCase() == 'yes') {
+      statusColor = AppColors.green;
+      status = "Approved";
+    } else if (transaction.isApproval == '0' ||
+        transaction.isApproval.toLowerCase() == 'Not Approved'.toLowerCase() ||
+        transaction.isApproval.toLowerCase() == 'no') {
+      statusColor = AppColors.yellow;
+      status = "Pending";
+    } else {
+      statusColor = AppColors.red;
+      status = "Rejected";
+    }
+
+    return _transactionItem(
+      title: title,
+      subtitle: transaction.amountType.isNotEmpty
+          ? transaction.amountType
+          : (transaction.note.isNotEmpty ? transaction.note : "System Transaction"),
+      amount: "${isCredit ? '+' : '-'} ${amount.toStringAsFixed(2)} EGP",
+      amountColor: isCredit ? AppColors.green : AppColors.red,
+      status: status,
+      statusColor: statusColor,
+      icon: icon,
+      iconBgColor: iconBgColor,
+      dateTime: formattedDate,
+      isPositive: isCredit,
+    );
+  }
+
+  // Format date string
+  String _formatDate(String dateStr) {
+    try {
+      if (dateStr.isEmpty) return 'Unknown';
+
+      final date = DateTime.parse(dateStr);
+      final now = DateTime.now();
+      final difference = now.difference(date);
+
+      if (difference.inDays == 0) {
+        return DateFormat('h:mm a').format(date);
+      } else if (difference.inDays == 1) {
+        return 'Yesterday';
+      } else if (difference.inDays < 7) {
+        return DateFormat('EEE').format(date);
+      } else {
+        return DateFormat('d MMM , h:mm a').format(date);
+      }
+    } catch (e) {
+      // Try alternative parsing if the first fails
+      try {
+        return DateFormat('MMM d, h:mm a').format(DateTime.parse(dateStr));
+      } catch (e2) {
+        return dateStr.isNotEmpty ? dateStr.substring(0, dateStr.length > 10 ? 10 : dateStr.length) : 'Unknown';
+      }
+    }
+  }
+
+  // Show all transactions in a modal
+  void _showAllTransactionsModal() {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (context) => DraggableScrollableSheet(
+        initialChildSize: 0.9,
+        maxChildSize: 0.95,
+        minChildSize: 0.5,
+        builder: (context, scrollController) {
+          // Use the modal scroll controller for pagination
+          //_modalScrollController.dispose();
+          return Container(
+            decoration: BoxDecoration(
+              color: AppColors.background,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+            ),
+            child: Column(
+              children: [
+                // Handle bar and header
+                Container(
+                  padding: EdgeInsets.all(16.sp),
+                  child: Column(
+                    children: [
+                      Container(
+                        width: 40.w,
+                        height: 4.h,
+                        decoration: BoxDecoration(
+                          color: AppColors.greyText,
+                          borderRadius: BorderRadius.circular(2.r),
+                        ),
+                      ),
+                      SizedBox(height: 16.h),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            "All Transactions",
+                            style: TextStyle(
+                              color: AppColors.textYellow,
+                              fontSize: 18.sp,
+                              fontWeight: FontWeight.w600,
+                            ),
+                          ),
+                          IconButton(
+                            onPressed: () => Navigator.pop(context),
+                            icon: const Icon(
+                              Icons.close,
+                              color: AppColors.greyText,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Transaction summary
+                BlocBuilder<WalletCubit, WalletState>(
+                  builder: (context, state) {
+                    final summary = WalletCubit.get(context).transactionModel?.result.summary;
+                    if (summary != null) {
+                      return Container(
+                        margin: EdgeInsets.symmetric(horizontal: 16.w, vertical: 8.h),
+                        padding: EdgeInsets.all(16.sp),
+                        decoration: BoxDecoration(
+                          color: AppColors.backgroundGrey,
+                          border: Border.all(color: AppColors.yellowBorder),
+                          borderRadius: BorderRadius.circular(12.r),
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceAround,
+                          children: [
+                            Column(
+                              children: [
+                                Text(
+                                  "Total Credit",
+                                  style: const TextStyle(color: AppColors.greyText, fontSize: 12),
+                                ),
+                                Text(
+                                  "\$${summary.totalCredit.toStringAsFixed(2)}",
+                                  style: const TextStyle(color: AppColors.green, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  "Total Debit",
+                                  style: const TextStyle(color: AppColors.greyText, fontSize: 12),
+                                ),
+                                Text(
+                                  "\$${summary.totalDebit.toStringAsFixed(2)}",
+                                  style: const TextStyle(color: AppColors.red, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: [
+                                Text(
+                                  "Last Balance",
+                                  style: const TextStyle(color: AppColors.greyText, fontSize: 12),
+                                ),
+                                Text(
+                                  "\$${summary.lastBalance}",
+                                  style: const TextStyle(color: AppColors.textYellow, fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    }
+                    return const SizedBox.shrink();
+                  },
+                ),
+
+                // Transactions list
+                Expanded(
+                  child: BlocBuilder<WalletCubit, WalletState>(
+                    builder: (context, state) {
+                      final cubit = WalletCubit.get(context);
+
+                      return ListView.builder(
+                        controller: scrollController,
+                        padding: EdgeInsets.symmetric(horizontal: 16.w),
+                        itemCount: cubit.allTransactions.length + 1,
+                        itemBuilder: (context, index) {
+                          if (index == cubit.allTransactions.length) {
+                            // Show load more indicator or end message
+                            if (cubit.isLoadingMoreTransactions) {
+                              return Padding(
+                                padding: EdgeInsets.all(16.sp),
+                                child: const Center(
+                                  child: CircularProgressIndicator(
+                                    color: AppColors.yellow,
+                                  ),
+                                ),
+                              );
+                            } else if (cubit.hasMoreTransactions) {
+                              return Padding(
+                                padding: EdgeInsets.all(16.sp),
+                                child: Center(
+                                  child: ElevatedButton(
+                                    onPressed: () => cubit.loadMoreTransactions(),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: AppColors.yellow,
+                                      foregroundColor: AppColors.black,
+                                    ),
+                                    child: const Text("Load More"),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return Padding(
+                                padding: EdgeInsets.all(16.sp),
+                                child: Center(
+                                  child: Text(
+                                    "No more transactions",
+                                    style: const TextStyle(color: AppColors.greyText),
+                                  ),
+                                ),
+                              );
+                            }
+                          }
+
+                          return _buildTransactionItem(cubit.allTransactions[index]);
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // Balance Card Widget
+  Widget _balanceCard({
+    required IconData icon,
+    required String title,
+    required Widget value
+  }) {
+    return Container(
+      padding: EdgeInsets.all(16.sp),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGrey,
+        border: Border.all(color: AppColors.yellowBorder),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Icon(icon, color: AppColors.yellow, size: 28.sp),
+          SizedBox(height: 8.h),
+          Text(
+            title,
+            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+          ),
+          SizedBox(height: 6.h),
+          value,
+        ],
+      ),
+    );
+  }
+
+  // Action Button Widget
+  Widget _actionButton(IconData icon, String text, {required VoidCallback onTap}) {
+    return Expanded(
+      child: GestureDetector(
+        onTap: onTap,
+        child: Container(
+          padding: EdgeInsets.symmetric(vertical: 18.h),
+          decoration: BoxDecoration(
+            color: AppColors.backgroundGrey,
+            border: Border.all(color: AppColors.yellowBorder),
+            borderRadius: BorderRadius.circular(12.r),
+          ),
+          child: Column(
+            children: [
+              Icon(icon, color: AppColors.yellow, size: 26.sp),
+              SizedBox(height: 8.h),
+              Text(
+                text,
+                style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  // Transaction Item Widget
+  Widget _transactionItem({
+    required String title,
+    required String subtitle,
+    required String amount,
+    required Color amountColor,
+    required String status,
+    required Color statusColor,
+    required IconData icon,
+    required Color iconBgColor,
+    required String dateTime,
+    required bool isPositive,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 14.h),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.sp),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(icon, color: AppColors.yellow, size: 26.sp),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // First row: title + amount
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style: const TextStyle(
+                          color: AppColors.yellow,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 16,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      amount,
+                      style: TextStyle(
+                        color: amountColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+                // Second row: status + subtitle + date
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Text(
+                              status,
+                              style: TextStyle(
+                                  color: statusColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              subtitle,
+                              style: const TextStyle(
+                                  color: AppColors.greyText, fontSize: 12),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      dateTime,
+                      style: const TextStyle(
+                        color: AppColors.greyText,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
