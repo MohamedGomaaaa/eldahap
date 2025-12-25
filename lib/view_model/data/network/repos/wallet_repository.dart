@@ -10,16 +10,28 @@ class WalletRepository {
   WalletRepository() {
     walletProvider = WalletProvider();
   }
-
-  Future<num> wallet() async {
+  Future<double> wallet() async {
     try {
       final walletResponse = await walletProvider.wallet();
-      return double.parse(walletResponse?.data?['result'] ?? '0') ;
+
+      final balance = walletResponse?.data?['result']?['balance'];
+
+      return (balance as num?)?.toDouble() ?? 0.0;
     } catch (e) {
       print("Error in wallet repository: $e");
       rethrow;
     }
   }
+
+  // Future<num> wallet() async {
+  //   try {
+  //     final walletResponse = await walletProvider.wallet();
+  //     return double.parse(walletResponse?.data?['result']["balance"] ?? '0') ;
+  //   } catch (e) {
+  //     print("Error in wallet repository: $e");
+  //     rethrow;
+  //   }
+  // }
 
   Future<Map<String, dynamic>> currencies() async {
     try {

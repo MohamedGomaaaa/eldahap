@@ -15,43 +15,40 @@ class TradesProvider {
     }
   }
 /////////////////////////////////////////////////////////////////////////////////////////////// new trades by eng gomaa
-  Future<Response?> tradess() async {
-    try{
-      return await DioHelper.get(
-        path: EndPoints.tradess,
-        withToken: true,
-      );
-    } catch (e) {
-      rethrow;
-    }
+
+  Future<Response> tradess() async {
+    return await DioHelper.get(
+      path: EndPoints.tradess, // endpoint الجديد
+      withToken: true,
+    );
   }
-
-
-/////////////////////////////////////////////////////////////////////////////////////////////// old orders
-  Future<Response?> orders() async {
-    try{
-      return await DioHelper.get(
-        path: EndPoints.orderss,
-        withToken: true,
-      );
-    } catch (e) {
-      rethrow;
-    }
-  }
-
 /////////////////////////////////////////////////////////////////////////////////////////////// new orders by eng gomaa
 
 
   Future<Response?> orderss() async {
-    try{
+    try {
       return await DioHelper.get(
-        path: EndPoints.orders,
+        path: EndPoints.orderss, // ✅ endpoint بتاع orders
         withToken: true,
       );
     } catch (e) {
       rethrow;
     }
   }
+/////////////////////////////////////////////////////////////////////////////////////////////// old orders
+//   Future<Response?> orders() async {
+//     try{
+//       return await DioHelper.get(
+//         path: EndPoints.orderss,
+//         withToken: true,
+//       );
+//     } catch (e) {
+//       rethrow;
+//     }
+//   }
+
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -89,6 +86,34 @@ class TradesProvider {
       rethrow;
     }
   }
+
+
+  Future<Response?> closeTrade({required orderId,required closePrice}) async {
+    try{
+      return await DioHelper.post(
+        path: EndPoints.closeTrade,
+        data: {
+          'order_id' : orderId,
+          "close_price": closePrice
+        },
+        withToken: true,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
   Future<Response?> sellTrade({required orderId}) async {
     try{

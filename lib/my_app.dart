@@ -52,20 +52,41 @@ class MyApp extends StatelessWidget {
               textTheme: GoogleFonts.cairoTextTheme(lightTheme.textTheme),
               primaryTextTheme: GoogleFonts.cairoTextTheme(lightTheme.primaryTextTheme),
             ),
+            color: AppColors.background, // يقلل فلاش الأبيض في بعض الأجهزة
+
             darkTheme: darkTheme,
             themeMode: ThemeMode.light,
             home: child,
             navigatorKey: navKey,
             // Add this builder to ensure all text uses Cairo font
+            // builder: (context, child) {
+            //   return DefaultTextStyle(
+            //     style: GoogleFonts.cairo(
+            //       color: Colors.black, // You can adjust this based on your theme
+            //       fontSize: 14, // Default font size
+            //     ),
+            //     child: child ?? Container(),
+            //   );
+            // },
+
+
             builder: (context, child) {
-              return DefaultTextStyle(
-                style: GoogleFonts.cairo(
-                  color: Colors.black, // You can adjust this based on your theme
-                  fontSize: 14, // Default font size
+              final theme = Theme.of(context);
+              return ColoredBox(
+                color: theme.scaffoldBackgroundColor, // يمنع الفلاش الأبيض
+                child: MediaQuery(
+                  data: MediaQuery.of(context),
+                  child: Theme(
+                    data: theme,
+                    child: DefaultTextStyle(
+                      style: theme.textTheme.bodyMedium ?? const TextStyle(),
+                      child: child ?? const SizedBox.shrink(),
+                    ),
+                  ),
                 ),
-                child: child ?? Container(),
               );
             },
+
           );
         },
         child: const SplashScreen(),
@@ -170,7 +191,7 @@ ThemeData lightTheme = ThemeData(
     backgroundColor: AppColors.background,
     elevation: 0,
     iconTheme: const IconThemeData(
-      color: AppColors.white,
+      color: AppColors.yellow,
     ),
     titleTextStyle: GoogleFonts.cairo(
       color: AppColors.textYellow,

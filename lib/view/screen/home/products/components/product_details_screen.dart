@@ -6,7 +6,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_gold/model/product.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
-import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
+import 'package:official_gold/view/components/app_bar_widget.dart';
 import 'package:official_gold/view_model/cubit/product_cubit/product_cubit.dart';
 import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 

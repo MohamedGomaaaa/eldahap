@@ -4,7 +4,8 @@ import 'dart:developer';
 import 'package:official_gold/view_model/data/network/data_providers/trades_providers.dart';
 
 import '../../../../model/new_trades.dart';
-import '../../../../model/trades.dart';
+import '../../../../model/trade_model.dart';
+
 
 class TradesRepository {
 
@@ -17,27 +18,60 @@ class TradesRepository {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////// old trades
-  Future<List<Trades>> trades() async {
+  Future<List<Trade>> trades() async {
     try {
       final tradesResponse = await productProvider.trades();
       // log(jsonEncode(tradesResponse?.data));
-      return (tradesResponse?.data?['result'] as List).map((e) => Trades.fromJson(e)).toList();
+      return (tradesResponse?.data?['result'] as List).map((e) => Trade.fromJson(e)).toList();
     } catch (e) {
       rethrow;
     }
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////////// new trades by eng gomaa
-  Future<List<Tradess>> tradess() async {
+  Future<Tradess> tradess() async {
     try {
       final tradesResponse = await productProvider.tradess();
-      return (tradesResponse?.data?['result'] as List).map((e) => Tradess.fromJson(e)).toList();
+
+      final data = tradesResponse?.data;
+      if (data is Map<String, dynamic>) {
+        return Tradess.fromJson(data);
+      }
+
+      // لو data جاية Map بس مش typed
+      if (data is Map) {
+        return Tradess.fromJson(Map<String, dynamic>.from(data));
+      }
+
+      // fallback
+      return Tradess(success: false, message: "Invalid response", result: []);
     } catch (e) {
       rethrow;
     }
   }
 
+/////////////////////////////////////////////////////////////////////////////////////////////// new orders by eng gomaa
 
+  Future<Tradess> orderss() async {
+    try {
+      final ordersResponse = await productProvider.orderss();
+
+      final data = ordersResponse?.data;
+      if (data is Map<String, dynamic>) {
+        return Tradess.fromJson(data);
+      }
+
+      // لو data جاية Map بس مش typed
+      if (data is Map) {
+        return Tradess.fromJson(Map<String, dynamic>.from(data));
+      }
+
+      // fallback
+      return Tradess(success: false, message: "Invalid response", result: []);
+    } catch (e) {
+      rethrow;
+    }
+  }
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////// old orders
@@ -45,25 +79,15 @@ class TradesRepository {
 
 
 
-  Future<void> orders() async {
-    try {
-      final ordersResponse = await productProvider.orders();
-      log(jsonEncode(ordersResponse?.data));
-      // return (tradesResponse?.data?['result'] as List).map((e) => Product.fromJson(e)).toList();
-    } catch (e) {
-      rethrow;
-    }
-  }
-/////////////////////////////////////////////////////////////////////////////////////////////// new orders by eng gomaa
-  Future<void> orderss() async {
-    try {
-      final ordersResponse = await productProvider.orderss();
-      log(jsonEncode(ordersResponse?.data));
-      // return (tradesResponse?.data?['result'] as List).map((e) => Product.fromJson(e)).toList();
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Future<void> orders() async {
+  //   try {
+  //     final ordersResponse = await productProvider.orders();
+  //     log(jsonEncode(ordersResponse?.data));
+  //     // return (tradesResponse?.data?['result'] as List).map((e) => Product.fromJson(e)).toList();
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +110,30 @@ class TradesRepository {
       rethrow;
     }
   }
+
+  Future<void> closeTrade({required orderId,required closePrice}) async {
+    try {
+      final closeTradeResponse = await productProvider.closeTrade(orderId: orderId,closePrice: closePrice);
+      log(jsonEncode(closeTradeResponse?.data));
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   Future<void> sellTrade({required orderId}) async {
     try {

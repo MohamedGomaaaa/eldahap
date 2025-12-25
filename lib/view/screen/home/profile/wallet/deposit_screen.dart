@@ -7,7 +7,7 @@ import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../../../view_model/utils/navigation.dart';
 import '../../../../components/gradient_widget.dart';
-import '../../app_bar/app_bar_widget.dart';
+import '../../../../components/app_bar_widget.dart';
 import 'completed_deposit_screen.dart';
 
 class DepositScreen extends StatelessWidget {

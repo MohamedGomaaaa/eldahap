@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../model/user.dart';
-import '../../../../view_model/cubit/home_cubit/home_cubit.dart';
-import '../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
-import '../../../../view_model/utils/assets.dart';
-import '../../../../view_model/utils/colors.dart';
-import '../../../../view_model/utils/navigation.dart';
-import '../../../components/svg_widget.dart';
-import '../profile/profile_screen.dart';
+import '../../model/user.dart';
+import '../../view_model/cubit/home_cubit/home_cubit.dart';
+import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
+import '../../view_model/utils/assets.dart';
+import '../../view_model/utils/colors.dart';
+import '../../view_model/utils/navigation.dart';
+import 'svg_widget.dart';
+import '../screen/home/profile/profile_screen.dart';
 
 
 
@@ -18,14 +18,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../model/user.dart';
-import '../../../../view_model/cubit/home_cubit/home_cubit.dart';
-import '../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
-import '../../../../view_model/utils/assets.dart';
-import '../../../../view_model/utils/colors.dart';
-import '../../../../view_model/utils/navigation.dart';
-import '../../../components/svg_widget.dart';
-import '../profile/profile_screen.dart';
+import '../../model/user.dart';
+import '../../view_model/cubit/home_cubit/home_cubit.dart';
+import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
+import '../../view_model/utils/assets.dart';
+import '../../view_model/utils/colors.dart';
+import '../../view_model/utils/navigation.dart';
+import 'svg_widget.dart';
+import '../screen/home/profile/profile_screen.dart';
 
 
 
@@ -37,14 +37,14 @@ import '../profile/profile_screen.dart';
 ///////////////////////////////////////////////////////  edit by eng gomaa
 class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   final bool showBalance;
-  final List<Widget>? actions;
+  // final List<Widget>? actions;
 
   // ✅ تحكم في ارتفاع الاب بار من برا لو تحب
   final double height;
 
   const AppBarCustom({
     this.showBalance = false,
-    this.actions,
+    // this.actions,
     this.height = 80, // default height (logical px before .h)
     super.key,
   });
@@ -84,7 +84,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                   Positioned(
                     top: 27.h,
                     child: Container(
-                      width: 44.w,
+
                       padding: EdgeInsets.symmetric(horizontal: 6.w,),
                       decoration: BoxDecoration(
                         color: AppColors.blueColor,
@@ -94,7 +94,8 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                         valueListenable: HomeCubit.get(context).user,
                         builder: (context, user, _) {
                           return Text(
-                            user.mode ?? '',
+
+                             user.mode ?? '',
                             textAlign: TextAlign.center,
                             style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: AppColors.white,
@@ -129,7 +130,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
           ),
         ),
       ),
-      actions: actions,
+      // actions: actions,
     );
   }
 

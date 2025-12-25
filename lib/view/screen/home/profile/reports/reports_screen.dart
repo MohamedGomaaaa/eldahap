@@ -7,7 +7,7 @@ import 'package:official_gold/view/screen/home/profile/components/profile_tile_w
 import 'package:official_gold/view_model/utils/navigation.dart';
 
 import '../../../../../view_model/utils/colors.dart';
-import '../../app_bar/app_bar_widget.dart';
+import '../../../../components/app_bar_widget.dart';
 import 'deposit_reports_screen.dart';
 import 'earnings_reports_screen.dart';
 import 'order_reports_screen.dart';

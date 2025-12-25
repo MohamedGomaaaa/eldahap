@@ -4,7 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
-import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
+import 'package:official_gold/view/components/app_bar_widget.dart';
 import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../view_model/utils/colors.dart';

@@ -7,7 +7,7 @@ class User {
   int? publish;
   String? type;
   String? mode;
-  double? balance;
+num? balance;
   String? nationalIdFront;
   String? nationalIdBack;
   bool? nationalIdFrontApproved;

@@ -45,6 +45,7 @@ class ProductsScreen extends StatelessWidget {
                           ),
                         ),
                       ),
+////////////////////////////////////////////////////////////////////////////////////////////    TabBar
                       child: BlocBuilder<ProductCubit, ProductState>(
                         buildWhen: (previous, current) {
                           return current is GetCategoriesLoadingState ||
@@ -53,50 +54,45 @@ class ProductsScreen extends StatelessWidget {
                         },
                         builder: (context, state) {
                           final productCubit = ProductCubit.get(context);
-
-                          return Align(
-                            alignment: Alignment.centerLeft, // مهم لإزالة المحاذاة المركزية
-                            child: TabBar(
-                              isScrollable: true, // ✅ Now scrollable
-                              tabAlignment: TabAlignment.start, // ✅ This removes the automatic padding
-                              padding: EdgeInsets.zero, // ⬅️ يزيل padding حول الـ TabBar
-                              labelPadding: EdgeInsets.symmetric(horizontal: 12), // فقط بين التبويبات
-                              indicatorPadding: EdgeInsets.zero, // ⬅️ يزيل padding من المؤشر نفسه
-                              labelStyle:  TextStyle(
-                                fontFamily: GoogleFonts.cairo().fontFamily,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
-                              unselectedLabelStyle:  TextStyle(
-                                fontFamily: GoogleFonts.cairo().fontFamily,
-                                fontSize: 14,
-                              ),
-                              tabs: productCubit.categories.map(
-                                    (e) => Tab(
-                                  child: Align(
-                                    alignment: Alignment.center,
-                                    child: Text(
-                                      e.name ?? '',
-                                      style: const TextStyle(
-                                        fontSize: 14,
-                                        overflow: TextOverflow.visible,
-                                      ),
-                                      softWrap: false,
+                          return TabBar(
+                            isScrollable: true, // ✅ Now scrollable
+                             tabAlignment: TabAlignment.center, // ✅ This removes the automatic padding
+                            padding: EdgeInsets.zero, // ⬅️ يزيل padding حول الـ TabBar
+                            labelPadding: const EdgeInsets.symmetric(horizontal: 12), // فقط بين التبويبات
+                            indicatorPadding: EdgeInsets.zero, // ⬅️ يزيل padding من المؤشر نفسه
+                            labelStyle:  TextStyle(
+                              fontFamily: GoogleFonts.cairo().fontFamily,
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
+                            unselectedLabelStyle:  TextStyle(
+                              fontFamily: GoogleFonts.cairo().fontFamily,
+                              fontSize: 14,
+                            ),
+                            tabs: productCubit.categories.map(
+                                  (e) => Tab(
+                                child: Align(
+                                  alignment: Alignment.center,
+                                  child: Text(
+                                    e.name ?? '',
+                                    style: const TextStyle(
+                                      fontSize: 14,
+                                      overflow: TextOverflow.visible,
                                     ),
+                                    softWrap: false,
                                   ),
                                 ),
-                              ).toList(),
-                              onTap: (index) {
+                              ),
+                            ).toList(),
+                            onTap: (index) {
 
-                                productCubit.getProducts(index);
-                              },
-                            ),
+                              productCubit.getProducts(index);
+                            },
                           );
                         },
                       ),
                     ),
-
-                    // ✅ TabBarView بدون padding
+//////////////////////////////////////////////////////////////////////////////////////////////// product list
                     Expanded(
                       child: BlocBuilder<ProductCubit, ProductState>(
                         buildWhen: (previous, current) =>

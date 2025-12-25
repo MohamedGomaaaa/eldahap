@@ -5,7 +5,7 @@ import 'package:official_gold/view/components/svg_widget.dart';
 import 'package:official_gold/view_model/utils/assets.dart';
 import 'package:official_gold/view_model/utils/colors.dart';
 import '../../../../../model/new.dart';
-import '../../app_bar/app_bar_widget.dart';
+import '../../../../components/app_bar_widget.dart';
 
 class NewsScreen extends StatelessWidget {
   final New newModel;

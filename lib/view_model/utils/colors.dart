@@ -14,13 +14,19 @@ class AppColors {
   // static const Color textYellow = Color(0xffF8FFAC);
   static const Color black = Color(0xff000000);
   static const Color background = Color(0xff141414);
-  static const Color white = Color(0xffffffff);
+   static const Color white = Color(0xffffffff);
   static const Color grey = Color(0xff2B2B2B);
   static const Color lightGrey = Color(0xff707070);
   static const Color backgroundGrey = Color(0xff262525);
   static const Color backgroundGrey2 = Color(0xff232222);
   static const Color greyText = Color.fromRGBO(222, 222, 219, 0.6);
-  static const Color darkGreen = Color(0xff283926);
+
+
+  static const Color darkGreen = Color(0xff000000);
+
+
+
+
   static const Color red = Colors.red;
   static const Color purple = Color(0xff2F2962);
   static const Color purple2 = Color(0xffA200FF);

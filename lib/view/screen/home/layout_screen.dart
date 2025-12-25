@@ -13,7 +13,7 @@ import 'package:official_gold/view_model/utils/colors.dart';
 import 'package:official_gold/view_model/utils/navigation.dart';
 
 import '../../components/gradient_widget.dart';
-import 'app_bar/app_bar_widget.dart';
+import '../../components/app_bar_widget.dart';
 
 class LayoutScreen extends StatelessWidget {
   const LayoutScreen({super.key});
@@ -29,47 +29,47 @@ class LayoutScreen extends StatelessWidget {
               null:
           AppBarCustom(
             showBalance: true,
-            actions: [
-              Stack(
-                alignment: Alignment.center,
-                children: [
-                  BlocBuilder<AuthCubit, AuthState>(
-                    buildWhen: (previous, current) {
-                      return current is LogoutLoadingState ||
-                          current is LogoutSuccessState ||
-                          current is LogoutErrorState;
-                    },
-                    builder: (context, state) {
-                      return Visibility(
-                        visible: state is LogoutLoadingState,
-                        child: const CircularProgressIndicator(
-                          color: AppColors.yellow2,
-                        ),
-                      );
-                    },
-                  ),
- ///////////////////////////////////////////////////////////////////////////////////////////////// log out
-                  IconButton(
-                    onPressed: () {
-                      SharedHelper.clear();
-                      // AuthCubit.get(context).logout().then((value) {
-                      //   Navigation.pushAndRemoveUntil(
-                      //     context,
-                      //     const LoginScreen(),
-                      //   );
-                      // });
-                      Navigation.pushAndRemoveUntil(context, const LoginScreen());
-                    },
-                    icon: Icon(
-                      Icons.logout_rounded,
-                      color: AppColors.yellow2,
-                      size: 20.sp,
-                    ),
-                    tooltip: LocaleKeys.logout.tr(),
-                  ),
-                ],
-              ),
-            ],
+ //            actions: [
+ //              Stack(
+ //                alignment: Alignment.center,
+ //                children: [
+ //                  BlocBuilder<AuthCubit, AuthState>(
+ //                    buildWhen: (previous, current) {
+ //                      return current is LogoutLoadingState ||
+ //                          current is LogoutSuccessState ||
+ //                          current is LogoutErrorState;
+ //                    },
+ //                    builder: (context, state) {
+ //                      return Visibility(
+ //                        visible: state is LogoutLoadingState,
+ //                        child: const CircularProgressIndicator(
+ //                          color: AppColors.yellow2,
+ //                        ),
+ //                      );
+ //                    },
+ //                  ),
+ // ///////////////////////////////////////////////////////////////////////////////////////////////// log out
+ //                  IconButton(
+ //                    onPressed: () {
+ //                      SharedHelper.clear();
+ //                      // AuthCubit.get(context).logout().then((value) {
+ //                      //   Navigation.pushAndRemoveUntil(
+ //                      //     context,
+ //                      //     const LoginScreen(),
+ //                      //   );
+ //                      // });
+ //                      Navigation.pushAndRemoveUntil(context, const LoginScreen());
+ //                    },
+ //                    icon: Icon(
+ //                      Icons.logout_rounded,
+ //                      color: AppColors.yellow2,
+ //                      size: 20.sp,
+ //                    ),
+ //                    tooltip: LocaleKeys.logout.tr(),
+ //                  ),
+ //                ],
+ //              ),
+ //            ],
           ),
           body:
 
@@ -142,14 +142,14 @@ class LayoutScreen extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: SvgWidget(
-                    assetName: AppAssets.wallet,
+                    assetName: AppAssets.chart,
                     height: 24.h,
                     color: AppColors.grey,
                   ),
-                  label:  LocaleKeys.wallet.tr(),
+                  label:  LocaleKeys.chart.tr(),
                   backgroundColor: AppColors.background,
                   activeIcon: SvgWidget(
-                    assetName: AppAssets.wallet,
+                    assetName: AppAssets.chart,
                     height: 25.h,
                     color: AppColors.yellow2,
                   ),

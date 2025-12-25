@@ -7,7 +7,7 @@ import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 
 import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../view_model/utils/colors.dart';
-import '../../app_bar/app_bar_widget.dart';
+import '../../../../components/app_bar_widget.dart';
 
 class DepositReportsScreen extends StatelessWidget {
   const DepositReportsScreen({super.key});

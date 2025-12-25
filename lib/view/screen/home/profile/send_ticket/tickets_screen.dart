@@ -2,7 +2,7 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
+import 'package:official_gold/view/components/app_bar_widget.dart';
 import 'package:official_gold/view/screen/home/profile/send_ticket/components/ticket_widget.dart';
 import 'package:official_gold/view/screen/home/profile/send_ticket/send_ticket_screen.dart';
 import 'package:official_gold/view_model/cubit/ticket_cubit/ticket_cubit.dart';

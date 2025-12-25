@@ -8,7 +8,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
 import 'package:official_gold/view/components/svg_widget.dart';
-import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
+import 'package:official_gold/view/components/app_bar_widget.dart';
 import 'package:official_gold/view_model/utils/assets.dart';
 
 import '../../../../../l10n/locale_keys.g.dart';

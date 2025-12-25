@@ -47,5 +47,9 @@ class EndPoints {
   static const String orders = 'orders';
   static const String updateTrade = 'update-trades';
   static const String deleteTrade = 'delete-trade';
+
+  static const String closeTrade = 'trade/close';
+
+
   static const String sellTrade = 'sell-trade';
 }

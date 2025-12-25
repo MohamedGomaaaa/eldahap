@@ -8,16 +8,15 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_gold/l10n/locale_keys.g.dart';
 import 'package:official_gold/view/components/app_loader.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
-import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
-
-import '../../../../model/trades.dart';
+import 'package:official_gold/view/components/app_bar_widget.dart';
+import '../../../../model/trade_model.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../../view_model/utils/toast.dart';
 import '../../static_pages/static_page_screen.dart';
 
 class TradeDetailsScreen extends StatelessWidget {
-  Trades trad;
+  Trade trad;
   TradeDetailsScreen(this.trad, {super.key});
 
   ApiService _appService =ApiService();

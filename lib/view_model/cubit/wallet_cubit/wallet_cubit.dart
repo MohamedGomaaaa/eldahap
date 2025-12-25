@@ -22,11 +22,18 @@ class WalletCubit extends Cubit<WalletState> {
   bool hasMoreTransactions = true;
   int currentTransactionPage = 1;
 
+
+
+
+
   Future<void> getWallet() async {
     emit(GetWalletLoadingState());
+
     await WalletRepository().wallet().then((value) {
       print("Wallet value: $value");
-      wallet = double.parse("${value.toStringAsFixed(2)}");
+
+      wallet = double.parse(value.toStringAsFixed(2));
+
       emit(GetWalletSuccessState(wallet));
     }).catchError((error) {
       if (error is DioException) {
@@ -38,6 +45,25 @@ class WalletCubit extends Cubit<WalletState> {
       }
     });
   }
+
+
+
+  // Future<void> getWallet() async {
+  //   emit(GetWalletLoadingState());
+  //   await WalletRepository().wallet().then((value) {
+  //     print("Wallet value: $value");
+  //     wallet = double.parse("${value.toStringAsFixed(2)}");
+  //     emit(GetWalletSuccessState(wallet));
+  //   }).catchError((error) {
+  //     if (error is DioException) {
+  //       debugPrint(error.response?.data?.toString());
+  //       emit(GetWalletErrorState(msg: error.response?.data?.toString()));
+  //     } else {
+  //       debugPrint("Unexpected error: $error");
+  //       emit(GetWalletErrorState(msg: error.toString()));
+  //     }
+  //   });
+  // }
 
   // Get initial transactions (first page)
   Future<void> getTransactions({bool refresh = false}) async {

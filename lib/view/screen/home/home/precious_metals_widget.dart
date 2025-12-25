@@ -17,7 +17,13 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
 
   // Base prices in EGP (as shown in image)
   final Map<String, Map<String, double>> basePricesEGP = {
-    'Gold': {
+    'Gold (24)': {
+      'livePrice': 2804.91,
+      'bid': 2804.91,
+      'ask': 2806.40,
+      'gram': 90.23
+    },
+    'Gold (21)': {
       'livePrice': 2804.91,
       'bid': 2804.91,
       'ask': 2806.40,
@@ -80,7 +86,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                   child: DropdownButton<String>(
                     value: selectedCurrency,
                     dropdownColor: AppColors.grey,
-                    underline: SizedBox.shrink(),
+                    underline: const SizedBox.shrink(),
                     icon: const Icon(Icons.keyboard_arrow_down,
                         color: AppColors.yellow2),
                     items: ['EGP', 'USD'].map((String currency) {
@@ -88,13 +94,13 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                         value: currency,
                         child: Row(
                           children: [
-                            Text(
+                            const Text(
                               '(£) ',
                               style: TextStyle(color: AppColors.yellow2),
                             ),
                             Text(
                               currency,
-                              style: TextStyle(color: AppColors.yellow2),
+                              style: const TextStyle(color: AppColors.yellow2),
                             ),
                           ],
                         ),
@@ -114,13 +120,13 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Tab bar
           Container(
-            margin: EdgeInsets.symmetric(horizontal: 4),
+            margin: const EdgeInsets.symmetric(horizontal: 4),
             decoration: BoxDecoration(
               color: AppColors.grey,
               borderRadius: BorderRadius.circular(8),
             ),
             child: Row(
-              children: ['Live Price', 'Market', 'Sell', 'Buy'].map((tab) {
+              children: ['Live Price', 'Bid(Oz)', 'Ask(Oz)', 'GRAM'].map((tab) {
                 bool isSelected = selectedTab == tab;
                 return Expanded(
                   child: GestureDetector(
@@ -142,11 +148,11 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                             Container(
                               width: 8,
                               height: 8,
-                              decoration: BoxDecoration(
+                              decoration: const BoxDecoration(
                                 color: AppColors.red,
                                 shape: BoxShape.circle,
                               ),
-                              margin: EdgeInsets.only(right: 8),
+                              margin: const EdgeInsets.only(right: 8),
                             ),
                           Text(
                             tab,
@@ -169,53 +175,52 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
             ),
           ),
 
-          SizedBox(height: 20),
+          const SizedBox(height: 20),
 
           // Table Headers
-          Container(
-            padding: EdgeInsets.symmetric(horizontal: 20),
-            child: Row(
-              children: [
-                Expanded(flex: 2, child: SizedBox()),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Bid(Oz)',
-                    style: TextStyle(color: AppColors.greyText, fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'Ask(Oz)',
-                    style: TextStyle(color: AppColors.greyText, fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-                Expanded(
-                  flex: 2,
-                  child: Text(
-                    'GRAM',
-                    style: TextStyle(color: AppColors.greyText, fontSize: 14),
-                    textAlign: TextAlign.center,
-                  ),
-                ),
-              ],
-            ),
-          ),
+          // Container(
+          //   padding: const EdgeInsets.symmetric(horizontal: 20),
+          //   child: const Row(
+          //     children: [
+          //       Expanded(flex: 2, child: SizedBox()),
+          //       Expanded(
+          //         flex: 2,
+          //         child: Text(
+          //           'Bid(Oz)',
+          //           style: TextStyle(color: AppColors.greyText, fontSize: 14),
+          //           textAlign: TextAlign.center,
+          //         ),
+          //       ),
+          //       Expanded(
+          //         flex: 2,
+          //         child: Text(
+          //           'Ask(Oz)',
+          //           style: TextStyle(color: AppColors.greyText, fontSize: 14),
+          //           textAlign: TextAlign.center,
+          //         ),
+          //       ),
+          //       Expanded(
+          //         flex: 2,
+          //         child: Text(
+          //           'GRAM',
+          //           style: TextStyle(color: AppColors.greyText, fontSize: 14),
+          //           textAlign: TextAlign.center,
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
-          SizedBox(height: 15),
 
-          // Metal list
+////////////////////////////////////////////////////////////////////////////////////////////////// Metal list
           Column(
             children: currentPrices.entries.map((entry) {
               String metalName = entry.key;
               Map<String, double> prices = entry.value;
 
               return Container(
-                margin: EdgeInsets.only(bottom: 4, left: 4, right: 4),
-                padding: EdgeInsets.all(16),
+                margin: const EdgeInsets.only(bottom: 6, left: 4, right: 4),
+                padding: const EdgeInsets.all(16),
                 decoration: BoxDecoration(
                   color: AppColors.grey,
                   borderRadius: BorderRadius.circular(12),
@@ -227,10 +232,10 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                       flex: 2,
                       child: Row(
                         children: [
-                          SizedBox(width: 12),
+                          const SizedBox(width: 12),
                           Text(
                             metalName,
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: AppColors.yellow2,
                               fontSize: 16,
                               fontWeight: FontWeight.w500,
@@ -245,7 +250,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                       flex: 2,
                       child: Text(
                         _formatPrice(prices['bid']!),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.yellow2,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -259,7 +264,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                       flex: 2,
                       child: Text(
                         _formatPrice(prices['ask']!),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.yellow2,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -273,7 +278,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                       flex: 2,
                       child: Text(
                         _formatPrice(prices['gram']!),
-                        style: TextStyle(
+                        style: const TextStyle(
                           color: AppColors.yellow2,
                           fontSize: 16,
                           fontWeight: FontWeight.w500,
@@ -285,30 +290,30 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget> {
                 ),
               );
             }).toList(),
+
           ),
-          //),
         ],
       ),
       // ),
     );
   }
 
-  Color _getMetalColor(String metalName) {
-    switch (metalName) {
-      case 'Gold':
-        return AppColors.yellow;
-      case 'Silver':
-        return AppColors.lightGrey;
-      case 'Platinum':
-        return AppColors.lightGrey;
-      case 'Palladium':
-        return AppColors.lightGrey;
-      case 'Rhodium':
-        return AppColors.lightGrey;
-      default:
-        return AppColors.yellow2;
-    }
-  }
+  // Color _getMetalColor(String metalName) {
+  //   switch (metalName) {
+  //     case 'Gold':
+  //       return AppColors.yellow;
+  //     case 'Silver':
+  //       return AppColors.lightGrey;
+  //     case 'Platinum':
+  //       return AppColors.lightGrey;
+  //     case 'Palladium':
+  //       return AppColors.lightGrey;
+  //     case 'Rhodium':
+  //       return AppColors.lightGrey;
+  //     default:
+  //       return AppColors.yellow2;
+  //   }
+  // }
 
   String _formatPrice(double price) {
     if (selectedCurrency == 'USD') {

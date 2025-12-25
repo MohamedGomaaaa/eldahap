@@ -1,4 +1,6 @@
-import 'package:official_gold/model/trades.dart';
+
+
+import 'package:official_gold/model/trade_model.dart';
 
 class Tradess {
   bool? success;
@@ -18,6 +20,11 @@ class Tradess {
     }
   }
 
+
+
+
+
+
   Map<String, dynamic> toJson() {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
@@ -32,7 +39,7 @@ class Tradess {
 class Result {
   String? metal;
   String? title;
-  List<Trades>? orders;
+  List<Trade>? orders;
 
   Result({this.metal, this.title, this.orders});
 
@@ -40,9 +47,9 @@ class Result {
     metal = json['metal']??"";
     title = json['title']??"";
     if (json['orders'] != null) {
-      orders = <Trades>[];
+      orders = <Trade>[];
       json['orders'].forEach((v) {
-        orders!.add(new Trades.fromJson(v));
+        orders!.add(new Trade.fromJson(v));
       });
     }
   }

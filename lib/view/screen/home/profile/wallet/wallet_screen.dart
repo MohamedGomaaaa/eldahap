@@ -523,7 +523,8 @@ import '../../../../../view_model/models/wallet_models/transaction_model.dart';
 import '../../../../../view_model/utils/colors.dart';
 
 class WalletScreen extends StatefulWidget {
-  const WalletScreen({super.key});
+  final  bool comingFromNavBar;final String userMode;
+  const WalletScreen({super.key, required this.comingFromNavBar, required this.userMode});
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();
@@ -565,7 +566,7 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: AppBar(
+      appBar:widget.comingFromNavBar==true?null: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
@@ -604,8 +605,8 @@ class _WalletScreenState extends State<WalletScreen> {
 
               SizedBox(height: 20.h),
 
-              // Action Buttons
-              _buildActionButtons(),
+//////////////////////////////////////////////////////////////////////////////////// Action Buttons
+             widget. userMode=="demo"?SizedBox():      _buildActionButtons(),
 
               SizedBox(height: 25.h),
 

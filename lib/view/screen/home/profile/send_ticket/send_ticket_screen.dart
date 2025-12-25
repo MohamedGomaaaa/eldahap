@@ -7,7 +7,7 @@ import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../model/ticket.dart';
 import '../../../../../view_model/cubit/ticket_cubit/ticket_cubit.dart';
 import '../../../../../view_model/utils/colors.dart';
-import '../../app_bar/app_bar_widget.dart';
+import '../../../../components/app_bar_widget.dart';
 import 'components/support_replay_widget.dart';
 import 'components/you_replay_widget.dart';
 

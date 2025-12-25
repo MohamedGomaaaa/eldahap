@@ -4,6 +4,8 @@ import 'package:official_gold/view/screen/home/home/home_screen.dart';
 import 'package:official_gold/view/screen/home/portfolio/portfolio_screen.dart';
 import 'package:official_gold/view/screen/home/products/products_screen.dart';
 
+import '../../../view/screen/home/charts/charts.dart';
+import '../../../view/screen/home/product_chart/product_chart_screen.dart';
 import '../../../view/screen/home/profile/tawk_chat/tawk_chat_screen.dart';
 import '../../../view/screen/home/profile/wallet/wallet_screen.dart';
 
@@ -16,18 +18,18 @@ class LayoutCubit extends Cubit<LayoutState> {
 
   int index = 0;
 
-  List<Widget> screens =  [
+  List<Widget> screens = [
     HomeScreen(),
     ProductsScreen(),
     PortfolioScreen(),
-    WalletScreen(),
-    //Charts(),
+    // WalletScreen(comingFromNavBar:true,userMode: "",),
+    TradingViewPage(type: 1), // 1 = Gold, 2 = Silver, 3 = Bitcoin
     TawkChatPage()
     // ProfileScreen(),
     //PayUsdtScreen(),
   ];
 
-  void changeCurrentIndex (int index){
+  void changeCurrentIndex(int index) {
     this.index = index;
     emit(ChangeCurrentIndexState());
   }

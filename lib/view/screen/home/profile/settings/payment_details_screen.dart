@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
 import 'package:official_gold/view/components/svg_widget.dart';
-import 'package:official_gold/view/screen/home/app_bar/app_bar_widget.dart';
+import 'package:official_gold/view/components/app_bar_widget.dart';
 import 'package:official_gold/view_model/utils/assets.dart';
 import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../view_model/utils/colors.dart';

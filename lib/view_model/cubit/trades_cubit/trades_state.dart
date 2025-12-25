@@ -34,3 +34,55 @@ final class SellTradeLoadingState extends TradesState {}
 final class SellTradeSuccessState extends TradesState {}
 
 final class SellTradeErrorState extends TradesState {}
+
+
+final class CloseTradeSuccessState extends TradesState {}
+
+final class CloseTradeErrorState extends TradesState {}
+
+final class CloseTradeLoadingState extends TradesState {}
+
+
+
+
+
+
+
+
+class TradesExpandedChanged extends TradesState {
+  final Set<String> expandedKeys;
+  TradesExpandedChanged(this.expandedKeys);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

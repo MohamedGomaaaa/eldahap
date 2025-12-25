@@ -1,229 +1,139 @@
-import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
-import '../../../../../l10n/locale_keys.g.dart';
-import '../../../../../model/trades.dart';
+import '../../../../../model/new_trades.dart';
+import '../../../../../model/trade_model.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../../components/app_loader.dart';
 import '../../../../components/svg_widget.dart';
 import '../../../static_pages/static_page_screen.dart';
+import 'creat_trade.dart';
+
 
 class TradeWidget extends StatelessWidget {
-  final Trades product;
-  final void Function()? onTap;
-  final TradesCubit tradesCubit;
-  const TradeWidget({required this.product, this.onTap, super.key, required this.tradesCubit});
+  final String wholeTradeName;
+  final String groupKey;
+
+  const TradeWidget({
+    super.key,
+    required this.wholeTradeName,
+    required this.groupKey,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return
-
-      BlocProvider.value(
-        value: tradesCubit,
-        child:
-        Material(
+    final tradesCubit = context.read<TradesCubit>();
+    return BlocBuilder<TradesCubit, TradesState>(
+      // ✅ خليه يسمع أي state يغير الداتا أو الفتح/القفل
+      builder: (context, state) {
+        final isOpen = tradesCubit.isGroupExpanded(groupKey);
+        /// ✅ نجيب tradeList من الكيوبت كل مرة (ده اللي بيخلي الحذف يظهر فورًا)
+        final group = tradesCubit.wholeTrade.firstWhere(
+              (g) => (g.metal ?? '') == groupKey,
+          orElse: () => Result(orders: []),
+        );
+        final tradeList = group.orders ?? [];
+        return Material(
           color: AppColors.transparent,
           borderRadius: BorderRadius.circular(12.sp),
-          child: InkWell(
-            onTap: onTap,
-            borderRadius: BorderRadius.circular(12.sp),
-            child: Container(
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.sp),
-                border: Border.all(
-                  color: AppColors.yellow2,
-                  width: 1.sp,
-                ),
-              ),
-              child: Column(
-                children: [
-                  Padding(
-                    padding: EdgeInsets.all(8.sp),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-
-                      children: [
-                        Material(
-                          color: AppColors.black,//black
-                          borderRadius: BorderRadius.circular(50.sp),
-                          child: Container(
-                            padding: EdgeInsets.all(0.sp),
-                            child: Row(
-                              children: [
-///////////////////////////////////////////////////////////////////////////////////////////////////// gold image
-                                Padding(
-                                  padding: const EdgeInsets.all(6.0),
-                                  child: SvgWidget(
-                                    assetName: AppAssets.gold3,
-                                    // color: AppColors.transparent,
-                                    width: 20.sp,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 6.sp,
-                                ),
-///////////////////////////////////////////////////////////////////////////////////////////////////// gold name
-                                Text(
-                                  LocaleKeys.gold.tr().toUpperCase(),
-                                  style: const TextStyle(
-                                    color: AppColors.white,
-                                  ),
-                                ),
-                                SizedBox(
-                                  width: 6.w,
-                                ),
-///////////////////////////////////////////////////////////////////////////////////////////////////// icon
-                                const Icon(
-                                  Icons.arrow_forward_ios_rounded,
+          child: AnimatedContainer(
+            duration: const Duration(milliseconds: 250),
+            curve: Curves.easeInOut,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.sp),
+              border: Border.all(color: AppColors.yellow2, width: 1.sp),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Padding(
+                  padding: EdgeInsets.all(8.sp),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Material(
+                        color: AppColors.black,
+                        borderRadius: BorderRadius.circular(50.sp),
+                        child: Row(
+                          children: [
+//////////////////////////////////////////////////////////////////////////////////////// image
+                            Padding(
+                              padding: const EdgeInsets.all(6.0),
+                              child: SvgWidget(
+                                assetName: AppAssets.gold3,
+                                width: 20.sp,
+                              ),
+                            ),
+                            SizedBox(width: 6.sp),
+//////////////////////////////////////////////////////////////////////////////////////// whole trade type
+                            Text(
+                              wholeTradeName,
+                              style: const TextStyle(color: AppColors.white),
+                            ),
+                            SizedBox(width: 6.w),
+//////////////////////////////////////////////////////////////////////////////////////// open trade button
+                            IconButton(
+                              onPressed: () {
+                                tradesCubit.toggleGroup(groupKey);
+                              },
+                              icon: AnimatedRotation(
+                                duration: const Duration(milliseconds: 200),
+                                turns: isOpen ? 0.5 : 0.0,
+                                child: const Icon(
+                                  Icons.keyboard_arrow_down_outlined,
                                   color: AppColors.yellow2,
                                 ),
-                              ],
-                            ),
-                          ),
-                        ),
-///////////////////////////////////////////////////////////////////////////////////////////////////// price
-                        Center(
-                          child: Text(
-                            '+${product.price}',
-                            textAlign: TextAlign.center,
-                            style: const TextStyle(
-                              color: AppColors.blueColor,
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// divider
-                  const Divider(  color: AppColors.yellow2,),
-
-
-
-                  Padding(
-                    padding: EdgeInsets.all(8.sp),
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            Material(
-                              color: AppColors.blueColor,
-                              borderRadius: BorderRadius.circular(8.sp),
-                              child: Container(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 14.sp,
-                                  vertical: 5.h,
-                                ),
-                                child: Text('+${product.qty}',style:     Theme.of(context)
-                                    .textTheme
-                                    .bodyLarge
-                                    ?.copyWith(
-                                  color: AppColors.white,
-                                ),),
-                              ),
-                            ),
-                            SizedBox(
-                              width: 6.sp,
-                            ),
-                            Expanded(
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  const Text(
-                                    'P&L',
-                                  ),
-                                  SizedBox(
-                                    width: 6.sp,
-                                  ),
-                                  Text(
-                                    '+14.854',
-                                    style: Theme.of(context)
-                                        .textTheme
-                                        .bodyLarge
-                                        ?.copyWith(
-                                          color: AppColors.blueColor,
-                                        ),
-                                  ),
-                                ],
                               ),
                             ),
                           ],
                         ),
-                        SizedBox(
-                          height: 6.h,
-                        ),
-                        Row(
-                          children: [
-                            const Text(
-                              '2.5494',
-                              style: TextStyle(
-                                color: AppColors.greyText,
-                              ),
-                            ),
-                            SizedBox(
-                              width: 6.sp,
-                            ),
-                            Icon(
-                              Icons.arrow_forward_ios_rounded,
-                              color: AppColors.yellow2,
-                              size: 12.sp,
-                            ),
-                            SizedBox(
-                              width: 6.sp,
-                            ),
-                            const Text(
-                              '2.5494',
-                              style: TextStyle(
-                                color: AppColors.greyText,
-                              ),
-                            ),
-                            const Spacer(),
-                            InkWell(
-                              onTap: (){
-                                showCloseTradeSheet(context, 0.15,product);
-                              },
-                              child: CircleAvatar(
-                                backgroundColor: AppColors.greyText,
-                                radius: 10.r,
-                                child: Icon(
-                                  Icons.close,
-                                  size: 16.sp,
-                                  color: AppColors.grey,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+                      ),
+
+///////////////////////////////////////////////////////////////////////////////////////// gold price
+                      const Text(
+                        '1234.4',
+                        style: TextStyle(color: AppColors.blueColor),
+                      ),
+                    ],
                   ),
-
-
-
-                ],
-              ),
+                ),
+                isOpen == true
+                    ? const Divider(color: AppColors.yellow2)
+                    : const SizedBox(),
+//////////////// ================= Body (Expandable List) =================
+                AnimatedCrossFade(
+                  duration: const Duration(milliseconds: 250),
+                  crossFadeState: isOpen
+                      ? CrossFadeState.showFirst
+                      : CrossFadeState.showSecond,
+                  firstChild: Column(
+                    children: tradeList.map((trade) {
+                      return CreatTrade(
+                        trade: trade,
+                        onCloseTap: () {
+                          showCloseTradeSheet(context, 0.15, trade,tradesCubit);
+                        },
+                      );
+                    }).toList(),
+                  ),
+                  secondChild: const SizedBox.shrink(),
+                ),
+              ],
             ),
           ),
-        )
-      )  ;
-
-
-
-
-
-
-
-
-
-
+        );
+      },
+    );
   }
 }
-void showCloseTradeSheet(BuildContext context, double profit, Trades trad) {
+
+
+void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade trad,TradesCubit  tradesCubit) {
   showModalBottomSheet(
     context: context,
+    isDismissible: false,
     backgroundColor: AppColors.background,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
@@ -234,27 +144,27 @@ void showCloseTradeSheet(BuildContext context, double profit, Trades trad) {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Text(
+            const Text(
               "Close trade?",
-              style: const TextStyle(
+              style: TextStyle(
                 color: AppColors.white,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            Text(
-              "Profit",
-              style: const TextStyle(
+            const Text(
+              "Profit", //// will change later to  lose
+              style: TextStyle(
                 color: AppColors.greyText,
                 fontSize: 14,
               ),
             ),
             const SizedBox(height: 4),
             Text(
-              "${profit >= 0 ? "+" : ""}\$${profit.toStringAsFixed(2)}",
+              "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
               style: TextStyle(
-                color: profit >= 0 ? AppColors.green : AppColors.red,
+                color: profitOrLosePrice >= 0 ? AppColors.blueColor : AppColors.red,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -262,11 +172,16 @@ void showCloseTradeSheet(BuildContext context, double profit, Trades trad) {
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
+////////////////////////////////////////////////////////////////////////////////////////////////////// sell trade
               child: ElevatedButton(
                 onPressed: () async {
-                  AppLoader.showLoader(context, ValueKey("sell_price"));
-                  ApiService _appService =ApiService();
-                  await _appService.sellOrder(orderId: trad.id ?? 0, ctx: context);
+                  // AppLoader.showLoader(context, ValueKey("sell_price"));
+                  // ApiService _appService = ApiService();
+                  // await _appService.sellOrder(
+                  //     orderId: trad.id ?? 0, ctx: context);
+
+
+                  tradesCubit.closeTrade(orderId: trad.id, closePrice: "99899.9");
                   Navigator.pop(context, true); // رجع قيمة لو تبغى
                 },
                 style: ElevatedButton.styleFrom(
@@ -284,6 +199,7 @@ void showCloseTradeSheet(BuildContext context, double profit, Trades trad) {
               ),
             ),
             const SizedBox(height: 12),
+///////////////////////////////////////////////////////////////////////////////////////////////////// delete trade
             GestureDetector(
               onTap: () => Navigator.pop(context, false),
               child: const Text(
@@ -295,9 +211,301 @@ void showCloseTradeSheet(BuildContext context, double profit, Trades trad) {
                 ),
               ),
             ),
+            SizedBox(height: 10,)
           ],
         ),
       );
     },
   );
 }
+////////////////////////////////////////////////////////////////////////////////////// old
+
+// class TradeWidget extends StatelessWidget {
+//   final Trade product;
+//   final void Function()? onTap;
+//   final TradesCubit tradesCubit;
+//   const TradeWidget({required this.product, this.onTap, super.key, required this.tradesCubit});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return
+//
+//       BlocProvider.value(
+//           value: tradesCubit,
+//           child:
+//           Material(
+//             color: AppColors.transparent,
+//             borderRadius: BorderRadius.circular(12.sp),
+//             child: InkWell(
+//               onTap: onTap,
+//               borderRadius: BorderRadius.circular(12.sp),
+//               child: Container(
+//                 decoration: BoxDecoration(
+//                   borderRadius: BorderRadius.circular(12.sp),
+//                   border: Border.all(
+//                     color: AppColors.yellow2,
+//                     width: 1.sp,
+//                   ),
+//                 ),
+//                 child: Column(
+//                   children: [
+//                     Padding(
+//                       padding: EdgeInsets.all(8.sp),
+//                       child: Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//
+//                         children: [
+//                           Material(
+//                             color: AppColors.black,//black
+//                             borderRadius: BorderRadius.circular(50.sp),
+//                             child: Container(
+//                               padding: EdgeInsets.all(0.sp),
+//                               child: Row(
+//                                 children: [
+// ///////////////////////////////////////////////////////////////////////////////////////////////////// gold image
+//                                   Padding(
+//                                     padding: const EdgeInsets.all(6.0),
+//                                     child: SvgWidget(
+//                                       assetName: AppAssets.gold3,
+//                                       // color: AppColors.transparent,
+//                                       width: 20.sp,
+//                                     ),
+//                                   ),
+//                                   SizedBox(
+//                                     width: 6.sp,
+//                                   ),
+// ///////////////////////////////////////////////////////////////////////////////////////////////////// gold name
+//                                   Text(
+//                                     LocaleKeys.gold.tr().toUpperCase(),
+//                                     style: const TextStyle(
+//                                       color: AppColors.white,
+//                                     ),
+//                                   ),
+//                                   SizedBox(
+//                                     width: 6.w,
+//                                   ),
+// ///////////////////////////////////////////////////////////////////////////////////////////////////// icon
+//                                   const Icon(
+//                                     Icons.arrow_forward_ios_rounded,
+//                                     color: AppColors.yellow2,
+//                                   ),
+//                                 ],
+//                               ),
+//                             ),
+//                           ),
+// ///////////////////////////////////////////////////////////////////////////////////////////////////// price
+//                           Center(
+//                             child: Text(
+//                               '+${product.price}',
+//                               textAlign: TextAlign.center,
+//                               style: const TextStyle(
+//                                 color: AppColors.blueColor,
+//                               ),
+//                             ),
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// divider
+//                     const Divider(  color: AppColors.yellow2,),
+//
+//
+//
+//                     Padding(
+//                       padding: EdgeInsets.all(8.sp),
+//                       child: Column(
+//                         children: [
+//                           Row(
+//                             children: [
+//                               Material(
+//                                 color: AppColors.blueColor,
+//                                 borderRadius: BorderRadius.circular(8.sp),
+//                                 child: Container(
+//                                   padding: EdgeInsets.symmetric(
+//                                     horizontal: 14.sp,
+//                                     vertical: 5.h,
+//                                   ),
+//                                   child: Text('+${product.qty}',style:     Theme.of(context)
+//                                       .textTheme
+//                                       .bodyLarge
+//                                       ?.copyWith(
+//                                     color: AppColors.white,
+//                                   ),),
+//                                 ),
+//                               ),
+//                               SizedBox(
+//                                 width: 6.sp,
+//                               ),
+//                               Expanded(
+//                                 child: Row(
+//                                   mainAxisAlignment: MainAxisAlignment.end,
+//                                   children: [
+//                                     const Text(
+//                                       'P&L',
+//                                     ),
+//                                     SizedBox(
+//                                       width: 6.sp,
+//                                     ),
+//                                     Text(
+//                                       '+14.854',
+//                                       style: Theme.of(context)
+//                                           .textTheme
+//                                           .bodyLarge
+//                                           ?.copyWith(
+//                                             color: AppColors.blueColor,
+//                                           ),
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                           SizedBox(
+//                             height: 6.h,
+//                           ),
+//                           Row(
+//                             children: [
+//                               const Text(
+//                                 '2.5494',
+//                                 style: TextStyle(
+//                                   color: AppColors.greyText,
+//                                 ),
+//                               ),
+//                               SizedBox(
+//                                 width: 6.sp,
+//                               ),
+//                               Icon(
+//                                 Icons.arrow_forward_ios_rounded,
+//                                 color: AppColors.yellow2,
+//                                 size: 12.sp,
+//                               ),
+//                               SizedBox(
+//                                 width: 6.sp,
+//                               ),
+//                               const Text(
+//                                 '2.5494',
+//                                 style: TextStyle(
+//                                   color: AppColors.greyText,
+//                                 ),
+//                               ),
+//                               const Spacer(),
+//                               InkWell(
+//                                 onTap: (){
+//                                   showCloseTradeSheet(context, 0.15,product);
+//                                 },
+//                                 child: CircleAvatar(
+//                                   backgroundColor: AppColors.greyText,
+//                                   radius: 10.r,
+//                                   child: Icon(
+//                                     Icons.close,
+//                                     size: 16.sp,
+//                                     color: AppColors.grey,
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//
+//
+//
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           )
+//       )  ;
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//   }
+// }
+// void showCloseTradeSheet(BuildContext context, double profit, Trade trad) {
+//   showModalBottomSheet(
+//     context: context,
+//     backgroundColor: AppColors.background,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+//     ),
+//     builder: (context) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             const Text(
+//               "Close trade?",
+//               style: TextStyle(
+//                 color: AppColors.white,
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             const Text(
+//               "Profit",
+//               style: TextStyle(
+//                 color: AppColors.greyText,
+//                 fontSize: 14,
+//               ),
+//             ),
+//             const SizedBox(height: 4),
+//             Text(
+//               "${profit >= 0 ? "+" : ""}\$${profit.toStringAsFixed(2)}",
+//               style: TextStyle(
+//                 color: profit >= 0 ? AppColors.green : AppColors.red,
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 24),
+//             SizedBox(
+//               width: double.infinity,
+//               child: ElevatedButton(
+//                 onPressed: () async {
+//                   AppLoader.showLoader(context, ValueKey("sell_price"));
+//                   ApiService _appService =ApiService();
+//                   await _appService.sellOrder(orderId: trad.id ?? 0, ctx: context);
+//                   Navigator.pop(context, true); // رجع قيمة لو تبغى
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: AppColors.yellow2,
+//                   foregroundColor: AppColors.white,
+//                   padding: const EdgeInsets.symmetric(vertical: 14),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text(
+//                   "Close",
+//                   style: TextStyle(fontWeight: FontWeight.bold),
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             GestureDetector(
+//               onTap: () => Navigator.pop(context, false),
+//               child: const Text(
+//                 "Cancel",
+//                 style: TextStyle(
+//                   color: AppColors.yellow2,
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }
