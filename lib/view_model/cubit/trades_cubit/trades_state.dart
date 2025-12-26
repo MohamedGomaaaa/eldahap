@@ -44,7 +44,15 @@ final class CloseTradeLoadingState extends TradesState {}
 
 
 
+final class CloseOrderErrorState extends TradesState {}
 
+final class CloseOrderLoadingState extends TradesState {}
+
+final class CloseOrderSuccessState extends TradesState {}
+
+
+class TradesRefreshingState extends TradesState {}
+class OrdersRefreshingState extends TradesState {}
 
 
 

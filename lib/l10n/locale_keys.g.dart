@@ -123,6 +123,10 @@ abstract class  LocaleKeys {
   static const bought = 'bought';
   static const currentPrice = 'currentPrice';
   static const reservedMargin = 'reservedMargin';
+
+  static const   appCommision = 'app Commision';
+
+
   static const positionDetails = 'positionDetails';
   static const edit = 'edit';
   static const updatePosition = 'updatePosition';

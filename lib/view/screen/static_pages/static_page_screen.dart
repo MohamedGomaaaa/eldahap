@@ -1,4 +1,3 @@
-
 // 5. Main Page Widget
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
@@ -58,7 +57,8 @@ class ApiResponse {
     return ApiResponse(
       success: json['success'] ?? false,
       message: json['message'] ?? '',
-      result: json['result'] != null ? PageModel.fromJson(json['result']) : null,
+      result:
+          json['result'] != null ? PageModel.fromJson(json['result']) : null,
     );
   }
 }
@@ -71,7 +71,7 @@ class ApiService {
 
    */
   static const String baseUrl = EndPoints.baseUrl;
-  static  String token = '${SharedHelper.get(SharedKeys.token)}';
+  static String token = '${SharedHelper.get(SharedKeys.token)}';
 
   final Dio _dio = Dio();
 
@@ -83,7 +83,7 @@ class ApiService {
 
   Future<ApiResponse> getSinglePage(int id) async {
     try {
-      final response = await _dio.get('$baseUrl''single-pages/$id');
+      final response = await _dio.get('$baseUrl' 'single-pages/$id');
       return ApiResponse.fromJson(response.data);
     } on DioException catch (e) {
       if (e.response != null) {
@@ -105,11 +105,10 @@ class ApiService {
     }
   }
 
-
   // /payment-methods/deposit
   Future<PaymentMethodsResponse> gePaymentMethodsDeposit() async {
     try {
-      final response = await _dio.get('$baseUrl''payment-methods/deposit');
+      final response = await _dio.get('$baseUrl' 'payment-methods/deposit');
       return PaymentMethodsResponse.fromJson(response.data);
     } on DioException catch (e) {
       if (e.response != null) {
@@ -127,40 +126,35 @@ class ApiService {
       }
     } catch (e) {
       return PaymentMethodsResponse(
-        success: false,
-        message: 'An unexpected error occurred',
-        result: []
-      );
-    }
-  }
-  ///api/make-withdraw
- Future<PaymentMethodsResponse> gePaymentMethodsWithdraw() async {
-    try {
-      final response = await _dio.get('$baseUrl''payment-methods/withdraw-options');
-      return PaymentMethodsResponse.fromJson(response.data);
-    } on DioException catch (e) {
-      if (e.response != null) {
-        return PaymentMethodsResponse(
-          success: false,
-          message: e.response?.data['message'] ?? 'Server error occurred',
-          result: [],
-        );
-      } else {
-        return PaymentMethodsResponse(
-          success: false,
-          message: 'Network error occurred',
-          result: [],
-        );
-      }
-    } catch (e) {
-      return PaymentMethodsResponse(
-        success: false,
-        message: 'An unexpected error occurred',
-        result: []
-      );
+          success: false, message: 'An unexpected error occurred', result: []);
     }
   }
 
+  ///api/make-withdraw
+  Future<PaymentMethodsResponse> gePaymentMethodsWithdraw() async {
+    try {
+      final response =
+          await _dio.get('$baseUrl' 'payment-methods/withdraw-options');
+      return PaymentMethodsResponse.fromJson(response.data);
+    } on DioException catch (e) {
+      if (e.response != null) {
+        return PaymentMethodsResponse(
+          success: false,
+          message: e.response?.data['message'] ?? 'Server error occurred',
+          result: [],
+        );
+      } else {
+        return PaymentMethodsResponse(
+          success: false,
+          message: 'Network error occurred',
+          result: [],
+        );
+      }
+    } catch (e) {
+      return PaymentMethodsResponse(
+          success: false, message: 'An unexpected error occurred', result: []);
+    }
+  }
 
 // /make-deposit
   Future<ApiResponse> makeDeposit({
@@ -185,7 +179,7 @@ class ApiService {
       });
 
       final response = await _dio.post(
-        '$baseUrl''make-deposit',
+        '$baseUrl' 'make-deposit',
         data: formData,
         options: Options(
           headers: {
@@ -207,7 +201,6 @@ class ApiService {
         return ApiResponse(
           success: false,
           message: 'Network error occurred',
-
         );
       }
     } catch (e) {
@@ -217,8 +210,6 @@ class ApiService {
       );
     }
   }
-
-
 
   Future<ApiResponse> makeWithdraw({
     required String amount,
@@ -233,7 +224,8 @@ class ApiService {
   }) async {
     try {
       final response = await _dio.post(
-        '$baseUrl''make-withdraw',
+        '$baseUrl'
+        'make-withdraw',
         data: {
           'amount': amount,
           'payment_method_id': paymentMethodId,
@@ -242,9 +234,10 @@ class ApiService {
           'bank_name': bankName,
           'bank_account': bankAccount,
           'note': note,
-          'address':address,
-          'binanceId':binanceId,
+          'address': address,
+          'binanceId': binanceId,
         },
+
         ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
         options: Options(
           headers: {
@@ -275,24 +268,24 @@ class ApiService {
     }
   }
 
-
   Future<ApiResponse> updateOrder({
     required int orderId,
     required double stopLoss,
     required double takeProfit,
     required BuildContext ctx,
     // required double sellWhenPrice,
-
   }) async {
     try {
       final response = await _dio.put(
-        '$baseUrl''order/update',
+        '$baseUrl'
+        'order/update',
         data: {
           "order_id": orderId,
           "stop_loss": stopLoss,
           "take_profit": takeProfit,
           // "sell_when_price": sellWhenPrice
         },
+
         ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
         options: Options(
           headers: {
@@ -306,7 +299,8 @@ class ApiService {
     } on DioException catch (e) {
       print("nojojlkhjklhkjhkjhgjghj");
       if (e.response != null) {
-        Toast.showMsg(msg:  e.response?.data['message'] ?? 'Server error occurred');
+        Toast.showMsg(
+            msg: e.response?.data['message'] ?? 'Server error occurred');
         AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
         return ApiResponse(
           success: false,
@@ -330,27 +324,22 @@ class ApiService {
     }
   }
 
-
-
-
-
 // /order/sell
 
-  Future<ApiResponse> sellOrder({
-    required int orderId,
+  Future<ApiResponse> sellOrder(
+      {required int orderId, required BuildContext ctx, double? sell_price
+      // required double sellWhenPrice,
 
-    required BuildContext ctx,
-  double? sell_price
-    // required double sellWhenPrice,
-
-  }) async {
+      }) async {
     try {
       final response = await _dio.post(
-        '$baseUrl''order/sell',
+        '$baseUrl'
+        'order/sell',
         data: {
           "order_id": orderId,
           // "sell_price": 1902.35
         },
+
         ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
         options: Options(
           headers: {
@@ -366,7 +355,8 @@ class ApiService {
     } on DioException catch (e) {
       print("sell_price error  :::: ");
       if (e.response != null) {
-        Toast.showMsg(msg:  e.response?.data['message'] ?? 'Server error occurred');
+        Toast.showMsg(
+            msg: e.response?.data['message'] ?? 'Server error occurred');
         AppLoader.closeLoader(ctx, ValueKey("sell_price"));
         return ApiResponse(
           success: false,
@@ -389,21 +379,18 @@ class ApiService {
     }
   }
 
-
-
-   // request-delivery
+  // request-delivery
 
   Future<ApiResponse> requestDelivery({
     required int orderId,
-    required String  deliveryAddress,
-    required String  deliveryCity,
-    required String  deliveryPhone,
+    required String deliveryAddress,
+    required String deliveryCity,
+    required String deliveryPhone,
     required BuildContext ctx,
-
   }) async {
     try {
       final response = await _dio.post(
-        '$baseUrl''order/request-delivery',
+        '$baseUrl' 'order/request-delivery',
         data: {
           "order_id": orderId,
           "delivery_method": "courier",
@@ -426,14 +413,16 @@ class ApiService {
         context: ctx,
         // delivery_fee
         builder: (context) => DeliveryFeesDialog(
-          deliveryFees: "${response.data["result"]["delivery_fee"]} USD", // أو أي قيمة
+          deliveryFees:
+              "${response.data["result"]["delivery_fee"]} USD", // أو أي قيمة
         ),
       );
       return ApiResponse.fromJson(response.data);
     } on DioException catch (e) {
       print("requestDelivery error  :::: ");
       if (e.response != null) {
-        Toast.showMsg(msg:  e.response?.data['message'] ?? 'Server error occurred');
+        Toast.showMsg(
+            msg: e.response?.data['message'] ?? 'Server error occurred');
         AppLoader.closeLoader(ctx, ValueKey("requestDelivery"));
         return ApiResponse(
           success: false,
@@ -498,7 +487,6 @@ class PageCubit extends Cubit<PageState> {
   }
 }
 
-
 class StaticPageScreen extends StatelessWidget {
   final int pageId;
 
@@ -559,7 +547,9 @@ class SinglePageView extends StatelessWidget {
                   SizedBox(height: 20.h),
                   ElevatedButton(
                     onPressed: () {
-                      context.read<PageCubit>().loadPage(1); // Retry with same ID
+                      context
+                          .read<PageCubit>()
+                          .loadPage(1); // Retry with same ID
                     },
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.yellow,
@@ -611,9 +601,9 @@ class PageContent extends StatelessWidget {
               child: Text(
                 page.title,
                 style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                  color: AppColors.yellow,
-                  fontWeight: FontWeight.bold,
-                ),
+                      color: AppColors.yellow,
+                      fontWeight: FontWeight.bold,
+                    ),
               ),
             ),
           ],
@@ -662,7 +652,8 @@ class PageContent extends StatelessWidget {
                     color: AppColors.grey,
                     child: Center(
                       child: CircularProgressIndicator(
-                        valueColor: AlwaysStoppedAnimation<Color>(AppColors.yellow),
+                        valueColor:
+                            AlwaysStoppedAnimation<Color>(AppColors.yellow),
                       ),
                     ),
                   ),
@@ -711,10 +702,10 @@ class PageContent extends StatelessWidget {
           child: Text(
             page.content,
             style: Theme.of(context).textTheme.titleLarge?.copyWith(
-              color: AppColors.yellow,
-              height: 1.6,
-              fontSize: 16.sp,
-            ),
+                  color: AppColors.yellow,
+                  height: 1.6,
+                  fontSize: 16.sp,
+                ),
           ),
         ),
 
@@ -753,5 +744,3 @@ class PageContent extends StatelessWidget {
     );
   }
 }
-
-

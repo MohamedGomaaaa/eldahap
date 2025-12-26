@@ -33,6 +33,30 @@ class TakeProfitAmountChanged extends OrderState {
 
 class OrderDeleted extends OrderState {}
 
+class GetOrdersErrorState extends OrderState {}
+class GetOrdersSuccessState extends OrderState {}
+class GetOrdersLoadingState extends OrderState {}
+class CloseOrderErrorState extends OrderState {}
+class CloseOrderSuccessState extends OrderState {}
+class CloseOrderLoadingState extends OrderState {}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class OrderError extends OrderState {
   final String message;
   OrderError(this.message);

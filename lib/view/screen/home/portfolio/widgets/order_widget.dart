@@ -5,12 +5,24 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../model/new_trades.dart';
+import '../../../../../model/trade_model.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../../../view_model/utils/navigation.dart';
+import '../../../../../view_model/utils/toast.dart';
 import '../../../../components/svg_widget.dart';
 import '../../order_details/order_details_screen.dart';
+import 'creat_order.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../model/new_trades.dart';
+import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
+import '../../../../../view_model/utils/assets.dart';
+import '../../../../../view_model/utils/colors.dart';
+import '../../../../components/svg_widget.dart';
 import 'creat_order.dart';
 
 class OrderWidget extends StatelessWidget {
@@ -28,16 +40,15 @@ class OrderWidget extends StatelessWidget {
     final tradesCubit = context.read<TradesCubit>();
 
     return BlocBuilder<TradesCubit, TradesState>(
-      // ✅ خليه يسمع أي state يغير الداتا أو الفتح/القفل
       builder: (context, state) {
-        final isOpen = tradesCubit.isOrderGroupExpanded(groupKey);
-        /// ✅ نجيب orderList من الكيوبت كل مرة (ده اللي بيخلي الحذف يظهر فورًا)
+        /// ✅ نجيب orderList من الكيوبت كل مرة
         final group = tradesCubit.wholeOrders.firstWhere(
           (g) => (g.metal ?? '') == groupKey,
           orElse: () => Result(orders: []),
         );
-        final orderList =
-            group.orders ?? []; // ✅ هنا نفس موديل Result.orders (List<Trade>)
+
+        final orderList = group.orders ?? [];
+
         return Material(
           color: AppColors.backgroundGrey2,
           borderRadius: BorderRadius.circular(12.sp),
@@ -54,6 +65,7 @@ class OrderWidget extends StatelessWidget {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
+                // ================= Header =================
                 Padding(
                   padding: EdgeInsets.only(
                     left: 8.sp,
@@ -65,53 +77,30 @@ class OrderWidget extends StatelessWidget {
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       Material(
-                        color: AppColors.black, //black
+                        color: AppColors.black,
                         borderRadius: BorderRadius.circular(50.sp),
                         child: Row(
                           children: [
-/////////////////////////////////////////////////////////////////////////////////////// image
-                            Container(  padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 4),
-                              decoration: const BoxDecoration(
-                                // shape: BoxShape.circle,
+                            Container(
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 10.0,
+                                vertical: 4,
                               ),
-                              child:
-                              SvgWidget(
+                              child: SvgWidget(
                                 assetName: AppAssets.gold3,
                                 width: 20.sp,
                               ),
-                              // Padding(
-                              //   padding: const EdgeInsets.all(6.0),
-                              //   child: SvgWidget(
-                              //     assetName: AppAssets.gold3,
-                              //     width: 20.sp,
-                              //   ),
-                              // ),
                             ),
                             SizedBox(width: 6.sp),
 
-//////////////////////////////////////////////////////////////////////////////////////// whole order type
+                            // whole order type
                             Text(
                               wholeOrderName,
-                              style: const TextStyle(
-                                color: AppColors.white,
-                              ),
+                              style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
 
-//////////////////////////////////////////////////////////////////////////////////////// open order button
-                            IconButton(
-                              onPressed: () {
-                                tradesCubit.toggleOrderGroup(groupKey);
-                              },
-                              icon: AnimatedRotation(
-                                duration: const Duration(milliseconds: 200),
-                                turns: isOpen ? 0.5 : 0.0,
-                                child: const Icon(
-                                  Icons.keyboard_arrow_down_outlined,
-                                  color: AppColors.yellow2,
-                                ),
-                              ),
-                            ),
+                            // ✅ شيلنا زرار الفتح/القفل
                           ],
                         ),
                       ),
@@ -119,36 +108,37 @@ class OrderWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                isOpen == true
-                    ? const Padding(
-                        padding: EdgeInsets.symmetric(vertical: 1.0),
-                        child: SizedBox(
-                          height: 1,
-                          child: Divider(
-                            thickness: 1,
-                            height: 1,
-                            indent: 0,
-                            endIndent: 0,
-                            color: AppColors.yellow2,
-                          ),
-                        ),
-                      )
-                    : const SizedBox(),
-//////////////// ================= Body (Expandable List) =================
-                AnimatedCrossFade(
-                  duration: const Duration(milliseconds: 250),
-                  crossFadeState: isOpen
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  firstChild: Column(
-                    children: orderList.map((order) {
-                      return CreatOrder(
-                        trade: order,
-                        onCloseTap: () {},
-                      );
-                    }).toList(),
+
+                // ✅ Divider ثابت
+                const Padding(
+                  padding: EdgeInsets.symmetric(vertical: 1.0),
+                  child: SizedBox(
+                    height: 1,
+                    child: Divider(
+                      thickness: 1,
+                      height: 1,
+                      indent: 0,
+                      endIndent: 0,
+                      color: AppColors.yellow2,
+                    ),
                   ),
-                  secondChild: const SizedBox.shrink(),
+                ),
+
+                // ✅ اعرض الليست على طول زي ما هي
+                Column(
+                  children: orderList.map((order) {
+                    return CreatOrder(
+                      order: order,
+                      onCloseTap: () {
+                        showCloseTradeSheet(
+                          context,
+                          0.15,
+                          order,
+                          tradesCubit,
+                        );
+                      },
+                    );
+                  }).toList(),
                 ),
               ],
             ),
@@ -157,6 +147,101 @@ class OrderWidget extends StatelessWidget {
       },
     );
   }
+}
+
+void showCloseTradeSheet(
+  BuildContext context,
+  double profitOrLosePrice,
+  Trade order,
+  TradesCubit tradesCubit,
+) {
+  showModalBottomSheet(
+    context: context,
+    isDismissible: false,
+    backgroundColor: AppColors.background,
+    shape: const RoundedRectangleBorder(
+      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+    ),
+    builder: (context) {
+      return Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Text(
+              "Delete trade?",
+              style: TextStyle(
+                color: AppColors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            const Text(
+              "Profit",
+              style: TextStyle(
+                color: AppColors.greyText,
+                fontSize: 14,
+              ),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
+              style: TextStyle(
+                color: profitOrLosePrice >= 0
+                    ? AppColors.blueColor
+                    : AppColors.red,
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 24),
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton(
+                onPressed: () async {
+                  if (order.status == "pending"&&order.type=="order") {
+                    tradesCubit.closeOrder(
+                      orderId: order.id,
+                    );
+                   } else {
+                    Toast.showMsg(msg: "this order is not pending");
+                   }
+
+                  Navigator.pop(context, true);
+                },
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.yellow2,
+                  foregroundColor: AppColors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 14),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                ),
+                child: const Text(
+                  "Close",
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+              ),
+            ),
+            const SizedBox(height: 12),
+            GestureDetector(
+              onTap: () => Navigator.pop(context, false),
+              child: const Text(
+                "Cancel",
+                style: TextStyle(
+                  color: AppColors.yellow2,
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+          ],
+        ),
+      );
+    },
+  );
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////// old

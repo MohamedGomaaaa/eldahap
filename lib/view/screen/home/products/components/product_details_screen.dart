@@ -1028,7 +1028,7 @@ class ProductDetailsScreen extends StatelessWidget {
 
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: AppColors.blueColor,
+                              backgroundColor: AppColors.yellow,
                               shape: RoundedRectangleBorder(
                                 borderRadius: BorderRadius.circular(12.r),
                               ),

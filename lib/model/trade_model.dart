@@ -31,8 +31,11 @@ class Trade {
   final String? takeProfit;
   final String? sellWhenPrice;
   final String? entryPrice;
+final String? status;
 
+final String  ?type;
   Trade({
+    this.status,this.type,
     this.entryPrice,
     this.id,
     this.metal,
@@ -106,6 +109,10 @@ class Trade {
       takeProfit: parseStringNumber(json['take_profit']),
       sellWhenPrice: parseStringNumber(json['sell_when_price']),
       entryPrice: parseStringNumber(json['entry_price']),
+
+
+        type:json['type'],
+        status:json['status']
     );
   }
 
@@ -138,6 +145,9 @@ class Trade {
       'take_profit': takeProfit,
       'sell_when_price': sellWhenPrice,
       'entry_price': entryPrice,
+
+      "type":type,
+      "status":status
     };
   }
 }

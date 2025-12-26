@@ -9,6 +9,7 @@ import 'package:official_gold/l10n/locale_keys.g.dart';
 import 'package:official_gold/view/components/app_loader.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
 import 'package:official_gold/view/components/app_bar_widget.dart';
+import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../model/trade_model.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
@@ -16,17 +17,16 @@ import '../../../../view_model/utils/toast.dart';
 import '../../static_pages/static_page_screen.dart';
 
 class TradeDetailsScreen extends StatelessWidget {
-  Trade trad;
-  TradeDetailsScreen(this.trad, {super.key});
+  Trade trade;
+  TradeDetailsScreen(this.trade, {super.key});
 
-  ApiService _appService =ApiService();
+  ApiService _appService = ApiService();
   @override
   Widget build(BuildContext context) {
-
     var cubit = ProductCubit.get(context);
 
-    cubit.takeProfitController.text = trad.takeProfit ?? "0";
-    cubit.stopLossController.text = trad.stopLoss ?? "0";
+    cubit.takeProfitController.text = trade.takeProfit ?? "0";
+    cubit.stopLossController.text = trade.stopLoss ?? "0";
     return Scaffold(
       // extendBodyBehindAppBar: true,
       backgroundColor: AppColors.transparent,
@@ -71,10 +71,10 @@ class TradeDetailsScreen extends StatelessWidget {
                   },
                 ),
                 textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.labelMedium?.copyWith(
-                  color: AppColors.white,
-                  fontSize: 13.sp
-                ),
+                style: Theme.of(context)
+                    .textTheme
+                    .labelMedium
+                    ?.copyWith(color: AppColors.white, fontSize: 13.sp),
               ),
             ),
             SizedBox(
@@ -109,12 +109,13 @@ class TradeDetailsScreen extends StatelessWidget {
                       horizontal: 12.sp,
                       vertical: 3.h,
                     ),
-                    child:  Text(
-
-                     '+${trad.qty}',
-                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: AppColors.white,fontSize: 13
-                    ),),
+                    child: Text(
+                      '+${trade.qty}',
+                      style: Theme.of(context)
+                          .textTheme
+                          .headlineSmall
+                          ?.copyWith(color: AppColors.white, fontSize: 13),
+                    ),
                   ),
                 ),
                 const Spacer(),
@@ -177,44 +178,51 @@ class TradeDetailsScreen extends StatelessWidget {
               height: 20.h,
               color: AppColors.greyText,
             ),
-            // Row(
-            //   children: [
-            //     Text(
-            //       LocaleKeys.reservedMargin.tr().toUpperCase(),
-            //       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            //             color: AppColors.greyText,
-            //           ),
-            //     ),
-            //     const Spacer(),
-            //     Text(
-            //       '\$ 20.75',
-            //       style: Theme.of(context).textTheme.titleMedium?.copyWith(
-            //             color: AppColors.white,
-            //           ),
-            //     ),
-            //   ],
-            // ),
-            // Divider(
-            //   height: 20.h,
-            //   color: AppColors.greyText,
-            // ),
             Row(
               children: [
                 Text(
-                  LocaleKeys.positionDetails.tr().toUpperCase(),
+                  LocaleKeys.appCommision.tr().toUpperCase(),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
                         color: AppColors.greyText,
                       ),
                 ),
-                SizedBox(
-                  width: 6.sp,
-                ),
-                const Icon(
-                  Icons.info_outline_rounded,
-                  color: AppColors.greyText,
+                const Spacer(),
+                Text(
+                  "12223",
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        color: AppColors.white,
+                      ),
                 ),
               ],
             ),
+            Divider(
+              height: 20.h,
+              color: AppColors.greyText,
+            ),
+
+            InkWell(
+              onTap: () => _showOrderDetailsSheet(context),
+              child: Row(
+                children: [
+                  Text(
+                    LocaleKeys.positionDetails.tr().toUpperCase(),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                          color: AppColors.greyText,
+                        ),
+                  ),
+                  SizedBox(
+                    width: 6.sp,
+                  ),
+                  const Icon(
+                    Icons.info_outline_rounded,
+                    color: AppColors.greyText,
+                  ),
+                ],
+              ),
+            ),
+
+
+
             SizedBox(
               height: 0.5.sh,
               child: DefaultTabController(
@@ -276,8 +284,8 @@ class TradeDetailsScreen extends StatelessWidget {
                                                 .textTheme
                                                 .bodyLarge
                                                 ?.copyWith(
-                                              color: AppColors.white,
-                                            ),
+                                                  color: AppColors.white,
+                                                ),
                                           ),
                                         ),
                                         SizedBox(
@@ -285,21 +293,24 @@ class TradeDetailsScreen extends StatelessWidget {
                                         ),
                                         BlocBuilder<ProductCubit, ProductState>(
                                           buildWhen: (previous, current) {
-
-                                            return current is ChangeStopLossState ||
-                                                current is ResetControllersState;
+                                            return current
+                                                    is ChangeStopLossState ||
+                                                current
+                                                    is ResetControllersState;
                                           },
                                           builder: (context, state) {
-                                            var cubit = ProductCubit.get(context);
+                                            var cubit =
+                                                ProductCubit.get(context);
                                             return Switch.adaptive(
                                               value: cubit.stopLoss,
                                               onChanged: (value) {
                                                 cubit.changeStopLoss(value);
                                               },
                                               activeColor: AppColors.yellow,
-                                              inactiveThumbColor: AppColors.grey,
-                                              inactiveTrackColor:
-                                              AppColors.grey.withOpacity(0.8),
+                                              inactiveThumbColor:
+                                                  AppColors.grey,
+                                              inactiveTrackColor: AppColors.grey
+                                                  .withOpacity(0.8),
                                             );
                                           },
                                         ),
@@ -324,9 +335,11 @@ class TradeDetailsScreen extends StatelessWidget {
                                                 padding: EdgeInsets.all(8.sp),
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                  BorderRadius.circular(12.r),
+                                                      BorderRadius.circular(
+                                                          12.r),
                                                   border: Border.all(
-                                                    color: AppColors.yellowBorder,
+                                                    color:
+                                                        AppColors.yellowBorder,
                                                     width: 1.w,
                                                   ),
                                                 ),
@@ -336,43 +349,53 @@ class TradeDetailsScreen extends StatelessWidget {
                                                       .textTheme
                                                       .headlineMedium
                                                       ?.copyWith(
-                                                    color: AppColors.white,
-                                                  ),
+                                                        color: AppColors.white,
+                                                      ),
                                                 ),
                                               ),
                                               SizedBox(
                                                 height: 12.h,
                                               ),
-                                              BlocBuilder<ProductCubit, ProductState>(
+                                              BlocBuilder<ProductCubit,
+                                                  ProductState>(
                                                 buildWhen: (previous, current) {
                                                   return current
-                                                  is AddAmountStopLossState ||
+                                                          is AddAmountStopLossState ||
                                                       current
-                                                      is SubtractAmountStopLossState ||
-                                                      current is ResetControllersState;
+                                                          is SubtractAmountStopLossState ||
+                                                      current
+                                                          is ResetControllersState;
                                                 },
                                                 builder: (context, state) {
-                                                  var cubit = ProductCubit.get(context);
-
+                                                  var cubit =
+                                                      ProductCubit.get(context);
 
                                                   return TextFormField(
-                                                    controller: cubit.stopLossController,
-                                                    textInputAction: TextInputAction.done,
+                                                    controller: cubit
+                                                        .stopLossController,
+                                                    textInputAction:
+                                                        TextInputAction.done,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .headlineMedium
                                                         ?.copyWith(
-                                                      color: AppColors.white,
-                                                    ),
-                                                    keyboardType: const TextInputType
-                                                        .numberWithOptions(decimal: true),
+                                                          color:
+                                                              AppColors.white,
+                                                        ),
+                                                    keyboardType:
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                            decimal: true),
                                                     inputFormatters: [
-                                                      FilteringTextInputFormatter.allow(
-                                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                            r'^\d+\.?\d{0,2}'),
                                                       ),
                                                     ],
                                                     onTapOutside: (_) {
-                                                      FocusScope.of(context).unfocus();
+                                                      FocusScope.of(context)
+                                                          .unfocus();
                                                     },
                                                     decoration: InputDecoration(
                                                       // hintText: '123',
@@ -393,14 +416,15 @@ class TradeDetailsScreen extends StatelessWidget {
                                                       // ),
                                                       isDense: true,
                                                       contentPadding:
-                                                      EdgeInsets.symmetric(
+                                                          EdgeInsets.symmetric(
                                                         horizontal: 12.sp,
                                                         vertical: 6.sp,
                                                       ),
                                                       isCollapsed: true,
                                                       alignLabelWithHint: true,
                                                       suffix: Row(
-                                                        mainAxisSize: MainAxisSize.min,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
                                                         children: [
                                                           FloatingActionButton(
                                                             onPressed: () {
@@ -408,36 +432,45 @@ class TradeDetailsScreen extends StatelessWidget {
                                                                   .subtractAmountStopLoss();
                                                             },
                                                             heroTag: null,
-                                                            shape: const CircleBorder(),
+                                                            shape:
+                                                                const CircleBorder(),
                                                             mini: true,
                                                             materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
                                                             backgroundColor:
-                                                            AppColors.transparent,
+                                                                AppColors
+                                                                    .transparent,
                                                             child: const Center(
                                                               child: Icon(
-                                                                FontAwesomeIcons.minus,
-                                                                color: AppColors.white,
+                                                                FontAwesomeIcons
+                                                                    .minus,
+                                                                color: AppColors
+                                                                    .white,
                                                               ),
                                                             ),
                                                           ),
                                                           FloatingActionButton(
                                                             onPressed: () {
-                                                              cubit.addAmountStopLoss();
+                                                              cubit
+                                                                  .addAmountStopLoss();
                                                             },
                                                             heroTag: null,
-                                                            shape: const CircleBorder(),
+                                                            shape:
+                                                                const CircleBorder(),
                                                             mini: true,
                                                             materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
                                                             backgroundColor:
-                                                            AppColors.transparent,
+                                                                AppColors
+                                                                    .transparent,
                                                             child: const Center(
                                                               child: Icon(
-                                                                FontAwesomeIcons.plus,
-                                                                color: AppColors.white,
+                                                                FontAwesomeIcons
+                                                                    .plus,
+                                                                color: AppColors
+                                                                    .white,
                                                               ),
                                                             ),
                                                           ),
@@ -458,6 +491,7 @@ class TradeDetailsScreen extends StatelessWidget {
                               SizedBox(
                                 height: 12.sp,
                               ),
+
                               /// Take Profit
                               Container(
                                 padding: EdgeInsets.all(12.sp),
@@ -480,8 +514,8 @@ class TradeDetailsScreen extends StatelessWidget {
                                                 .textTheme
                                                 .bodyLarge
                                                 ?.copyWith(
-                                              color: AppColors.white,
-                                            ),
+                                                  color: AppColors.white,
+                                                ),
                                           ),
                                         ),
                                         SizedBox(
@@ -489,20 +523,24 @@ class TradeDetailsScreen extends StatelessWidget {
                                         ),
                                         BlocBuilder<ProductCubit, ProductState>(
                                           buildWhen: (previous, current) {
-                                            return current is ChangeTakeProfitState ||
-                                                current is ResetControllersState;
+                                            return current
+                                                    is ChangeTakeProfitState ||
+                                                current
+                                                    is ResetControllersState;
                                           },
                                           builder: (context, state) {
-                                            var cubit = ProductCubit.get(context);
+                                            var cubit =
+                                                ProductCubit.get(context);
                                             return Switch.adaptive(
                                               value: cubit.takeProfit,
                                               onChanged: (value) {
                                                 cubit.changeTakeProfit(value);
                                               },
                                               activeColor: AppColors.yellow,
-                                              inactiveThumbColor: AppColors.grey,
-                                              inactiveTrackColor:
-                                              AppColors.grey.withOpacity(0.8),
+                                              inactiveThumbColor:
+                                                  AppColors.grey,
+                                              inactiveTrackColor: AppColors.grey
+                                                  .withOpacity(0.8),
                                             );
                                           },
                                         ),
@@ -510,7 +548,8 @@ class TradeDetailsScreen extends StatelessWidget {
                                     ),
                                     BlocBuilder<ProductCubit, ProductState>(
                                       buildWhen: (previous, current) {
-                                        return current is ChangeTakeProfitState ||
+                                        return current
+                                                is ChangeTakeProfitState ||
                                             current is ResetControllersState;
                                       },
                                       builder: (context, state) {
@@ -527,9 +566,11 @@ class TradeDetailsScreen extends StatelessWidget {
                                                 padding: EdgeInsets.all(8.sp),
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                  BorderRadius.circular(12.r),
+                                                      BorderRadius.circular(
+                                                          12.r),
                                                   border: Border.all(
-                                                    color: AppColors.yellowBorder,
+                                                    color:
+                                                        AppColors.yellowBorder,
                                                     width: 1.w,
                                                   ),
                                                 ),
@@ -539,42 +580,52 @@ class TradeDetailsScreen extends StatelessWidget {
                                                       .textTheme
                                                       .headlineMedium
                                                       ?.copyWith(
-                                                    color: AppColors.white,
-                                                  ),
+                                                        color: AppColors.white,
+                                                      ),
                                                 ),
                                               ),
                                               SizedBox(
                                                 height: 12.h,
                                               ),
-                                              BlocBuilder<ProductCubit, ProductState>(
+                                              BlocBuilder<ProductCubit,
+                                                  ProductState>(
                                                 buildWhen: (previous, current) {
                                                   return current
-                                                  is AddAmountTakeProfitState ||
+                                                          is AddAmountTakeProfitState ||
                                                       current
-                                                      is SubtractAmountTakeProfitState ||
-                                                      current is ResetControllersState;
+                                                          is SubtractAmountTakeProfitState ||
+                                                      current
+                                                          is ResetControllersState;
                                                 },
                                                 builder: (context, state) {
-                                                  var cubit = ProductCubit.get(context);
+                                                  var cubit =
+                                                      ProductCubit.get(context);
                                                   return TextFormField(
-                                                    controller:
-                                                    cubit.takeProfitController,
-                                                    textInputAction: TextInputAction.done,
+                                                    controller: cubit
+                                                        .takeProfitController,
+                                                    textInputAction:
+                                                        TextInputAction.done,
                                                     style: Theme.of(context)
                                                         .textTheme
                                                         .headlineMedium
                                                         ?.copyWith(
-                                                      color: AppColors.white,
-                                                    ),
-                                                    keyboardType: const TextInputType
-                                                        .numberWithOptions(decimal: true),
+                                                          color:
+                                                              AppColors.white,
+                                                        ),
+                                                    keyboardType:
+                                                        const TextInputType
+                                                            .numberWithOptions(
+                                                            decimal: true),
                                                     inputFormatters: [
-                                                      FilteringTextInputFormatter.allow(
-                                                        RegExp(r'^\d+\.?\d{0,2}'),
+                                                      FilteringTextInputFormatter
+                                                          .allow(
+                                                        RegExp(
+                                                            r'^\d+\.?\d{0,2}'),
                                                       ),
                                                     ],
                                                     onTapOutside: (_) {
-                                                      FocusScope.of(context).unfocus();
+                                                      FocusScope.of(context)
+                                                          .unfocus();
                                                     },
                                                     decoration: InputDecoration(
                                                       // hintText: '123',
@@ -595,14 +646,15 @@ class TradeDetailsScreen extends StatelessWidget {
                                                       // ),
                                                       isDense: true,
                                                       contentPadding:
-                                                      EdgeInsets.symmetric(
+                                                          EdgeInsets.symmetric(
                                                         horizontal: 12.sp,
                                                         vertical: 6.sp,
                                                       ),
                                                       isCollapsed: true,
                                                       alignLabelWithHint: true,
                                                       suffix: Row(
-                                                        mainAxisSize: MainAxisSize.min,
+                                                        mainAxisSize:
+                                                            MainAxisSize.min,
                                                         children: [
                                                           FloatingActionButton(
                                                             onPressed: () {
@@ -610,36 +662,45 @@ class TradeDetailsScreen extends StatelessWidget {
                                                                   .subtractAmountTakeProfit();
                                                             },
                                                             heroTag: null,
-                                                            shape: const CircleBorder(),
+                                                            shape:
+                                                                const CircleBorder(),
                                                             mini: true,
                                                             materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
                                                             backgroundColor:
-                                                            AppColors.transparent,
+                                                                AppColors
+                                                                    .transparent,
                                                             child: const Center(
                                                               child: Icon(
-                                                                FontAwesomeIcons.minus,
-                                                                color: AppColors.white,
+                                                                FontAwesomeIcons
+                                                                    .minus,
+                                                                color: AppColors
+                                                                    .white,
                                                               ),
                                                             ),
                                                           ),
                                                           FloatingActionButton(
                                                             onPressed: () {
-                                                              cubit.addAmountTakeProfit();
+                                                              cubit
+                                                                  .addAmountTakeProfit();
                                                             },
                                                             heroTag: null,
-                                                            shape: const CircleBorder(),
+                                                            shape:
+                                                                const CircleBorder(),
                                                             mini: true,
                                                             materialTapTargetSize:
-                                                            MaterialTapTargetSize
-                                                                .shrinkWrap,
+                                                                MaterialTapTargetSize
+                                                                    .shrinkWrap,
                                                             backgroundColor:
-                                                            AppColors.transparent,
+                                                                AppColors
+                                                                    .transparent,
                                                             child: const Center(
                                                               child: Icon(
-                                                                FontAwesomeIcons.plus,
-                                                                color: AppColors.white,
+                                                                FontAwesomeIcons
+                                                                    .plus,
+                                                                color: AppColors
+                                                                    .white,
                                                               ),
                                                             ),
                                                           ),
@@ -654,9 +715,6 @@ class TradeDetailsScreen extends StatelessWidget {
                                         );
                                       },
                                     ),
-
-
-
                                   ],
                                 ),
                               ),
@@ -871,54 +929,71 @@ class TradeDetailsScreen extends StatelessWidget {
                               // SizedBox(
                               //   height: 12.sp,
                               // ),
+
                               SizedBox(
                                 width: double.infinity,
                                 height: 40.h,
                                 child: ElevatedButton(
-                                  onPressed: () async
-                                  {
+                                  onPressed: () async {
                                     var cubit = ProductCubit.get(context);
 
-                                    if(cubit.stopLoss==false && cubit.takeProfit==false){
-                                      Toast.showMsg(msg: LocaleKeys.canNotDoOpreation.tr());
+                                    if (cubit.stopLoss == false &&
+                                        cubit.takeProfit == false) {
+                                      Toast.showMsg(
+                                          msg: LocaleKeys.canNotDoOpreation
+                                              .tr());
                                       return;
                                     }
-                                    AppLoader.showLoader(context, ValueKey("updateOrder"));
+                                    AppLoader.showLoader(
+                                        context, ValueKey("updateOrder"));
 
-                                    print(" trad.id >>> ${ trad.id }");
-                                    print(" takeProfitController >>> ${ cubit.takeProfitController.text }");
-                                    print(" stopLossController >>> ${ cubit.stopLossController.text }");
-                                    print(" cubit.sellWhenPriceController >>> ${ cubit.sellWhenPriceController.text }");
+                                    print(" trad.id >>> ${trade.id}");
+                                    print(
+                                        " takeProfitController >>> ${cubit.takeProfitController.text}");
+                                    print(
+                                        " stopLossController >>> ${cubit.stopLossController.text}");
+                                    print(
+                                        " cubit.sellWhenPriceController >>> ${cubit.sellWhenPriceController.text}");
 
-
-                                    if(cubit.takeProfit==false){
-                                      cubit.takeProfitController.text="0";
+                                    if (cubit.takeProfit == false) {
+                                      cubit.takeProfitController.text = "0";
                                     }
-                                    if(cubit.stopLoss==false){
-                                      cubit.stopLossController.text="0";
+                                    if (cubit.stopLoss == false) {
+                                      cubit.stopLossController.text = "0";
                                     }
                                     // if(cubit.sellWhenPrice==false){
                                     //   cubit.sellWhenPriceController.text="0";
                                     // }
 
-                                  try{
-                                    await _appService.updateOrder(
-                                      orderId: trad.id ?? 0,
-                                      stopLoss: double.parse(cubit.stopLossController.text.isEmpty?"0":cubit.stopLossController.text),
-                                      takeProfit: double.parse(cubit.takeProfitController.text.isEmpty?"0":cubit.takeProfitController.text),
-                                      ctx: context
-                                      // sellWhenPrice: double.parse(cubit.sellWhenPriceController.text.isEmpty?"0":cubit.sellWhenPriceController.text),
-                                    );
-                                    AppLoader.closeLoader(context, ValueKey("updateOrder"));
-                                  }on DioException catch (e){
-
-                                  }catch(e){
-                                    AppLoader.closeLoader(context, ValueKey("updateOrder"));
-                                  }
-
+                                    try {
+                                      await _appService.updateOrder(
+                                          orderId: trade.id ?? 0,
+                                          stopLoss: double.parse(cubit
+                                                  .stopLossController
+                                                  .text
+                                                  .isEmpty
+                                              ? "0"
+                                              : cubit.stopLossController.text),
+                                          takeProfit: double.parse(cubit
+                                                  .takeProfitController
+                                                  .text
+                                                  .isEmpty
+                                              ? "0"
+                                              : cubit
+                                                  .takeProfitController.text),
+                                          ctx: context
+                                          // sellWhenPrice: double.parse(cubit.sellWhenPriceController.text.isEmpty?"0":cubit.sellWhenPriceController.text),
+                                          );
+                                      AppLoader.closeLoader(
+                                          context, ValueKey("updateOrder"));
+                                    } on DioException catch (e) {
+                                    } catch (e) {
+                                      AppLoader.closeLoader(
+                                          context, ValueKey("updateOrder"));
+                                    }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.blueColor,
+                                    backgroundColor: AppColors.yellow,
                                     disabledBackgroundColor: AppColors.grey,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12.r),
@@ -926,9 +1001,12 @@ class TradeDetailsScreen extends StatelessWidget {
                                   ),
                                   child: Text(
                                     LocaleKeys.updatePosition.tr(),
-                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          color: AppColors.white,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -941,11 +1019,13 @@ class TradeDetailsScreen extends StatelessWidget {
                                 height: 40.h,
                                 child: ElevatedButton(
                                   onPressed: () async {
-                                    AppLoader.showLoader(context, ValueKey("sell_price"));
-                                    await _appService.sellOrder(orderId: trad.id ?? 0, ctx: context);
+                                    AppLoader.showLoader(
+                                        context, ValueKey("sell_price"));
+                                    await _appService.sellOrder(
+                                        orderId: trade.id ?? 0, ctx: context);
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.lightPurple,
+                                    backgroundColor: AppColors.yellow,
                                     disabledBackgroundColor: AppColors.grey,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12.r),
@@ -953,9 +1033,12 @@ class TradeDetailsScreen extends StatelessWidget {
                                   ),
                                   child: Text(
                                     LocaleKeys.close.tr(),
-                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          color: AppColors.white,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -967,10 +1050,11 @@ class TradeDetailsScreen extends StatelessWidget {
                                 height: 40.h,
                                 child: ElevatedButton(
                                   onPressed: () async {
-
-                                    final deliveryData = await showDialog<Map<String, String>>(
+                                    final deliveryData =
+                                        await showDialog<Map<String, String>>(
                                       context: context,
-                                      builder: (context) => const DeliveryDataDialog(),
+                                      builder: (context) =>
+                                          const DeliveryDataDialog(),
                                     );
 
                                     if (deliveryData != null) {
@@ -981,17 +1065,24 @@ class TradeDetailsScreen extends StatelessWidget {
       print('Delivery City: ${result['delivery_city']}');
       print('Delivery Phone: ${result['delivery_phone']}');
                                        */
-                                      AppLoader.showLoader(context, ValueKey("requestDelivery"));
+                                      AppLoader.showLoader(
+                                          context, ValueKey("requestDelivery"));
                                       _appService.requestDelivery(
-                                          orderId: trad.id ?? 0,
-                                          deliveryAddress: deliveryData["delivery_address"] ?? '',
-                                          deliveryCity: deliveryData["delivery_city"] ?? '',
-                                          deliveryPhone: deliveryData["delivery_phone"] ?? '',
+                                          orderId: trade.id ?? 0,
+                                          deliveryAddress: deliveryData[
+                                                  "delivery_address"] ??
+                                              '',
+                                          deliveryCity:
+                                              deliveryData["delivery_city"] ??
+                                                  '',
+                                          deliveryPhone:
+                                              deliveryData["delivery_phone"] ??
+                                                  '',
                                           ctx: context);
                                     }
                                   },
                                   style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColors.lightPurple,
+                                    backgroundColor: AppColors.yellow,
                                     disabledBackgroundColor: AppColors.grey,
                                     shape: RoundedRectangleBorder(
                                       borderRadius: BorderRadius.circular(12.r),
@@ -999,9 +1090,12 @@ class TradeDetailsScreen extends StatelessWidget {
                                   ),
                                   child: Text(
                                     LocaleKeys.delivery.tr(),
-                                    style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                                      color: AppColors.white,
-                                    ),
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .headlineMedium
+                                        ?.copyWith(
+                                          color: AppColors.white,
+                                        ),
                                   ),
                                 ),
                               ),
@@ -1019,9 +1113,114 @@ class TradeDetailsScreen extends StatelessWidget {
       ),
     );
   }
+  void _showOrderDetailsSheet(BuildContext context) {
+
+
+
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.grey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+      ),
+      builder: (context) => Container(
+        padding: EdgeInsets.all(24.sp),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Text(
+              'Order details',
+              style: TextStyle(
+                color: AppColors.white,
+                fontSize: 20.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 24.h),
+            _buildSheetRow(
+              'Trade size',
+              '\$${ '1,750.00'}',
+              hasInfo: true,
+            ),
+            Divider(color: AppColors.lightGrey, height: 32.h),
+            _buildSheetRow(
+              'Leverage',
+              ' 1:1 ',
+            ),
+// Divider(color: AppColors.lightGrey, height: 32.h),
+// _buildSheetRow(
+//   'Margin',
+//   '\$${order?.margin.toStringAsFixed(2) ?? '17.50'}',
+//   hasInfo: true,
+// ),
+            Divider(color: AppColors.lightGrey, height: 32.h),
+            _buildSheetRow(
+              'app commision',
+              '-\$${ '0.27'}',
+              hasInfo: true,
+            ),
+            SizedBox(height: 24.h),
+            InkWell(
+              onTap: () => Navigator.pop(context),
+              child: Container(
+                width: double.infinity,
+                padding: EdgeInsets.symmetric(vertical: 16.h),
+                decoration: BoxDecoration(
+                  color: AppColors.yellow,
+                  borderRadius: BorderRadius.circular(12.r),
+                ),
+                child: Center(
+                  child: Text(
+                    'Close',
+                    style: TextStyle(
+                      color: AppColors.black,
+                      fontSize: 16.sp,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+  Widget _buildSheetRow(String label, String value, {bool hasInfo = false}) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        Row(
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                color: AppColors.greyText,
+                fontSize: 16.sp,
+              ),
+            ),
+            // if (hasInfo) ...[
+            //   SizedBox(width: 8.w),
+            //   Icon(
+            //     Icons.info_outline,
+            //     color: AppColors.greyText,
+            //     size: 18.sp,
+            //   ),
+            // ],
+          ],
+        ),
+        Text(
+          value,
+          style: TextStyle(
+            color: AppColors.white,
+            fontSize: 16.sp,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ],
+    );
+  }
 }
-
-
 
 class DeliveryDataDialog extends StatefulWidget {
   const DeliveryDataDialog({Key? key}) : super(key: key);
@@ -1138,11 +1337,14 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
                     children: [
                       Text(
                         'Delivery Information',
-                        style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                          color: AppColors.yellow,
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18.sp,
-                        ),
+                        style: Theme.of(context)
+                            .textTheme
+                            .headlineMedium
+                            ?.copyWith(
+                              color: AppColors.yellow,
+                              fontWeight: FontWeight.bold,
+                              fontSize: 18.sp,
+                            ),
                       ),
                       Container(
                         decoration: BoxDecoration(
@@ -1167,10 +1369,10 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
                   Text(
                     'Address',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.white,
-                      fontSize: 14.sp,
-                    ),
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.white,
+                          fontSize: 14.sp,
+                        ),
                   ),
                   SizedBox(height: 8.h),
                   TextFormField(
@@ -1241,10 +1443,10 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
                   Text(
                     'City',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.white,
-                      fontSize: 14.sp,
-                    ),
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.white,
+                          fontSize: 14.sp,
+                        ),
                   ),
                   SizedBox(height: 8.h),
                   TextFormField(
@@ -1314,10 +1516,10 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
                   Text(
                     'Phone Number',
                     style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: AppColors.white,
-                      fontSize: 14.sp,
-                    ),
+                          fontWeight: FontWeight.w500,
+                          color: AppColors.white,
+                          fontSize: 14.sp,
+                        ),
                   ),
                   SizedBox(height: 8.h),
                   TextFormField(
@@ -1501,9 +1703,6 @@ class DeliveryButton extends StatelessWidget {
     );
   }
 }
-
-
-
 
 class DeliveryFeesDialog extends StatelessWidget {
   final String deliveryFees;
@@ -1769,6 +1968,13 @@ class YourExistingWidget extends StatelessWidget {
       child: const Text('View Delivery Fees'),
     );
   }
+
+
+
+
+
+
+
+
+//
 }
-
-

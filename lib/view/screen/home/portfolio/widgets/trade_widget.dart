@@ -11,6 +11,27 @@ import '../../../../components/svg_widget.dart';
 import '../../../static_pages/static_page_screen.dart';
 import 'creat_trade.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import '../../../../../model/new_trades.dart';
+import '../../../../../model/trade_model.dart';
+import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
+import '../../../../../view_model/utils/assets.dart';
+import '../../../../../view_model/utils/colors.dart';
+import '../../../../components/svg_widget.dart';
+import 'creat_trade.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../../model/new_trades.dart';
+import '../../../../../model/trade_model.dart';
+import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
+import '../../../../../view_model/utils/assets.dart';
+import '../../../../../view_model/utils/colors.dart';
+import '../../../../components/svg_widget.dart';
+import 'creat_trade.dart';
 
 class TradeWidget extends StatelessWidget {
   final String wholeTradeName;
@@ -25,16 +46,31 @@ class TradeWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final tradesCubit = context.read<TradesCubit>();
+
     return BlocBuilder<TradesCubit, TradesState>(
-      // ✅ خليه يسمع أي state يغير الداتا أو الفتح/القفل
       builder: (context, state) {
         final isOpen = tradesCubit.isGroupExpanded(groupKey);
-        /// ✅ نجيب tradeList من الكيوبت كل مرة (ده اللي بيخلي الحذف يظهر فورًا)
+
         final group = tradesCubit.wholeTrade.firstWhere(
-              (g) => (g.metal ?? '') == groupKey,
+          (g) => (g.metal ?? '') == groupKey,
           orElse: () => Result(orders: []),
         );
         final tradeList = group.orders ?? [];
+
+        final totalQty = tradeList.fold<double>(
+          0.0,
+          (sum, t) => sum + (double.tryParse(t.qty ?? "0") ?? 0.0),
+        );
+
+        final Trade summaryTrade =
+            tradeList.isNotEmpty ? tradeList.first : Trade();
+
+        // ✅ لو صفقة واحدة: مفيش سهم
+        final bool hasMoreThanOne = tradeList.length > 1;
+
+        // ✅ لو صفقة واحدة نخليها تظهر كأنها مفتوحة على طول
+        final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
+
         return Material(
           color: AppColors.transparent,
           borderRadius: BorderRadius.circular(12.sp),
@@ -58,7 +94,6 @@ class TradeWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(50.sp),
                         child: Row(
                           children: [
-//////////////////////////////////////////////////////////////////////////////////////// image
                             Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: SvgWidget(
@@ -67,31 +102,14 @@ class TradeWidget extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 6.sp),
-//////////////////////////////////////////////////////////////////////////////////////// whole trade type
                             Text(
                               wholeTradeName,
                               style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
-//////////////////////////////////////////////////////////////////////////////////////// open trade button
-                            IconButton(
-                              onPressed: () {
-                                tradesCubit.toggleGroup(groupKey);
-                              },
-                              icon: AnimatedRotation(
-                                duration: const Duration(milliseconds: 200),
-                                turns: isOpen ? 0.5 : 0.0,
-                                child: const Icon(
-                                  Icons.keyboard_arrow_down_outlined,
-                                  color: AppColors.yellow2,
-                                ),
-                              ),
-                            ),
                           ],
                         ),
                       ),
-
-///////////////////////////////////////////////////////////////////////////////////////// gold price
                       const Text(
                         '1234.4',
                         style: TextStyle(color: AppColors.blueColor),
@@ -99,26 +117,65 @@ class TradeWidget extends StatelessWidget {
                     ],
                   ),
                 ),
-                isOpen == true
-                    ? const Divider(color: AppColors.yellow2)
-                    : const SizedBox(),
-//////////////// ================= Body (Expandable List) =================
-                AnimatedCrossFade(
-                  duration: const Duration(milliseconds: 250),
-                  crossFadeState: isOpen
-                      ? CrossFadeState.showFirst
-                      : CrossFadeState.showSecond,
-                  firstChild: Column(
-                    children: tradeList.map((trade) {
-                      return CreatTrade(
-                        trade: trade,
-                        onCloseTap: () {
-                          showCloseTradeSheet(context, 0.15, trade,tradesCubit);
-                        },
-                      );
-                    }).toList(),
+                const Divider(color: AppColors.yellow2),
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // ✅ السهم يظهر فقط لو فيه أكتر من صفقة
+                      if (hasMoreThanOne) ...[
+                        InkWell(
+                          onTap: () => tradesCubit.toggleGroup(groupKey),
+                          child: AnimatedRotation(
+                            duration: const Duration(milliseconds: 200),
+                            turns: isOpen ? 0.5 : 0.0,
+                            child: Icon(
+                              Icons.keyboard_arrow_down_outlined,
+                              color: AppColors.yellow2,
+                              size: 26.sp,
+                            ),
+                          ),
+                        ),
+                      ],
+
+                      Expanded(
+                        child: AnimatedCrossFade(
+                          duration: const Duration(milliseconds: 250),
+                          crossFadeState: effectiveOpen
+                              ? CrossFadeState.showFirst
+                              : CrossFadeState.showSecond,
+
+                          // ✅ OPEN: قائمة trades
+                          firstChild: Column(
+                            children: tradeList.map((trade) {
+                              return CreatTrade(
+                                trade: trade,
+                                displayQty: null,
+                                onCloseTap: () {
+                                  showCloseTradeSheet(
+                                    context,
+                                    0.15,
+                                    trade,
+                                    tradesCubit,
+                                  );
+                                },
+                              );
+                            }).toList(),
+                          ),
+
+                          // ✅ CLOSED: ملخص بالتجميعة (يظهر فقط لو فيه أكتر من صفقة)
+                          secondChild: CreatTrade(
+                            trade: summaryTrade,
+                            displayQty: totalQty.toStringAsFixed(2),
+                            onCloseTap: () {
+                              tradesCubit.toggleGroup(groupKey);
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  secondChild: const SizedBox.shrink(),
                 ),
               ],
             ),
@@ -129,8 +186,13 @@ class TradeWidget extends StatelessWidget {
   }
 }
 
-
-void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade trad,TradesCubit  tradesCubit) {
+void showCloseTradeSheet(
+  BuildContext context,
+  double profitOrLosePrice,
+  Trade trad,
+  TradesCubit tradesCubit,
+)
+{
   showModalBottomSheet(
     context: context,
     isDismissible: false,
@@ -154,7 +216,7 @@ void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade t
             ),
             const SizedBox(height: 12),
             const Text(
-              "Profit", //// will change later to  lose
+              "Profit",
               style: TextStyle(
                 color: AppColors.greyText,
                 fontSize: 14,
@@ -164,7 +226,9 @@ void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade t
             Text(
               "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
               style: TextStyle(
-                color: profitOrLosePrice >= 0 ? AppColors.blueColor : AppColors.red,
+                color: profitOrLosePrice >= 0
+                    ? AppColors.blueColor
+                    : AppColors.red,
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -172,17 +236,11 @@ void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade t
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
-////////////////////////////////////////////////////////////////////////////////////////////////////// sell trade
               child: ElevatedButton(
                 onPressed: () async {
-                  // AppLoader.showLoader(context, ValueKey("sell_price"));
-                  // ApiService _appService = ApiService();
-                  // await _appService.sellOrder(
-                  //     orderId: trad.id ?? 0, ctx: context);
-
-
-                  tradesCubit.closeTrade(orderId: trad.id, closePrice: "99899.9");
-                  Navigator.pop(context, true); // رجع قيمة لو تبغى
+                  tradesCubit.closeTrade(
+                      orderId: trad.id, closePrice: "99899.9");
+                  Navigator.pop(context, true);
                 },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.yellow2,
@@ -199,7 +257,6 @@ void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade t
               ),
             ),
             const SizedBox(height: 12),
-///////////////////////////////////////////////////////////////////////////////////////////////////// delete trade
             GestureDetector(
               onTap: () => Navigator.pop(context, false),
               child: const Text(
@@ -211,13 +268,14 @@ void showCloseTradeSheet(BuildContext context, double profitOrLosePrice, Trade t
                 ),
               ),
             ),
-            SizedBox(height: 10,)
+            const SizedBox(height: 10),
           ],
         ),
       );
     },
   );
 }
+
 ////////////////////////////////////////////////////////////////////////////////////// old
 
 // class TradeWidget extends StatelessWidget {

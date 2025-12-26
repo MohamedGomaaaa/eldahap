@@ -18,9 +18,7 @@ class ProductCubit extends Cubit<ProductState> {
 
   static ProductCubit get(context) => BlocProvider.of<ProductCubit>(context);
 
-
   final formProductKey = GlobalKey<FormState>();
-
 
   TextEditingController quantityController = TextEditingController();
 
@@ -87,8 +85,6 @@ class ProductCubit extends Cubit<ProductState> {
 
   TextEditingController sellWhenPriceController = TextEditingController();
   bool sellWhenPrice = true;
-
-
 
   void changeSellWhenPrice(bool value) {
     sellWhenPrice = value;
@@ -158,7 +154,7 @@ class ProductCubit extends Cubit<ProductState> {
       categories[index].products = value;
       emit(GetProductsSuccessState(categories));
     }).catchError((error) {
-       print("llllllllllllll $error");
+      print("llllllllllllll $error");
       if (error is DioException) {
         debugPrint(
             'Error on Get Products: ${error.response?.data?.toString()}');
@@ -169,38 +165,53 @@ class ProductCubit extends Cubit<ProductState> {
     });
   }
 
-
   Future<void> makeOrder(Product product) async {
     emit(MakeOrderLoadingState());
     await DioHelper.post(
       path: EndPoints.orderStore,
       data: {
         // ...product.toJson(),
-        'metal': product.symbol?.split("/")[0] ?? 'XAU',
-        'currency': product.currency ?? 'USD',
-        'price': product.price ?? 1895.50,
-        'prev_close_price': product.prevClosePrice ?? 1890.40,
-        'open_price': product.openPrice ?? 1892.10,
-        'low_price': product.lowPrice ?? 1880.00,
-        'high_price': product.highPrice ?? 1900.00,
-        'open_time': product.openTime ?? '2025-01-01 10:00:00',
-        'ch': product.ch ?? '+5',
-        'chp': product.chp ?? '+0.2',
-        'ask': product.ask ?? 1896.00,
-        'bid': product.bid ?? 1895.00,
+        // 'metal': product.symbol?.split("/")[0] ?? 'XAU',
+        // 'currency': product.currency ?? 'USD',
+        // 'price': product.price ?? 1895.50,
+        // 'prev_close_price': product.prevClosePrice ?? 1890.40,
+        // 'open_price': product.openPrice ?? 1892.10,
+        // 'low_price': product.lowPrice ?? 1880.00,
+        // 'high_price': product.highPrice ?? 1900.00,
+        // 'open_time': product.openTime ?? '2025-01-01 10:00:00',
+        // 'ch': product.ch ?? '+5',
+        // 'chp': product.chp ?? '+0.2',
+        // 'ask': product.ask ?? 1896.00,
+        // 'bid': product.bid ?? 1895.00,
+        //
+        // 'price_gram_24k': product.priceGram24k ?? 62.50,
+        // 'price_gram_22k': product.priceGram22k ?? 57.30,
+        // 'price_gram_21k': product.priceGram21k ?? 54.70,
+        // 'price_gram_20k': product.priceGram20k ?? 52.10,
+        // 'price_gram_18k': product.priceGram18k ?? 46.90,
+        // 'price_gram_16k': product.priceGram16k ?? 41.80,
+        // 'price_gram_14k': product.priceGram14k ?? 36.50,
+        // 'price_gram_10k': product.priceGram10k ?? 26.30,
+        // 'qty' : num.tryParse(quantityController.text) ?? 0,
+        // 'stop_loss' : num.tryParse(stopLossController.text) ?? 0,
+        // 'take_profit' : num.tryParse(takeProfitController.text) ?? 0,
+        // 'sell_when_price' :  num.tryParse(amountController.text) ?? 0,
+        //
 
-        'price_gram_24k': product.priceGram24k ?? 62.50,
-        'price_gram_22k': product.priceGram22k ?? 57.30,
-        'price_gram_21k': product.priceGram21k ?? 54.70,
-        'price_gram_20k': product.priceGram20k ?? 52.10,
-        'price_gram_18k': product.priceGram18k ?? 46.90,
-        'price_gram_16k': product.priceGram16k ?? 41.80,
-        'price_gram_14k': product.priceGram14k ?? 36.50,
-        'price_gram_10k': product.priceGram10k ?? 26.30,
-        'qty' : num.tryParse(quantityController.text) ?? 0,
-        'stop_loss' : num.tryParse(stopLossController.text) ?? 0,
-        'take_profit' : num.tryParse(takeProfitController.text) ?? 0,
-        'sell_when_price' :  num.tryParse(amountController.text) ?? 0,
+//////////////////////////////////////////////////////////////////////////////////// new bu eng gomaa
+
+        "metal": product.symbol?.split("/")[0] ?? 'XAU',
+        'currency': product.currency ?? 'USD',
+        'open_price': product.openPrice ?? 1892.10,
+        'qty': num.tryParse(quantityController.text) ?? 0,
+
+
+        if (stopLossController.text.trim().isNotEmpty)
+          'stop_loss': num.parse(stopLossController.text.trim()),
+
+        if (takeProfitController.text.trim().isNotEmpty)
+          'take_profit': num.parse(takeProfitController.text.trim()),
+
       },
       withToken: true,
     ).then((value) {
@@ -208,10 +219,9 @@ class ProductCubit extends Cubit<ProductState> {
       Toast.showMsg(msg: value.data['message'].toString());
       resetControllers();
       emit(MakeOrderSuccessState());
-    }).catchError((error){
+    }).catchError((error) {
       if (error is DioException) {
-        debugPrint(
-            'Error on Make Order: ${error.response?.data?.toString()}');
+        debugPrint('Error on Make Order: ${error.response?.data?.toString()}');
         Toast.showError(
             msg: error.response?.data?.toString() ?? 'Error on Make Order');
       }

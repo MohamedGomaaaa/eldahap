@@ -6,6 +6,8 @@ import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart' as trades;
+
 
 import '../../../../view_model/utils/colors.dart';
 import 'order_cubit.dart';
@@ -14,8 +16,9 @@ import 'order_state.dart';
 
 
 
-class OrderDetailsPage extends StatelessWidget {
-  const OrderDetailsPage({super.key});
+class OrderDetailsScreen extends StatelessWidget {
+  final int orderId;
+  const OrderDetailsScreen({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
@@ -36,13 +39,14 @@ class OrderDetailsPage extends StatelessWidget {
 
     return BlocProvider(
       create: (context) => OrderCubit()..loadOrder(sampleOrder),
-      child: const OrderDetailsView(),
+      child:  OrderDetailsView(orderId:orderId),
     );
   }
 }
 
 class OrderDetailsView extends StatelessWidget {
-  const OrderDetailsView({super.key});
+  final int orderId;
+  const OrderDetailsView({super.key, required this.orderId});
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +56,7 @@ class OrderDetailsView extends StatelessWidget {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Icon(Icons.arrow_back_ios, color: AppColors.white),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.white),
           onPressed: () => Navigator.pop(context),
         ),
         title: BlocBuilder<OrderCubit, OrderState>(
@@ -91,7 +95,7 @@ class OrderDetailsView extends StatelessWidget {
           if (state is OrderDeleted) {
             Navigator.pop(context);
             ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
+              const SnackBar(
                 content: Text('Order deleted successfully'),
                 backgroundColor: AppColors.green,
               ),
@@ -109,7 +113,30 @@ class OrderDetailsView extends StatelessWidget {
               SizedBox(height: 24.h),
               _buildOrderDetailsButton(context),
               SizedBox(height: 16.h),
-              _buildDeleteButton(context),
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////  delete
+
+              BlocListener<trades.TradesCubit, trades.TradesState>(
+                listener: (context, state) {
+                  if (state is CloseOrderSuccessState) {
+                    Navigator.pop(context);
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Order deleted successfully'),
+                        backgroundColor: AppColors.green,
+                      ),
+                    );
+                  }
+                },
+                child:    _buildDeleteButton(context,orderId),
+              ),
+
+
+
+
+
+
+
+
               SizedBox(height: 24.h),
               _buildBuyWhenSection(),
               SizedBox(height: 24.h),
@@ -244,9 +271,9 @@ class OrderDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildDeleteButton(BuildContext context) {
+  Widget _buildDeleteButton(BuildContext context,orderId) {
     return InkWell(
-      onTap: () => context.read<OrderCubit>().deleteOrder(),
+      onTap: () => context.read<trades.TradesCubit>().closeOrder(orderId: orderId),
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -709,17 +736,17 @@ class OrderDetailsView extends StatelessWidget {
             Divider(color: AppColors.lightGrey, height: 32.h),
             _buildSheetRow(
               'Leverage',
-              order?.leverage ?? '100:1',
+              order?.leverage ?? ' 1:1 ',
             ),
+            // Divider(color: AppColors.lightGrey, height: 32.h),
+            // _buildSheetRow(
+            //   'Margin',
+            //   '\$${order?.margin.toStringAsFixed(2) ?? '17.50'}',
+            //   hasInfo: true,
+            // ),
             Divider(color: AppColors.lightGrey, height: 32.h),
             _buildSheetRow(
-              'Margin',
-              '\$${order?.margin.toStringAsFixed(2) ?? '17.50'}',
-              hasInfo: true,
-            ),
-            Divider(color: AppColors.lightGrey, height: 32.h),
-            _buildSheetRow(
-              'Overnight funding adjustment',
+              'app commision',
               '-\$${order?.overnightFunding.abs().toStringAsFixed(2) ?? '0.27'}',
               hasInfo: true,
             ),
@@ -764,14 +791,14 @@ class OrderDetailsView extends StatelessWidget {
                 fontSize: 16.sp,
               ),
             ),
-            if (hasInfo) ...[
-              SizedBox(width: 8.w),
-              Icon(
-                Icons.info_outline,
-                color: AppColors.greyText,
-                size: 18.sp,
-              ),
-            ],
+            // if (hasInfo) ...[
+            //   SizedBox(width: 8.w),
+            //   Icon(
+            //     Icons.info_outline,
+            //     color: AppColors.greyText,
+            //     size: 18.sp,
+            //   ),
+            // ],
           ],
         ),
         Text(

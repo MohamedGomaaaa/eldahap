@@ -21,6 +21,7 @@ class TradesSection extends StatelessWidget {
             return current is GetTradesLoadingState ||
                 current is GetTradesSuccessState ||
                 current is GetTradesErrorState ||
+                current is TradesRefreshingState || // ✅ NEW
                 current is TradesExpandedChanged; // ✅ مهم
           },
           builder: (context, state) {

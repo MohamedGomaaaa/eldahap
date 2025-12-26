@@ -120,6 +120,13 @@ class TradesRepository {
     }
   }
 
+  Future<void> closeOrder({required orderId}) async {
+    try {
+      final closeOrderResponse = await productProvider.closeOrder(orderId: orderId);
+      log(jsonEncode(closeOrderResponse?.data));
+    } catch (e) {
+      rethrow;
+    }
 
 
 
@@ -135,7 +142,7 @@ class TradesRepository {
 
 
 
-  Future<void> sellTrade({required orderId}) async {
+    Future<void> sellTrade({required orderId}) async {
     try {
       final sellTradeResponse = await productProvider.sellTrade(orderId: orderId);
       log(jsonEncode(sellTradeResponse?.data));
@@ -157,4 +164,4 @@ class TradesRepository {
   //     rethrow;
   //   }
   // }
-}
+}}

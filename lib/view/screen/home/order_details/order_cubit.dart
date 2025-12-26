@@ -1,10 +1,15 @@
 
 
+import 'dart:async';
+
+import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
+import '../../../../view_model/data/network/repos/trades_repository.dart';
 import 'order_model.dart';
-import 'order_state.dart';
+import 'order_state.dart' hide CloseOrderLoadingState;
 
 class OrderCubit extends Cubit<OrderState> {
   OrderCubit() : super(OrderInitial());
@@ -77,11 +82,57 @@ class OrderCubit extends Cubit<OrderState> {
       emit(TakeProfitAmountChanged(newAmount));
     }
   }
+////////////////////////////////////////////////////////////////////////////////////
+
+  // Future<void> getOrderss({bool showShimmer = true}) async {
+  //   if (showShimmer) {
+  //     emit(GetOrdersLoadingState());
+  //   } else {
+  //     isOrdersRefreshing = true;
+  //     emit(OrdersRefreshingState());
+  //   }
+  //
+  //   try {
+  //     final res = await TradesRepository().orderss();
+  //     wholeOrders = res.result ?? [];
+  //     isOrdersRefreshing = false;
+  //     emit(GetOrdersSuccessState());
+  //   } on DioException catch (error) {
+  //     isOrdersRefreshing = false;
+  //     debugPrint('Error: ${error.response?.data}');
+  //     emit(GetOrdersErrorState());
+  //   } catch (error) {
+  //     isOrdersRefreshing = false;
+  //     debugPrint('Error: $error');
+  //     emit(GetOrdersErrorState());
+  //   }
+  // }
 
   void deleteOrder() {
     // Call API to delete order
     emit(OrderDeleted());
   }
+
+
+  // Future<void> closeOrder({required orderId}) async {
+  //   emit(CloseOrderLoadingState());
+  //   await TradesRepository().closeOrder(orderId: orderId).then((value) async {
+  //     emit(CloseOrderSuccessState());
+  //
+  //     // ✅ بعد العملية: اعمل get مع shimmer
+  //     await getOrderss(showShimmer: false);
+  //   }).catchError((error) {
+  //     if (error is DioException) {
+  //       debugPrint('Error: ${error.response?.data}');
+  //     } else {
+  //       debugPrint('Error: $error');
+  //     }
+  //     emit(CloseOrderErrorState());
+  //   });
+  // }
+  //
+  //
+
 
   void saveOrder() {
     // Call API to save order with stop loss and take profit
@@ -92,6 +143,13 @@ class OrderCubit extends Cubit<OrderState> {
     // Send to backend
     print('Saving order: $data');
   }
+
+
+
+
+
+
+
 
   @override
   Future<void> close() {

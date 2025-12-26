@@ -104,6 +104,20 @@ class TradesProvider {
   }
 
 
+  Future<Response?> closeOrder({required orderId}) async {
+    try{
+      return await DioHelper.post(
+        path: EndPoints.closeOrder,
+        data: {
+          'order_id' : orderId,
+
+        },
+        withToken: true,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 
 
 
