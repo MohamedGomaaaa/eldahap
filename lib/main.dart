@@ -16,6 +16,7 @@ void main() async {
   await SharedHelper.init();
   await InAppWebViewController.setWebContentsDebuggingEnabled(true);
 
+
   Bloc.observer = MyBlocObserver();
   // SharedHelper.clear();
   runApp(
