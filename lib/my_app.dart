@@ -1,6 +1,7 @@
 import 'package:official_gold/view_model/cubit/auth_cubit/auth_cubit.dart';
 import 'package:official_gold/view_model/cubit/home_cubit/home_cubit.dart';
 import 'package:official_gold/view_model/cubit/layout_cubit/layout_cubit.dart';
+import 'package:official_gold/view_model/cubit/live_price_cubit/live_cubit.dart';
 import 'package:official_gold/view_model/cubit/product_cubit/product_cubit.dart';
 import 'package:official_gold/view_model/cubit/ticket_cubit/ticket_cubit.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
@@ -33,6 +34,7 @@ class MyApp extends StatelessWidget {
         BlocProvider(create: (context) => WalletCubit(),),
         BlocProvider(create: (context) => TicketCubit(),),
         BlocProvider(create: (context) => TradesCubit(),),
+        BlocProvider(create: (_) => LivePriceCubit()..start()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),

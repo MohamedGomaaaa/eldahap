@@ -7,6 +7,12 @@ class AppColors {
   static const Color yellow2 = Color(0xffE2B461);
   static const Color yellowBorder = Color(0xffE2B461);
   static const Color textYellow = Color(0xffE2B461);
+
+  static const Color greenColor = Colors.green;
+
+  static const Color redColor = Colors.red;
+
+
 //////////////////////////////////////////////////////////////////////////// old code
   // static const Color yellow = Color(0xffFFC107);
   // static const Color yellow2 = Color(0xffE2B461);

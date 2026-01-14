@@ -17,6 +17,9 @@ class Toast {
     );
   }
 
+
+
+
   static void showError({required String msg, Color? color = AppColors.red, Color? textColor = AppColors.white}) {
     toast.Fluttertoast.showToast(
         msg: msg,

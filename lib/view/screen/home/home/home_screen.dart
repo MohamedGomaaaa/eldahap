@@ -13,6 +13,7 @@ import 'package:official_gold/view_model/utils/assets.dart';
 import 'package:official_gold/view_model/utils/navigation.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../components/shimmer_widget.dart';
 import '../../../components/svg_widget.dart';
@@ -403,7 +404,6 @@ class HomeScreen extends StatelessWidget {
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////     PreciousMetalsWidget
                 PreciousMetalsWidget(),
-
 
                 SizedBox(
                   height: 12.h,

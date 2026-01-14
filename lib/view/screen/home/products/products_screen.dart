@@ -46,7 +46,8 @@ class ProductsScreen extends StatelessWidget {
                         ),
                       ),
 ////////////////////////////////////////////////////////////////////////////////////////////    TabBar
-                      child: BlocBuilder<ProductCubit, ProductState>(
+                      child:
+                      BlocBuilder<ProductCubit, ProductState>(
                         buildWhen: (previous, current) {
                           return current is GetCategoriesLoadingState ||
                               current is GetCategoriesSuccessState ||
@@ -85,7 +86,7 @@ class ProductsScreen extends StatelessWidget {
                               ),
                             ).toList(),
                             onTap: (index) {
-
+                              print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                               productCubit.getProducts(index);
                             },
                           );
