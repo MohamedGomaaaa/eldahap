@@ -33,7 +33,17 @@ class Product {
   int? takeProfit;
   String? sellWhenPrice;
 
+
+
+
+  num ?gramWeight;
+
+
   Product({
+    this.gramWeight,
+
+
+
     this.timestamp,
     this.metal,
     this.user,
@@ -70,6 +80,10 @@ class Product {
   });
 
   Product.fromJson(Map<String, dynamic> json) {
+
+
+    gramWeight = json['gramWeight'];
+
     timestamp = json['timestamp'];
     metal = json['metal'];
     user = json['user'];

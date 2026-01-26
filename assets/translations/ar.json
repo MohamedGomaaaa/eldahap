@@ -33,7 +33,7 @@
   "buy": "Buy",
   "goldSpot": "Gold Spot",
   "quantityTroyOunce": "Quantity (Troy Ounce)",
-  "sellWhenPriceIs": "Sell when price is",
+  "sellWhenPriceIs": "buy when price is",
   "marginRequired": "Margin Required",
   "available": "Available",
   "stopLoss": "Stop Loss",
@@ -208,5 +208,12 @@
   "address": "العنوان",
   "sellWhenPrice": "Sell When Price",
   "canNotDoOpreation": "The operation cannot be performed",
-  "pleaseFillAllFields": "Please fill all fields"
+  "pleaseFillAllFields": "Please fill all fields",
+
+
+  "Buy": "شراء",
+  "chart": "شارت",
+  "buyWhenPriceIs": "اشترِ عندما يصبح السعر",
+
+
 }

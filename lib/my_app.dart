@@ -17,78 +17,105 @@ import 'view_model/cubit/wallet_cubit/wallet_cubit.dart';
 
 
 
+
+// ✅ عندك بالفعل
 final GlobalKey<NavigatorState> navKey = GlobalKey<NavigatorState>();
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
   const MyApp({super.key});
 
   @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+  }
+
+  @override
+  void didChangeAppLifecycleState(AppLifecycleState state) {
+    // ignore: avoid_print
+    print('🟣 APP lifecycle => $state');
+
+    final ctx = navKey.currentContext;
+    if (ctx == null) return;
+
+    final liveCubit = ctx.read<LivePriceCubit>();
+
+    // ✅ افصل السوكت في الخلفية
+    if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.hidden ||
+        state == AppLifecycleState.detached) {
+      liveCubit.stop(message: '⛔ App in background');
+      return;
+    }
+
+    // ✅ شغل تاني لما يرجع
+    if (state == AppLifecycleState.resumed) {
+      liveCubit.start();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
-    context.setLocale(const Locale('en',));
     return MultiBlocProvider(
       providers: [
-        BlocProvider(create: (context) => AuthCubit(),),
-        BlocProvider(create: (context) => LayoutCubit(),),
-        BlocProvider(create: (context) => HomeCubit()..getProfile(),),
-        BlocProvider(create: (context) => ProductCubit(),),
-        BlocProvider(create: (context) => WalletCubit(),),
-        BlocProvider(create: (context) => TicketCubit(),),
-        BlocProvider(create: (context) => TradesCubit(),),
+        BlocProvider(create: (context) => AuthCubit()),
+        BlocProvider(create: (context) => LayoutCubit()),
+        BlocProvider(create: (context) => HomeCubit()..getProfile()),
+        BlocProvider(create: (context) => ProductCubit()),
+        BlocProvider(create: (context) => WalletCubit()),
+        BlocProvider(create: (context) => TicketCubit()),
+        BlocProvider(create: (context) => TradesCubit()),
+
+        // ✅ Cubit واحد للتطبيق كله
         BlocProvider(create: (_) => LivePriceCubit()..start()),
       ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,
         splitScreenMode: true,
-        // Use builder only if you need to use library outside ScreenUtilInit context
-        builder: (_ , child) {
-          ScreenUtil.init(context);
+        builder: (_, child) {
+          final theme = lightTheme.copyWith(
+            textTheme: GoogleFonts.cairoTextTheme(lightTheme.textTheme),
+            primaryTextTheme:
+            GoogleFonts.cairoTextTheme(lightTheme.primaryTextTheme),
+          );
+
           return MaterialApp(
             title: 'Gold Trade',
             localizationsDelegates: context.localizationDelegates,
             supportedLocales: context.supportedLocales,
             locale: context.locale,
             debugShowCheckedModeBanner: false,
-            theme: lightTheme.copyWith(
-              // Ensure the font family is explicitly set at the app level
-              textTheme: GoogleFonts.cairoTextTheme(lightTheme.textTheme),
-              primaryTextTheme: GoogleFonts.cairoTextTheme(lightTheme.primaryTextTheme),
-            ),
-            color: AppColors.background, // يقلل فلاش الأبيض في بعض الأجهزة
-
+            theme: theme,
             darkTheme: darkTheme,
             themeMode: ThemeMode.light,
             home: child,
             navigatorKey: navKey,
-            // Add this builder to ensure all text uses Cairo font
-            // builder: (context, child) {
-            //   return DefaultTextStyle(
-            //     style: GoogleFonts.cairo(
-            //       color: Colors.black, // You can adjust this based on your theme
-            //       fontSize: 14, // Default font size
-            //     ),
-            //     child: child ?? Container(),
-            //   );
-            // },
-
-
             builder: (context, child) {
-              final theme = Theme.of(context);
+              final t = Theme.of(context);
               return ColoredBox(
-                color: theme.scaffoldBackgroundColor, // يمنع الفلاش الأبيض
-                child: MediaQuery(
-                  data: MediaQuery.of(context),
-                  child: Theme(
-                    data: theme,
-                    child: DefaultTextStyle(
-                      style: theme.textTheme.bodyMedium ?? const TextStyle(),
-                      child: child ?? const SizedBox.shrink(),
-                    ),
+                color: t.scaffoldBackgroundColor,
+                child: Theme(
+                  data: t,
+                  child: DefaultTextStyle(
+                    style: t.textTheme.bodyMedium ?? const TextStyle(),
+                    child: child ?? const SizedBox.shrink(),
                   ),
                 ),
               );
             },
-
           );
         },
         child: const SplashScreen(),
@@ -98,7 +125,17 @@ class MyApp extends StatelessWidget {
 }
 
 
-// Create a helper method to ensure Cairo font is applied consistently
+
+
+
+
+
+
+
+
+
+
+
 TextTheme _buildCairoTextTheme(ColorScheme colorScheme) {
   return TextTheme(
     displayLarge: GoogleFonts.cairo(

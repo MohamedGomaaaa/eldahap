@@ -32,7 +32,11 @@
   "buy": "Buy",
   "goldSpot": "Gold Spot",
   "quantityTroyOunce": "Quantity (Troy Ounce)",
-  "sellWhenPriceIs": "Sell when price is",
+
+
+  "sellWhenPriceIs": "buy when price is",
+
+
   "marginRequired": "Margin Required",
   "available": "Available",
   "stopLoss": "Stop Loss",
@@ -208,16 +212,10 @@
   "address": "Address",
   "sellWhenPrice": "Sell When Price",
   "canNotDoOpreation": "The operation cannot be performed",
-  "pleaseFillAllFields": "Please fill all fields"
+  "pleaseFillAllFields": "Please fill all fields",
+  "buyWhenPriceIs": "Buy when price is",
 
 
-
-
-
-
-
-
-
-
-
+  "Buy": "Buy",
+  "chart": "Chart"
 }

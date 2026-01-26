@@ -11,24 +11,38 @@ import 'my_app.dart';
 import 'dart:async';
 import 'dart:io';
 
+import 'dart:async';
+import 'dart:io';
 
-void main() async {
-  WidgetsFlutterBinding.ensureInitialized();
+import 'package:bloc/bloc.dart';
+import 'package:easy_localization/easy_localization.dart';
+import 'package:flutter/foundation.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_inappwebview/flutter_inappwebview.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-  await EasyLocalization.ensureInitialized();
-  await ScreenUtil.ensureScreenSize();
-  await SharedHelper.init();
-  await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+import 'l10n/localization.dart';
+import 'my_app.dart';
+import 'view_model/cubit/observer.dart';
+import 'view_model/data/local/shared_helper.dart';
 
-  Bloc.observer = MyBlocObserver();
+void main() {
+  runZonedGuarded(() async {
+    WidgetsFlutterBinding.ensureInitialized();
 
-  runZonedGuarded(() {
+    await EasyLocalization.ensureInitialized();
+    await ScreenUtil.ensureScreenSize();
+    await SharedHelper.init();
+    await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+
+    Bloc.observer = MyBlocObserver();
+
     // ✅ يمسك Errors اللي خارج try/catch
     PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
       if (error is SocketException &&
           error.message.contains('Reading from a closed socket')) {
         debugPrint('🟡 Ignored SocketException: Reading from a closed socket');
-        return true; // handled
+        return true;
       }
       return false;
     };
@@ -42,7 +56,6 @@ void main() async {
       ),
     );
   }, (Object error, StackTrace stack) {
-    // ✅ Zone errors (احتياطي)
     if (error is SocketException &&
         error.message.contains('Reading from a closed socket')) {
       debugPrint('🟡 Ignored (zone) Reading from a closed socket');

@@ -11,6 +11,18 @@ import '../../../components/live_status_text.dart';
 import '../../../components/live_text.dart';
 
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+
+import '../../../../l10n/locale_keys.g.dart';
+import '../../../../model/metal_price_model.dart';
+import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
+import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
+import '../../../../view_model/utils/colors.dart';
+import '../../../components/live_status_text.dart';
+import '../../../components/live_text.dart';
+
 class PreciousMetalsWidget extends StatefulWidget {
   const PreciousMetalsWidget({super.key});
 
@@ -36,7 +48,10 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
   @override
   void dispose() {
     WidgetsBinding.instance.removeObserver(this);
-    _liveCubit.stop(); // لو عايز await: اعملها في close بتاع cubit
+
+    // ❌ متفصلش هنا عشان التنقل بين الصفحات مايفصلش السوكت
+    // _liveCubit.stop();
+
     super.dispose();
   }
 
@@ -45,12 +60,12 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
     // ignore: avoid_print
     print('🟣 lifecycle => $state');
 
-    if (state == AppLifecycleState.paused) {
-      _liveCubit.stop();
-    }
-
     if (state == AppLifecycleState.resumed) {
       _liveCubit.start();
+    } else if (state == AppLifecycleState.paused ||
+        state == AppLifecycleState.inactive ||
+        state == AppLifecycleState.detached) {
+      _liveCubit.stop();
     }
   }
 
@@ -78,7 +93,6 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
           final gramBuy = p.buy;
           final gramSell = p.sell;
 
-
           final ounceBuy = gramBuy * LocaleKeys.ounceFactor;
           final ounceSell = gramSell * LocaleKeys.ounceFactor;
 
@@ -102,6 +116,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                         fontWeight: FontWeight.bold,
                       ),
                     ),
+///////////////////////////////////////////////////////////////////////////// drop down button
                     Container(
                       height: 30.h,
                       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -148,6 +163,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                 ),
                 child: const Row(
                   children: [
+////////////////////////////////////////////////////////////////////////////////////////////////////    Live Status Text
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 12),

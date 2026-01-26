@@ -5,10 +5,18 @@ import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../view_model/utils/colors.dart';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
+import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
+import '../../../../view_model/utils/colors.dart';
+
 class LiveStatusText extends StatelessWidget {
   final double dotSize;
   final double space;
   final TextStyle? style;
+
   final String liveText;
   final String connectingText;
   final String noInternetText;
@@ -28,13 +36,26 @@ class LiveStatusText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LivePriceCubit, LivePriceState>(
-      buildWhen: (prev, curr) => prev.runtimeType != curr.runtimeType,
+      // ✅ نعيد البناء لما النوع يتغير أو لما live prices تتغير (أول tick مهم)
+      buildWhen: (prev, curr) {
+        if (prev.runtimeType != curr.runtimeType) return true;
+        if (prev is LivePriceLive && curr is LivePriceLive) {
+          // أول ما الأسعار تبقى > 0 هنغير النص/اللون
+          final prevOk = _hasAnyPrice(prev);
+          final currOk = _hasAnyPrice(curr);
+          return prevOk != currOk;
+        }
+        return false;
+      },
       builder: (context, state) {
-        final bool isConnected = state is LivePriceLive;
-        final Color dotColor = isConnected ? AppColors.green : AppColors.red;
+        final bool hasPrice = state is LivePriceLive && _hasAnyPrice(state);
+
+        // ✅ أخضر فقط لو في سعر فعلي
+        final Color dotColor = hasPrice ? AppColors.green : AppColors.red;
 
         final String text = _textFromState(
           state,
+          hasPrice: hasPrice,
           liveText: liveText,
           connectingText: connectingText,
           noInternetText: noInternetText,
@@ -47,12 +68,16 @@ class LiveStatusText extends StatelessWidget {
             Container(
               width: dotSize,
               height: dotSize,
-              decoration: BoxDecoration(color: dotColor, shape: BoxShape.circle),
+              decoration: BoxDecoration(
+                color: dotColor,
+                shape: BoxShape.circle,
+              ),
             ),
             SizedBox(width: space),
             Text(
               text,
-              style: (style ?? const TextStyle(fontSize: 14, fontWeight: FontWeight.w600))
+              style: (style ??
+                  const TextStyle(fontSize: 14, fontWeight: FontWeight.w600))
                   .copyWith(color: dotColor),
             ),
           ],
@@ -61,14 +86,26 @@ class LiveStatusText extends StatelessWidget {
     );
   }
 
+  bool _hasAnyPrice(LivePriceLive s) {
+    // ✅ يعتبر “جاهز” لو في أي عملة فيها buy أو sell أكبر من صفر
+    for (final p in s.metals.values) {
+      if (p.buy > 0 || p.sell > 0) return true;
+    }
+    return false;
+  }
+
   String _textFromState(
       LivePriceState state, {
+        required bool hasPrice,
         required String liveText,
         required String connectingText,
         required String noInternetText,
         required String disconnectedText,
       }) {
-    if (state is LivePriceLive) return liveText;
+    // ✅ لو اتصلنا بس لسه مفيش Tick
+    if (state is LivePriceLive && !hasPrice) return connectingText;
+
+    if (state is LivePriceLive && hasPrice) return liveText;
     if (state is LivePriceConnecting) return connectingText;
 
     if (state is LivePriceStopped) {

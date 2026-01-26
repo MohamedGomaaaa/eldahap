@@ -86,8 +86,6 @@ class ProductsScreen extends StatelessWidget {
                               ),
                             ).toList(),
                             onTap: (index) {
-
-
                               print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>> ${productCubit.categories[index].name} >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                               productCubit.getProducts(index);
                             },

@@ -154,7 +154,8 @@ class ProductCubit extends Cubit<ProductState> {
     await ProductRepository()
         .products(categoryId: categories[index].id ?? 0)
         .then((value) {
-      categories[index].products = value;
+      categories[index].products= value;
+      categories[index].products;
       emit(GetProductsSuccessState(categories));
     }).catchError((error) {
       print("llllllllllllll $error");
