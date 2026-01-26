@@ -119,6 +119,12 @@ class TradesCubit extends Cubit<TradesState> {
     });
   }
 
+
+
+
+
+
+
   /////////////////////////////////////////////////////////////////////////////////
   // close order (delete pending)
   Future<void> closeOrder({required orderId}) async {
