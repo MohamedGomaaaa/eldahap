@@ -42,7 +42,7 @@ class TradesCubit extends Cubit<TradesState> {
 
   /////////////////////////////////////////////////////////////////////////////////
   // trades list
-  List<Result> wholeTrade = [];
+  List<GroupOfTradesOrOrders> groupOfTradesOrOrders = [];
   bool isTradesRefreshing = false;
 
   Future<void> getTradess({bool showShimmer = true}) async {
@@ -55,7 +55,7 @@ class TradesCubit extends Cubit<TradesState> {
 
     try {
       final res = await TradesRepository().tradess();
-      wholeTrade = res.result ?? [];
+      groupOfTradesOrOrders = res.groupOfTradesOrOrders ?? [];
       isTradesRefreshing = false;
       emit(GetTradesSuccessState());
     } on DioException catch (error) {
@@ -71,7 +71,7 @@ class TradesCubit extends Cubit<TradesState> {
 
   /////////////////////////////////////////////////////////////////////////////////
   // orders list
-  List<Result> wholeOrders = [];
+  List<GroupOfTradesOrOrders> wholeOrders = [];
   bool isOrdersRefreshing = false;
 
   Future<void> getOrderss({bool showShimmer = true}) async {
@@ -84,7 +84,7 @@ class TradesCubit extends Cubit<TradesState> {
 
     try {
       final res = await TradesRepository().orderss();
-      wholeOrders = res.result ?? [];
+      wholeOrders = res.groupOfTradesOrOrders ?? [];
       isOrdersRefreshing = false;
       emit(GetOrdersSuccessState());
     } on DioException catch (error) {

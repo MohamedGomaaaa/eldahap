@@ -1,7 +1,7 @@
 
 
 
-class Trade {
+class TradeOrOrder {
   final int? id;
   final String? metal;
   final String? user;
@@ -34,7 +34,7 @@ class Trade {
 final String? status;
 
 final String  ?type;
-  Trade({
+  TradeOrOrder({
     this.status,this.type,
     this.entryPrice,
     this.id,
@@ -78,8 +78,8 @@ final String  ?type;
   }
 
   /// fromJson
-  factory Trade.fromJson(Map<String, dynamic> json) {
-    return Trade(
+  factory TradeOrOrder.fromJson(Map<String, dynamic> json) {
+    return TradeOrOrder(
       id: json['id'], // لو ممكن يجي String قولي أظبطه
       metal: json['metal'] ?? "",
       user: json['user'] ?? "",

@@ -2,6 +2,7 @@ import 'dart:async';
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view_model/utils/text_style.dart';
 
 import '../../view_model/utils/colors.dart';
@@ -196,8 +197,9 @@ class _LivePriceTextState extends State<LivePriceText>
     final txt = v.toStringAsFixed(widget.decimals);
 
     return AnimatedContainer(
+
       duration: const Duration(milliseconds: 700),
-      padding: widget.padding,
+       padding: widget.padding,
       decoration: BoxDecoration(
         color: _bg(),
         borderRadius: widget.borderRadius,
@@ -205,17 +207,17 @@ class _LivePriceTextState extends State<LivePriceText>
       // ✅ NEW: scale animation بدل FadeTransition
       child: ScaleTransition(
         scale: _scale,
-        child: Text(
-          '${widget.prefix ?? ''}$txt${widget.suffix ?? ''}',
-          style: widget.style ??
-            WhiteTitle.display5(context).copyWith(
-              fontSize: 16,
-            )
-              // const TextStyle(
-              //   color: Colors.white,
-              //   fontSize: 16,
-              //   fontWeight: FontWeight.w600,
-              // ),
+        child: Container(
+          alignment: Alignment.center,
+          width: 70.w,
+          child: Text(
+            '${widget.prefix ?? ''}$txt${widget.suffix ?? ''}',
+            style: widget.style ??
+              WhiteTitle.display5(context).copyWith(
+                fontSize: 16,
+              )
+
+          ),
         ),
       ),
     );

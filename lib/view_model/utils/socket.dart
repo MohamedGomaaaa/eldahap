@@ -17,7 +17,9 @@ class LivePriceSocketService {
   bool _subscribed = false;
 
   bool _connecting = false;
-  bool _disconnecting = false;
+
+  /// ✅ Lock يمنع disconnect يتكرر
+  Future<void>? _disconnecting;
 
   // ✅ URL الحقيقي (Pusher)
   final String url =
@@ -40,7 +42,9 @@ class LivePriceSocketService {
     required void Function(String msg) onError,
     required Future<void> Function() onDisconnected,
   }) async {
-    _log('connectAndListen() called | isConnected=$isConnected connecting=$_connecting closing=$_closing');
+    _log(
+      'connectAndListen() called | isConnected=$isConnected connecting=$_connecting closing=$_closing',
+    );
 
     if (isConnected) {
       _log('connect skipped: already connected ✅');
@@ -54,10 +58,10 @@ class LivePriceSocketService {
 
     _connecting = true;
 
-    // ✅ لو كان فيه disconnect شغال استناه يخلص
-    while (_disconnecting) {
+    // ✅ لو فيه disconnect شغال استناه
+    if (_disconnecting != null) {
       _log('waiting for disconnect to finish...');
-      await Future.delayed(const Duration(milliseconds: 50));
+      await _disconnecting;
     }
 
     _closing = false;
@@ -74,21 +78,11 @@ class LivePriceSocketService {
         headers: {'Origin': origin},
       );
 
-      // ✅ pingInterval (مفيد)
       _ws!.pingInterval = const Duration(seconds: 10);
 
       isConnected = true;
       _log('CONNECTED ✅ pingInterval=10s');
       onConnected();
-
-      // ✅ (اختياري) راقب done future
-      unawaited(
-        _ws!.done.then((_) {
-          _log('ws.done completed');
-        }).catchError((e) {
-          _log('ws.done error => $e');
-        }),
-      );
 
       _sub = _ws!.listen(
             (dynamic data) {
@@ -127,15 +121,16 @@ class LivePriceSocketService {
               return;
             }
 
-            // ✅ لو channel موجود ولازم يطابق
+            // ✅ channel لازم يطابق
             if (ch != null && ch.isNotEmpty && ch != channel) {
               _log('SKIP (wrong channel=$ch)');
               return;
             }
 
             final inner = parsed['data'];
-            final Map<String, dynamic> payload =
-            inner is String ? jsonDecode(inner) : Map<String, dynamic>.from(inner);
+            final Map<String, dynamic> payload = inner is String
+                ? jsonDecode(inner)
+                : Map<String, dynamic>.from(inner);
 
             final model = LivePriceModel.fromJson(payload);
 
@@ -153,9 +148,8 @@ class LivePriceSocketService {
           }
         },
         onError: (Object e, StackTrace st) {
-          // ✅ لو احنا بنقفل تجاهل errors أثناء الإغلاق
+          // ✅ لو بنقفل تجاهل
           if (_closing) return;
-
           _log('stream onError() => $e');
           onError(e.toString());
         },
@@ -163,7 +157,6 @@ class LivePriceSocketService {
           _log('stream onDone() called | closing=$_closing');
           isConnected = false;
 
-          // ✅ لو احنا اللي قفلنا: متعملش onDisconnected
           if (_closing) {
             _log('DISCONNECTED ✅ (closed by us)');
             return;
@@ -186,7 +179,8 @@ class LivePriceSocketService {
   }
 
   void _subscribe() {
-    if (_ws == null) return;
+    final ws = _ws;
+    if (ws == null) return;
     if (_closing) return;
 
     if (_subscribed) {
@@ -201,41 +195,35 @@ class LivePriceSocketService {
 
     final encoded = jsonEncode(msg);
     _log('SEND => $encoded');
-    _ws!.add(encoded);
+    ws.add(encoded);
   }
 
-  /// ✅ disconnect مُصلّح:
-  /// - يمنع التكرار (_disconnecting)
-  /// - يقفل ping
-  /// - يعمل close ثم يستنى ws.done
-  /// - بعد كده يلغي subscription
-  /// ده يقلل جدًا خطأ Reading from a closed socket
-  Future<void?> disconnect() async {
-    // ✅ يمنع disconnect مرتين في نفس الوقت
+  /// ✅ disconnect ثابت + Lock (Future) لمنع التكرار
+  Future<void> disconnect() async {
     if (_disconnecting != null) {
       _log('disconnect() skipped: already disconnecting...');
       return _disconnecting!;
     }
 
     final completer = Completer<void>();
-    _disconnecting = completer.future as bool;
+    _disconnecting = completer.future;
 
-    final ws = _ws;   // snapshot
-    final sub = _sub; // snapshot
+    final ws = _ws; // snapshot
+    final sub = _sub;
 
     _log('disconnect() called | ws=${ws != null} sub=${sub != null}');
 
-    // ✅ flags بدري
+    // flags بدري
     _closing = true;
     isConnected = false;
     _subscribed = false;
 
-    // ✅ افصل الريفرنس بدري لتقليل race
+    // افصل الريفرنس بدري
     _ws = null;
     _sub = null;
 
     try {
-      // ✅ 1) cancel stream subscription أولاً (يقلل read callbacks)
+      // 1) cancel subscription
       try {
         _log('cancel subscription...');
         await sub?.cancel();
@@ -244,12 +232,12 @@ class LivePriceSocketService {
         _log('subscription cancel error => $e');
       }
 
-      // ✅ 2) اقفل ping قبل close
+      // 2) اقفل ping
       try {
         ws?.pingInterval = null;
       } catch (_) {}
 
-      // ✅ 3) close socket
+      // 3) close socket
       try {
         if (ws != null) {
           _log('CLOSING socket...');
@@ -260,7 +248,7 @@ class LivePriceSocketService {
         _log('socket close error => $e');
       }
 
-      // ✅ 4) استنى ws.done (مهم جدًا)
+      // 4) استنى done
       try {
         if (ws != null) {
           _log('await ws.done...');
@@ -271,7 +259,6 @@ class LivePriceSocketService {
         _log('ws.done timeout/error => $e');
       }
 
-      // ✅ (اختياري) delay صغير يساعد مع بعض أجهزة/إصدارات دارت
       await Future.delayed(const Duration(milliseconds: 50));
     } finally {
       _closing = false;
@@ -280,5 +267,4 @@ class LivePriceSocketService {
       completer.complete();
     }
   }
-
 }

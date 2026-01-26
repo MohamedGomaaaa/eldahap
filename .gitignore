@@ -43,3 +43,8 @@ app.*.map.json
 /android/app/debug
 /android/app/profile
 /android/app/release
+
+# Android keystore و key.properties (لا ترفع الـ keystore الحقيقي، لكن أضف key.properties إذا كان فارغاً أو عاماً)
+!/android/app/upload-keystore.jks  # أضف هذا لاستثناء رفع الـ keystore
+!/android/key.properties           # أضف هذا لرفع key.properties (يحتوي على مسارات فقط، لا كلمات مرور)
+# أو إذا كان keystore في مكان آخر: !/android/app/[اسم-keystore.jks]

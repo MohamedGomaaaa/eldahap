@@ -11,14 +11,17 @@ import '../trade_details_screen.dart';
 /// - وخليناه يقبل بيانات ثابتة مؤقتًا (P&L / prices)
 /// - وكمان يقبل onCloseTap عشان يفتح bottom sheet
 class CreatTrade extends StatelessWidget {
-  final Trade trade;
+  final TradeOrOrder trade;
   final VoidCallback onCloseTap;
-  final String ?displayQty;
-  const CreatTrade({
+  final String? displayQty;
+  CreatTrade({
     super.key,
     required this.trade,
-    required this.onCloseTap, required this.displayQty,
+    required this.onCloseTap,
+    required this.displayQty,
   });
+
+  num livePrice = 2000;
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +49,7 @@ class CreatTrade extends StatelessWidget {
                       ),
                       child: Text(
                         // '+${trade.qty ?? "0"}',
-                          '+${displayQty ?? (trade.qty ?? "0")}',
+                        '+${displayQty ?? (trade.qty ?? "0")}',
                         style: Theme.of(context).textTheme.bodyLarge?.copyWith(
                               color: AppColors.white,
                             ),
@@ -78,9 +81,12 @@ class CreatTrade extends StatelessWidget {
                     const Text('P&L'),
                     SizedBox(width: 6.sp),
                     Text(
-                      '+14.854',
+                      (livePrice - num.parse(trade.openPrice!))
+                          .toStringAsFixed(2),
                       style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                            color: AppColors.blueColor,
+                            color: num.parse(trade.openPrice!) < livePrice
+                                ? AppColors.blueColor
+                                : AppColors.red,
                           ),
                     ),
                   ],
@@ -115,7 +121,7 @@ class CreatTrade extends StatelessWidget {
     return Row(
       children: [
         Text(
-          '2.5494',
+          num.parse(trade.openPrice!).toStringAsFixed(2),
           style: const TextStyle(color: AppColors.greyText),
         ),
         SizedBox(width: 6.sp),
@@ -126,7 +132,7 @@ class CreatTrade extends StatelessWidget {
         ),
         SizedBox(width: 6.sp),
         Text(
-          '2.5494',
+          'live price $livePrice',
           style: const TextStyle(color: AppColors.greyText),
         ),
       ],

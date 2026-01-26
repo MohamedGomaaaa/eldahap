@@ -86,14 +86,16 @@ class ProductsScreen extends StatelessWidget {
                               ),
                             ).toList(),
                             onTap: (index) {
-                              print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+
+
+                              print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>> ${productCubit.categories[index].name} >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
                               productCubit.getProducts(index);
                             },
                           );
                         },
                       ),
                     ),
-//////////////////////////////////////////////////////////////////////////////////////////////// product list
+//////////////////////////////////////////////////////////////////////////////////////////////// product list according to category
                     Expanded(
                       child: BlocBuilder<ProductCubit, ProductState>(
                         buildWhen: (previous, current) =>
@@ -103,7 +105,7 @@ class ProductsScreen extends StatelessWidget {
                           return TabBarView(
                             physics: const BouncingScrollPhysics(),
                             children: List.generate(
-                              cubit.categories.length,
+                               cubit.categories.length, /// مظبوطه
                                   (index) => ProductsOfCategoryScreen(index: index),
                             ),
                           );

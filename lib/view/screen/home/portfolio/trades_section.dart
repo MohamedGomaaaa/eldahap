@@ -51,12 +51,14 @@ class TradesSection extends StatelessWidget {
                 vertical: 12.sp,
                 horizontal: 0.sp,
               ),
-              itemCount: TradesCubit.get(context).wholeTrade.length,
+              itemCount: TradesCubit.get(context).groupOfTradesOrOrders.length,
               itemBuilder: (context, index) {
-                final g = TradesCubit.get(context).wholeTrade[index];
+                final g = TradesCubit.get(context).groupOfTradesOrOrders[index];
                 final key = g.metal ?? 'unknown_$index';
-                return TradeWidget(
-                  wholeTradeName: g.title ?? '',
+                return
+                  TradeWidget(
+                  tradeGroup:g,
+                  // wholeTradeName: g.title ?? '',
                   groupKey: key, // ✅ نفس المفتاح اللي الكيوبت بيستخدمه
                 );
               },

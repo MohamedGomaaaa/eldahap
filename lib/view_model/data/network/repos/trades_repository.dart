@@ -18,11 +18,11 @@ class TradesRepository {
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////// old trades
-  Future<List<Trade>> trades() async {
+  Future<List<TradeOrOrder>> trades() async {
     try {
       final tradesResponse = await productProvider.trades();
       // log(jsonEncode(tradesResponse?.data));
-      return (tradesResponse?.data?['result'] as List).map((e) => Trade.fromJson(e)).toList();
+      return (tradesResponse?.data?['result'] as List).map((e) => TradeOrOrder.fromJson(e)).toList();
     } catch (e) {
       rethrow;
     }
@@ -44,7 +44,7 @@ class TradesRepository {
       }
 
       // fallback
-      return Tradess(success: false, message: "Invalid response", result: []);
+      return Tradess(success: false, message: "Invalid response", groupOfTradesOrOrders: []);
     } catch (e) {
       rethrow;
     }
@@ -67,7 +67,7 @@ class TradesRepository {
       }
 
       // fallback
-      return Tradess(success: false, message: "Invalid response", result: []);
+      return Tradess(success: false, message: "Invalid response", groupOfTradesOrOrders: []);
     } catch (e) {
       rethrow;
     }

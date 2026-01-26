@@ -6,7 +6,7 @@ import '../../../../../view_model/utils/navigation.dart';
 import '../../order_details/order_details_screen.dart';
 
 class CreatOrder extends StatelessWidget {
-  final Trade order;
+  final TradeOrOrder order;
   final VoidCallback onCloseTap;
   const CreatOrder({super.key, required this.order, required this.onCloseTap});
 

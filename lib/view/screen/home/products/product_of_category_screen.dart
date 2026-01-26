@@ -8,6 +8,7 @@ import 'package:official_gold/view/components/shimmer_widget.dart';
 import '../../../../l10n/locale_keys.g.dart';
 import '../../../../model/product.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
+import '../../../components/live_status_text.dart';
 import 'components/product_widget.dart';
 
 class ProductsOfCategoryScreen extends StatelessWidget {
@@ -25,8 +26,13 @@ class ProductsOfCategoryScreen extends StatelessWidget {
           horizontal: 12.sp,
         ),
         children: [
-          Text(
-            LocaleKeys.latestProducts.tr(),
+          // Text(
+          //   LocaleKeys.latestProducts.tr(),
+          // ),
+          ////////////////////////////////////////////////////////////////////////////////////////////////////////////// ✅ NEW: status text بدل "connection"
+          Container(
+            margin: EdgeInsets.symmetric(horizontal: 8.w),
+            child: const LiveStatusText(),
           ),
           SizedBox(
             height: 12.h,
@@ -74,20 +80,22 @@ class ProductsOfCategoryScreen extends StatelessWidget {
                 ListView.separated(
                   physics:
                   const NeverScrollableScrollPhysics(),
+                  itemCount: cubit.categories[index].products.length,
                   shrinkWrap: true,
+                  separatorBuilder: (context, index) =>
+                      SizedBox(
+                        height: 12.h,
+                      ),
                   itemBuilder: (context, index2) =>
+
                       ProductWidget(
                         product: cubit.categories[index]
                             .products[index2],
                         category: cubit.categories[index],
                         tabIndex: index + 1,
                       ),
-                  separatorBuilder: (context, index) =>
-                      SizedBox(
-                        height: 12.h,
-                      ),
-                  itemCount: cubit
-                      .categories[index].products.length,
+
+
                 ),
               );
             },

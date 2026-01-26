@@ -16,6 +16,8 @@ import '../../../../../model/metal_price_model.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../../view_model/utils/colors.dart';
+import '../../../../../view_model/utils/validator.dart';
+import '../../../../components/live_status_text.dart';
 import '../../../../components/live_text.dart';
 
 import 'package:easy_localization/easy_localization.dart';
@@ -48,31 +50,6 @@ class ProductDetailsScreen extends StatelessWidget {
     super.key,
   });
 
-  // ✅ mapping من metal -> key داخل metals map بتاع LivePriceCubit
-  // String _metalKeyFromProduct(Product p) {
-  //   final m = (p.metal ?? '').toLowerCase().trim();
-  //   if (m == 'gold') return 'Gold (24)';
-  //   if (m == 'silver') return 'Silver';
-  //   return 'Gold (24)'; // fallback
-  // }
-
-  // ✅ عرض حالة السوكت
-
-  String _liveTabText(LivePriceState state) {
-    if (state is LivePriceLive) return 'Live Price';
-    if (state is LivePriceConnecting) return 'Connecting...';
-    if (state is LivePriceStopped) {
-      final m = state.message.toLowerCase();
-      if (m.contains('no internet')) return 'No Internet';
-      return 'Disconnected';
-    }
-    return 'Connecting...';
-  }
-
-  // ✅ لو Live أخضر، غير كده أحمر
-  Color _liveTabColor(LivePriceState state) {
-    return state is LivePriceLive ? AppColors.green : AppColors.red;
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -88,57 +65,56 @@ class ProductDetailsScreen extends StatelessWidget {
             child: Column(
               children: [
                 const AppBarCustom(),
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////// live price state connect / disconnect
+                const LiveStatusText(),
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////// category name
                 Expanded(
                   child: ListView(
-                    padding: EdgeInsets.all(16.sp),
+                     padding: EdgeInsets.only(left:16.sp,right:16.sp,top: 16.sp ),
                     children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          BlocBuilder<LivePriceCubit, LivePriceState>(
-                            // يقلل rebuilds
-                            buildWhen: (prev, curr) =>
-                                prev.runtimeType != curr.runtimeType,
-                            builder: (context, state) {
-                              return Text(
-                                _liveTabText(state),
-                                textAlign: TextAlign.center,
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .displayLarge
-                                    ?.copyWith(
-                                      fontSize: 13.sp,
-                                      color: _liveTabColor(state),
-                                    ),
-                              );
-                            },
-                          ),
-                          Text(
-                            category.name ?? '',
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(
-                                  fontSize: 30.sp,
-                                ),
-                          ),
-                          Text(
-                            "   ",
-                            textAlign: TextAlign.center,
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(
-                                  fontSize: 13.sp,
-                                ),
-                          ),
-                        ],
+                      Center(
+                        child: Text(
+                          category.name ?? '',
+                          textAlign: TextAlign.center,
+                          style: Theme.of(context)
+                              .textTheme
+                              .displayLarge
+                              ?.copyWith(
+                                fontSize: 30.sp,
+                              ),
+                        ),
                       ),
-                      Text(
-                        product.currency ?? '',
-                        // LocaleKeys.goldSpot.tr(),
-                        textAlign: TextAlign.center,
+/////////////////////////////////////////////////////////////////////////////////////////////////////// currency
+                      Container(
+                        margin: EdgeInsets.only(top: 5.sp ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(
+                                  horizontal: 6.sp),
+                              child: Text(
+                                product.currency ?? '',
+                                textAlign: TextAlign.center,
+                              ),
+                            ),
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////// product name
+                            Text(
+                              product.name!,
+                              textAlign: TextAlign.center,
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .displayLarge
+                                  ?.copyWith(
+                                fontSize: 13.sp,
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
                       const Divider(
                         color: AppColors.textYellow,
@@ -147,7 +123,7 @@ class ProductDetailsScreen extends StatelessWidget {
                       SizedBox(
                         height: 12.h,
                       ),
-
+/////////////////////////////////////////////////////////////////////////////////////////////////////// green and red live price container
                       Stack(
                         alignment: AlignmentDirectional.center,
                         children: [
@@ -290,28 +266,28 @@ class ProductDetailsScreen extends StatelessWidget {
                             ),
                           ),
 
-                          // ✅ اللي في النص زي ما هو
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 16.sp, vertical: 2.sp),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(12.r),
-                              color: AppColors.black,
-                            ),
-                            child: Text(
-                              ((product.lowestPrice ?? 0) -
-                                      (product.highestPrice ?? 0))
-                                  .abs()
-                                  .toStringAsFixed(2),
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .titleLarge
-                                  ?.copyWith(
-                                    color: AppColors.white,
-                                    fontWeight: FontWeight.w500,
-                                  ),
-                            ),
-                          ),
+/////////////////////////////////////////////////////////////////////////////////////////////////////// price different
+//                           Container(
+//                             padding: EdgeInsets.symmetric(
+//                                 horizontal: 16.sp, vertical: 2.sp),
+//                             decoration: BoxDecoration(
+//                               borderRadius: BorderRadius.circular(12.r),
+//                               color: AppColors.black,
+//                             ),
+//                             child: Text(
+//                               ((product.lowestPrice ?? 0) -
+//                                       (product.highestPrice ?? 0))
+//                                   .abs()
+//                                   .toStringAsFixed(2),
+//                               style: Theme.of(context)
+//                                   .textTheme
+//                                   .titleLarge
+//                                   ?.copyWith(
+//                                     color: AppColors.white,
+//                                     fontWeight: FontWeight.w500,
+//                                   ),
+//                             ),
+//                           ),
                         ],
                       ),
 
@@ -339,10 +315,11 @@ class ProductDetailsScreen extends StatelessWidget {
                                     color: AppColors.yellow,
                                   ),
                             ),
+
                             SizedBox(
                               height: 12.h,
                             ),
-/////////////////////////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////////////////////// quantityController
                             BlocBuilder<ProductCubit, ProductState>(
                               buildWhen: (previous, current) {
                                 return current is AddQuantityState ||
@@ -366,7 +343,6 @@ class ProductDetailsScreen extends StatelessWidget {
                                   inputFormatters: [
                                     FilteringTextInputFormatter.allow(
                                       RegExp(r'^\d+\d{0,2}'),
-                                      // RegExp(r'^\d+\.?\d{0,2}'),
                                     ),
                                   ],
                                   validator: (value) {
@@ -396,47 +372,59 @@ class ProductDetailsScreen extends StatelessWidget {
                                     ),
                                     isCollapsed: true,
                                     alignLabelWithHint: true,
-                                    suffix: Row(
-                                      mainAxisSize: MainAxisSize.min,
-                                      children: [
-                                        FloatingActionButton(
-                                          onPressed: () {
-                                            cubit.subtractQuantity();
-                                          },
-                                          heroTag: null,
-                                          shape: const CircleBorder(),
-                                          mini: true,
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          backgroundColor:
-                                              AppColors.transparent,
-                                          child: const Center(
-                                            child: Icon(
-                                              FontAwesomeIcons.minus,
-                                              color: AppColors.yellow,
-                                            ),
-                                          ),
-                                        ),
-                                        FloatingActionButton(
-                                          onPressed: () {
-                                            cubit.addQuantity();
-                                          },
-                                          heroTag: null,
-                                          shape: const CircleBorder(),
-                                          mini: true,
-                                          materialTapTargetSize:
-                                              MaterialTapTargetSize.shrinkWrap,
-                                          backgroundColor:
-                                              AppColors.transparent,
-                                          child: const Center(
-                                            child: Icon(
-                                              FontAwesomeIcons.plus,
-                                              color: AppColors.yellow,
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+
+
+                                      suffix: makeAddAndMinusButton(onAdd: () {
+
+                                        cubit
+                                            .addQuantity();
+                                      }, onMinus: () {
+                                        cubit
+                                            .subtractQuantity();
+                                      }
+
+                                      )
+                                    // suffix: Row(
+                                    //   mainAxisSize: MainAxisSize.min,
+                                    //   children: [
+                                    //     FloatingActionButton(
+                                    //       onPressed: () {
+                                    //         cubit.subtractQuantity();
+                                    //       },
+                                    //       heroTag: null,
+                                    //       shape: const CircleBorder(),
+                                    //       mini: true,
+                                    //       materialTapTargetSize:
+                                    //           MaterialTapTargetSize.shrinkWrap,
+                                    //       backgroundColor:
+                                    //           AppColors.transparent,
+                                    //       child: const Center(
+                                    //         child: Icon(
+                                    //           FontAwesomeIcons.minus,
+                                    //           color: AppColors.yellow,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     FloatingActionButton(
+                                    //       onPressed: () {
+                                    //         cubit.addQuantity();
+                                    //       },
+                                    //       heroTag: null,
+                                    //       shape: const CircleBorder(),
+                                    //       mini: true,
+                                    //       materialTapTargetSize:
+                                    //           MaterialTapTargetSize.shrinkWrap,
+                                    //       backgroundColor:
+                                    //           AppColors.transparent,
+                                    //       child: const Center(
+                                    //         child: Icon(
+                                    //           FontAwesomeIcons.plus,
+                                    //           color: AppColors.yellow,
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //   ],
+                                    // ),
                                   ),
                                 );
                               },
@@ -460,7 +448,9 @@ class ProductDetailsScreen extends StatelessWidget {
                                 SizedBox(
                                   width: 12.w,
                                 ),
-///////////////////////////////////////////////////////////////////////////////////////////////// switch button
+///////////////////////////////////////////////////////////////////////////////////////////////// buy when switch button
+                             // change trade to stop order بيحوله الي اوردر معلق
+                                   ///    واول منوصل للسعر يحولها لصفقه
                                 BlocBuilder<ProductCubit, ProductState>(
                                   buildWhen: (previous, current) {
                                     return current
@@ -485,7 +475,7 @@ class ProductDetailsScreen extends StatelessWidget {
                             SizedBox(
                               height: 12.h,
                             ),
-                            ///////////////////////////////////////////////////////////////////////////////////////////////// amount due to switch
+ ///////////////////////////////////////////////////////////////////////////////////////////////// amount  that will change order to open trade
                             BlocBuilder<ProductCubit, ProductState>(
                               buildWhen: (previous, current) {
                                 return current is ChangeSellWhenPriceIsState ||
@@ -520,6 +510,9 @@ class ProductDetailsScreen extends StatelessWidget {
                                       SizedBox(
                                         height: 12.h,
                                       ),
+///////////////////////////////////////////////////////////////////////////////////////////////// amount  that will change order to open trade
+                          ///  هذا الرقم اما يوصله سعر الدهب تتحول الي صفقه مفتوحه يقدر يتداول عليها  ابيع و قت  ماحب
+
                                       BlocBuilder<ProductCubit, ProductState>(
                                         buildWhen: (previous, current) {
                                           return current is AddAmountState ||
@@ -545,16 +538,18 @@ class ProductDetailsScreen extends StatelessWidget {
                                                 RegExp(r'^\d+\.?\d{0,2}'),
                                               ),
                                             ],
+
                                             onTapOutside: (_) {
                                               FocusScope.of(context).unfocus();
                                             },
-                                            validator: (value) {
-                                              if ((value == null ||
-                                                  value.trim().isEmpty)) {
-                                                return "Filed is required";
-                                              }
-                                              return null;
-                                            },
+                                            validator: (value) => Validator.validatePriceWithRange(
+                                              value: value,
+                                              originalPrice: 100,
+                                            ),
+
+
+
+
                                             decoration: InputDecoration(
                                               hintText: '',
                                               hintStyle: Theme.of(context)
@@ -573,49 +568,64 @@ class ProductDetailsScreen extends StatelessWidget {
                                               ),
                                               isCollapsed: true,
                                               alignLabelWithHint: true,
-                                              suffix: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  FloatingActionButton(
-                                                    onPressed: () {
-                                                      cubit.subtractAmount();
-                                                    },
-                                                    heroTag: null,
-                                                    shape: const CircleBorder(),
-                                                    mini: true,
-                                                    materialTapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                    backgroundColor:
-                                                        AppColors.transparent,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons.minus,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  FloatingActionButton(
-                                                    onPressed: () {
-                                                      cubit.addAmount();
-                                                    },
-                                                    heroTag: null,
-                                                    shape: const CircleBorder(),
-                                                    mini: true,
-                                                    materialTapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                    backgroundColor:
-                                                        AppColors.transparent,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons.plus,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+
+                                                suffix: makeAddAndMinusButton(onAdd: () {
+
+                                                  cubit
+                                                      .addAmount();
+                                                }, onMinus: () {
+                                                  cubit
+                                                      .subtractAmount();
+                                                }
+
+                                                )
+
+
+
+
+                                              // suffix: Row(
+                                              //   mainAxisSize: MainAxisSize.min,
+                                              //   children: [
+                                              //     FloatingActionButton(
+                                              //       onPressed: () {
+                                              //         cubit.subtractAmount();
+                                              //       },
+                                              //       heroTag: null,
+                                              //       shape: const CircleBorder(),
+                                              //       mini: true,
+                                              //       materialTapTargetSize:
+                                              //           MaterialTapTargetSize
+                                              //               .shrinkWrap,
+                                              //       backgroundColor:
+                                              //           AppColors.transparent,
+                                              //       child: const Center(
+                                              //         child: Icon(
+                                              //           FontAwesomeIcons.minus,
+                                              //           color: AppColors.yellow,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //     FloatingActionButton(
+                                              //       onPressed: () {
+                                              //         cubit.addAmount();
+                                              //       },
+                                              //       heroTag: null,
+                                              //       shape: const CircleBorder(),
+                                              //       mini: true,
+                                              //       materialTapTargetSize:
+                                              //           MaterialTapTargetSize
+                                              //               .shrinkWrap,
+                                              //       backgroundColor:
+                                              //           AppColors.transparent,
+                                              //       child: const Center(
+                                              //         child: Icon(
+                                              //           FontAwesomeIcons.plus,
+                                              //           color: AppColors.yellow,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ],
+                                              // ),
                                             ),
                                           );
                                         },
@@ -658,6 +668,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                   child: Column(
                                     crossAxisAlignment: CrossAxisAlignment.end,
                                     children: [
+ /////////////////////////////////////////////////////////////////////////////////////////////////// available price in wallet
                                       Text(
                                         LocaleKeys.available.tr().toUpperCase(),
                                         style: Theme.of(context)
@@ -702,6 +713,10 @@ class ProductDetailsScreen extends StatelessWidget {
                         height: 12.h,
                       ),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Stop Loss
+
+                 // وقف الصفقه عند خساره كذا بمعن  تتشال من الصفقات اول ماجي عند الرقم ده وتدخل المحفظه
+
+
                       Container(
                         padding: EdgeInsets.all(12.sp),
                         decoration: BoxDecoration(
@@ -795,6 +810,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                   is SubtractAmountStopLossState ||
                                               current is ResetControllersState;
                                         },
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////  lose amount
                                         builder: (context, state) {
                                           return TextFormField(
                                             controller:
@@ -835,15 +851,15 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     fontSize: 12.sp,
                                                     fontWeight: FontWeight.w400,
                                                   ),
-                                              prefix: Text(
-                                                '\$',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headlineMedium
-                                                    ?.copyWith(
-                                                      color: AppColors.red,
-                                                    ),
-                                              ),
+                                              // prefix: Text(
+                                              //   '\$',
+                                              //   style: Theme.of(context)
+                                              //       .textTheme
+                                              //       .headlineMedium
+                                              //       ?.copyWith(
+                                              //         color: AppColors.red,
+                                              //       ),
+                                              // ),
                                               isDense: true,
                                               contentPadding:
                                                   EdgeInsets.symmetric(
@@ -852,50 +868,63 @@ class ProductDetailsScreen extends StatelessWidget {
                                               ),
                                               isCollapsed: true,
                                               alignLabelWithHint: true,
-                                              suffix: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  FloatingActionButton(
-                                                    onPressed: () {
-                                                      cubit
-                                                          .subtractAmountStopLoss();
-                                                    },
-                                                    heroTag: null,
-                                                    shape: const CircleBorder(),
-                                                    mini: true,
-                                                    materialTapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                    backgroundColor:
-                                                        AppColors.transparent,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons.minus,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  FloatingActionButton(
-                                                    onPressed: () {
-                                                      cubit.addAmountStopLoss();
-                                                    },
-                                                    heroTag: null,
-                                                    shape: const CircleBorder(),
-                                                    mini: true,
-                                                    materialTapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                    backgroundColor:
-                                                        AppColors.transparent,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons.plus,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+
+
+
+                                                suffix: makeAddAndMinusButton(onAdd: () {
+
+                                                  cubit
+                                                      .addAmountStopLoss();
+                                                }, onMinus: () {
+                                                  cubit
+                                                      .subtractAmountStopLoss();
+                                                }
+
+                                                )
+                                              // suffix: Row(
+                                              //   mainAxisSize: MainAxisSize.min,
+                                              //   children: [
+                                              //     FloatingActionButton(
+                                              //       onPressed: () {
+                                              //         cubit
+                                              //             .subtractAmountStopLoss();
+                                              //       },
+                                              //       heroTag: null,
+                                              //       shape: const CircleBorder(),
+                                              //       mini: true,
+                                              //       materialTapTargetSize:
+                                              //           MaterialTapTargetSize
+                                              //               .shrinkWrap,
+                                              //       backgroundColor:
+                                              //           AppColors.transparent,
+                                              //       child: const Center(
+                                              //         child: Icon(
+                                              //           FontAwesomeIcons.minus,
+                                              //           color: AppColors.yellow,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //     FloatingActionButton(
+                                              //       onPressed: () {
+                                              //         cubit.addAmountStopLoss();
+                                              //       },
+                                              //       heroTag: null,
+                                              //       shape: const CircleBorder(),
+                                              //       mini: true,
+                                              //       materialTapTargetSize:
+                                              //           MaterialTapTargetSize
+                                              //               .shrinkWrap,
+                                              //       backgroundColor:
+                                              //           AppColors.transparent,
+                                              //       child: const Center(
+                                              //         child: Icon(
+                                              //           FontAwesomeIcons.plus,
+                                              //           color: AppColors.yellow,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ],
+                                              // ),
                                             ),
                                           );
                                         },
@@ -912,6 +941,7 @@ class ProductDetailsScreen extends StatelessWidget {
                         height: 12.h,
                       ),
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// Take Profit
+                    ///  اقفل الصفقه عند مكسب الرقم اللي هحطه هنا وحول الفلوس للومحفظه
                       Container(
                         padding: EdgeInsets.all(12.sp),
                         decoration: BoxDecoration(
@@ -1005,6 +1035,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                   is SubtractAmountTakeProfitState ||
                                               current is ResetControllersState;
                                         },
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////  Profit value
                                         builder: (context, state) {
                                           return TextFormField(
                                             controller:
@@ -1015,7 +1046,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                 .textTheme
                                                 .headlineMedium
                                                 ?.copyWith(
-                                                  color: AppColors.red,
+                                                  color: AppColors.green,
                                                 ),
                                             keyboardType: const TextInputType
                                                 .numberWithOptions(
@@ -1045,15 +1076,15 @@ class ProductDetailsScreen extends StatelessWidget {
                                                     fontSize: 12.sp,
                                                     fontWeight: FontWeight.w400,
                                                   ),
-                                              prefix: Text(
-                                                '\$',
-                                                style: Theme.of(context)
-                                                    .textTheme
-                                                    .headlineMedium
-                                                    ?.copyWith(
-                                                      color: AppColors.red,
-                                                    ),
-                                              ),
+                                              // prefix: Text(
+                                              //   '\$',
+                                              //   style: Theme.of(context)
+                                              //       .textTheme
+                                              //       .headlineMedium
+                                              //       ?.copyWith(
+                                              //         color: AppColors.red,
+                                              //       ),
+                                              // ),
                                               isDense: true,
                                               contentPadding:
                                                   EdgeInsets.symmetric(
@@ -1062,51 +1093,61 @@ class ProductDetailsScreen extends StatelessWidget {
                                               ),
                                               isCollapsed: true,
                                               alignLabelWithHint: true,
-                                              suffix: Row(
-                                                mainAxisSize: MainAxisSize.min,
-                                                children: [
-                                                  FloatingActionButton(
-                                                    onPressed: () {
-                                                      cubit
-                                                          .subtractAmountTakeProfit();
-                                                    },
-                                                    heroTag: null,
-                                                    shape: const CircleBorder(),
-                                                    mini: true,
-                                                    materialTapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                    backgroundColor:
-                                                        AppColors.transparent,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons.minus,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                  FloatingActionButton(
-                                                    onPressed: () {
-                                                      cubit
-                                                          .addAmountTakeProfit();
-                                                    },
-                                                    heroTag: null,
-                                                    shape: const CircleBorder(),
-                                                    mini: true,
-                                                    materialTapTargetSize:
-                                                        MaterialTapTargetSize
-                                                            .shrinkWrap,
-                                                    backgroundColor:
-                                                        AppColors.transparent,
-                                                    child: const Center(
-                                                      child: Icon(
-                                                        FontAwesomeIcons.plus,
-                                                        color: AppColors.yellow,
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
+                                              suffix: makeAddAndMinusButton(onAdd: () {
+
+                                                cubit
+                                                           .addAmountTakeProfit();
+                                              }, onMinus: () {
+                                                cubit
+                                                    .subtractAmountTakeProfit();
+                                              }
+
+                                              )
+                                              // suffix: Row(
+                                              //   mainAxisSize: MainAxisSize.min,
+                                              //   children: [
+                                              //     FloatingActionButton(
+                                              //       onPressed: () {
+                                              //         cubit
+                                              //             .subtractAmountTakeProfit();
+                                              //       },
+                                              //       heroTag: null,
+                                              //       shape: const CircleBorder(),
+                                              //       mini: true,
+                                              //       materialTapTargetSize:
+                                              //           MaterialTapTargetSize
+                                              //               .shrinkWrap,
+                                              //       backgroundColor:
+                                              //           AppColors.transparent,
+                                              //       child: const Center(
+                                              //         child: Icon(
+                                              //           FontAwesomeIcons.minus,
+                                              //           color: AppColors.yellow,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //     FloatingActionButton(
+                                              //       onPressed: () {
+                                              //         cubit
+                                              //             .addAmountTakeProfit();
+                                              //       },
+                                              //       heroTag: null,
+                                              //       shape: const CircleBorder(),
+                                              //       mini: true,
+                                              //       materialTapTargetSize:
+                                              //           MaterialTapTargetSize
+                                              //               .shrinkWrap,
+                                              //       backgroundColor:
+                                              //           AppColors.transparent,
+                                              //       child: const Center(
+                                              //         child: Icon(
+                                              //           FontAwesomeIcons.plus,
+                                              //           color: AppColors.yellow,
+                                              //         ),
+                                              //       ),
+                                              //     ),
+                                              //   ],
+                                              // ),
                                             ),
                                           );
                                         },
@@ -1149,24 +1190,24 @@ class ProductDetailsScreen extends StatelessWidget {
                         builder: (context, state) {
                           return ElevatedButton(
                             onPressed: () {
-                              final isFormValid = cubit
-                                      .formProductKey.currentState
-                                      ?.validate() ==
-                                  true;
-                              final hasQuantity =
-                                  cubit.quantityController.text.isNotEmpty;
-                              final hasSellWhenPrice =
-                                  cubit.amountController.text.isNotEmpty;
-                              final hasStopLoss =
-                                  cubit.stopLossController.text.isNotEmpty;
-                              final hasTakeProfit =
-                                  cubit.takeProfitController.text.isNotEmpty;
+                              // final isFormValid = cubit
+                              //         .formProductKey.currentState
+                              //         ?.validate() ==
+                              //     true;
+                              // final hasQuantity =
+                              //     cubit.quantityController.text.isNotEmpty;
+                              // final hasSellWhenPrice =
+                              //     cubit.amountController.text.isNotEmpty;
+                              // final hasStopLoss =
+                              //     cubit.stopLossController.text.isNotEmpty;
+                              // final hasTakeProfit =
+                              //     cubit.takeProfitController.text.isNotEmpty;
 
-                              print('isFormValid: $isFormValid');
-                              print('hasQuantity: $hasQuantity');
-                              print('hasSellWhenPrice: $hasSellWhenPrice');
-                              print('hasStopLoss: $hasStopLoss');
-                              print('hasTakeProfit: $hasTakeProfit');
+                              // print('isFormValid: $isFormValid');
+                              // print('hasQuantity: $hasQuantity');
+                              // print('hasSellWhenPrice: $hasSellWhenPrice');
+                              // print('hasStopLoss: $hasStopLoss');
+                              // print('hasTakeProfit: $hasTakeProfit');
 
                               if (cubit.formProductKey.currentState
                                               ?.validate() ==
@@ -1180,7 +1221,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                   ) {
                                 if (state is! MakeOrderLoadingState) {
                                   ProductCubit.get(context)
-                                      .makeOrder(product)
+                                      .makeOrder(product,6767.9)
                                       .then(
                                         (value) => Navigator.pop(context),
                                       );
@@ -1226,6 +1267,58 @@ class ProductDetailsScreen extends StatelessWidget {
       ),
     );
   }
+
+  Widget makeAddAndMinusButton({
+    required void Function()? onAdd,
+    required void Function()? onMinus,
+  }) {
+    return
+      Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        // زر الطرح -
+        ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onMinus,
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+              ),
+              child: const Icon(
+                FontAwesomeIcons.minus,
+                size: 12,
+                color: AppColors.yellow,
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(width: 8),
+        // زر الجمع +
+        ExcludeSemantics(
+          child: GestureDetector(
+            onTap: onAdd,
+            child: Container(
+              width: 28,
+              height: 28,
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Colors.transparent,
+              ),
+              child: const Icon(
+                FontAwesomeIcons.plus,
+                size: 12,
+                color: AppColors.yellow,
+              ),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
 }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////// old code

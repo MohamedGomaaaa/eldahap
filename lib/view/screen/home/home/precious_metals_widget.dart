@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
+import '../../../../l10n/locale_keys.g.dart';
 import '../../../../model/metal_price_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
@@ -77,9 +78,9 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
           final gramBuy = p.buy;
           final gramSell = p.sell;
 
-          const ounceFactor = 31.1035;
-          final ounceBuy = gramBuy * ounceFactor;
-          final ounceSell = gramSell * ounceFactor;
+
+          final ounceBuy = gramBuy * LocaleKeys.ounceFactor;
+          final ounceSell = gramSell * LocaleKeys.ounceFactor;
 
           final rows = <_MetalRow>[
             _MetalRow(name: ounceTitle, buy: ounceBuy, sell: ounceSell),

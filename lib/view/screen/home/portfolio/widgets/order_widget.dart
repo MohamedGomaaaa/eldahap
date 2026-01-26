@@ -44,10 +44,10 @@ class OrderWidget extends StatelessWidget {
         /// ✅ نجيب orderList من الكيوبت كل مرة
         final group = tradesCubit.wholeOrders.firstWhere(
           (g) => (g.metal ?? '') == groupKey,
-          orElse: () => Result(orders: []),
+          orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
         );
 
-        final orderList = group.orders ?? [];
+        final orderList = group.tradesOrOrders ?? [];
 
         return Material(
           color: AppColors.backgroundGrey2,
@@ -152,7 +152,7 @@ class OrderWidget extends StatelessWidget {
 void showCloseTradeSheet(
   BuildContext context,
   double profitOrLosePrice,
-  Trade order,
+  TradeOrOrder order,
   TradesCubit tradesCubit,
 ) {
   showModalBottomSheet(
@@ -171,30 +171,30 @@ void showCloseTradeSheet(
             const Text(
               "Delete trade?",
               style: TextStyle(
-                color: AppColors.white,
+                color: AppColors.yellow,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
-            const SizedBox(height: 12),
-            const Text(
-              "Profit",
-              style: TextStyle(
-                color: AppColors.greyText,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
-              style: TextStyle(
-                color: profitOrLosePrice >= 0
-                    ? AppColors.blueColor
-                    : AppColors.red,
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
+            // const SizedBox(height: 12),
+            // const Text(
+            //   "Profit",
+            //   style: TextStyle(
+            //     color: AppColors.greyText,
+            //     fontSize: 14,
+            //   ),
+            // ),
+            // const SizedBox(height: 4),
+            // Text(
+            //   "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
+            //   style: TextStyle(
+            //     color: profitOrLosePrice >= 0
+            //         ? AppColors.blueColor
+            //         : AppColors.red,
+            //     fontSize: 20,
+            //     fontWeight: FontWeight.bold,
+            //   ),
+            // ),
             const SizedBox(height: 24),
             SizedBox(
               width: double.infinity,
@@ -219,7 +219,7 @@ void showCloseTradeSheet(
                   ),
                 ),
                 child: const Text(
-                  "Close",
+                  "Delete",
                   style: TextStyle(fontWeight: FontWeight.bold),
                 ),
               ),

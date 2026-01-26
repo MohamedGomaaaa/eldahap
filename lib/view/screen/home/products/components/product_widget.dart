@@ -10,6 +10,7 @@ import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../model/category.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
+import '../../../../components/live_status_text.dart';
 import '../../../../components/live_text.dart'; // LivePriceText
 import '../../product_chart/product_chart_screen.dart';
 import 'product_details_screen.dart';
@@ -20,11 +21,11 @@ import '../../../../../model/metal_price_model.dart';
 
 
 
-
-import 'dart:math';
-import 'package:fl_chart/fl_chart.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+//
+// import 'dart:math';
+// import 'package:fl_chart/fl_chart.dart';
+// import 'package:flutter/material.dart';
+// import 'package:flutter_bloc/flutter_bloc.dart';
 
 
 
@@ -40,36 +41,11 @@ class ProductWidget extends StatelessWidget {
     super.key,
   });
 
-  // ✅ NEW: mapping من metal -> key داخل metals map بتاع LivePriceCubit
-  String _metalKeyFromProduct(Product p) {
-    final m = (p.metal ?? '').toLowerCase().trim();
-    if (m == 'gold') return 'Gold (24)';
-    if (m == 'silver') return 'Silver';
-    // fallback
-    return 'Gold (24)';
-  }
 
-  // ✅ NEW: نفس الميثود بتاعتك لعرض حالة السوكت
-  String _liveTabText(LivePriceState state) {
-    if (state is LivePriceLive) return 'Live Price';
-    if (state is LivePriceConnecting) return 'Connecting...';
-    if (state is LivePriceStopped) {
-      final m = state.message.toLowerCase();
-      if (m.contains('no internet')) return 'No Internet';
-      return 'Disconnected';
-    }
-    return 'Connecting...';
-  }
-
-  // ✅ NEW: Live أخضر - غير كده أحمر
-  Color _liveStatusColor(LivePriceState state) {
-    if (state is LivePriceLive) return AppColors.green;
-    return AppColors.red;
-  }
 
   @override
   Widget build(BuildContext context) {
-    final metalKey = _metalKeyFromProduct(product);
+
 
     return Material(
       color: AppColors.backgroundGrey,
@@ -85,38 +61,19 @@ class ProductWidget extends StatelessWidget {
         ),
         child: BlocBuilder<LivePriceCubit, LivePriceState>(
           builder: (context, state) {
-            // ✅ status
-            final statusText = _liveTabText(state);
-            final statusColor = _liveStatusColor(state);
-
-            // ✅ metals
-            MetalPrices? mp;
-            if (state is LivePriceLive) {
-              mp = state.metals[metalKey];
-            }
-
-            final double sellFromSocket = mp?.sell ?? 0.0; // ✅ SELL
-            final double buyFromSocket = mp?.buy ?? 0.0; // ✅ BUY
 
             return Column(
+
               children: [
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-////////////////////////////////////////////////////////////////////////////////////////////////////////////// ✅ NEW: status text بدل "connection"
-                    Container(
-                      margin: EdgeInsets.symmetric(horizontal: 8.w),
-                      child: Text(statusText,
-                          style: BlackTitle.display5(context).copyWith(
-                            fontSize: 12,
-                            color: statusColor, // ✅ Live أخضر / غير كده أحمر
-                          )),
-                    ),
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// title and image
                     SvgPicture.asset(AppAssets.gold),
                     SizedBox(width: 12.w),
                     Text(
-                      product.currency ?? '',
+                      product.name ?? '',
                       style: Theme.of(context).textTheme.titleLarge?.copyWith(
                             color: AppColors.textYellow,
                           ),
@@ -135,7 +92,7 @@ class ProductWidget extends StatelessWidget {
                           LivePriceText(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 6),
-                            price: sellFromSocket,
+                            price: 343.9,
                             decimals: 2,
                             fakeMinDelta: 0.01,
                             fakeMaxDelta: 0.05,
@@ -220,16 +177,9 @@ class ProductWidget extends StatelessWidget {
                                 ),
                               );
                             },
-                            child:SizedBox(
-                              height: 20.h,
-                              width: 60.w,
-                              child: LiveLineChart(
-                                metalKey: _metalKeyFromProduct(product),
-                                useBuy: true, // أو false للـ sell
-                              ),
-                            ),
+                            child:
 
-                            // Image.asset(AppAssets.tradingChart),
+                            Image.asset(AppAssets.tradingChart,color: Colors.yellow,),
                           )
                         ],
                       ),
@@ -244,7 +194,7 @@ class ProductWidget extends StatelessWidget {
                           LivePriceText(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 30, vertical: 6),
-                            price: buyFromSocket,
+                            price: 33.9,
                             decimals: 2,
                             fakeMinDelta: 0.01,
                             fakeMaxDelta: 0.05,
@@ -308,95 +258,94 @@ class ProductWidget extends StatelessWidget {
 
 
 
-class LiveLineChart extends StatefulWidget {
-  final String metalKey; // مثال: 'Gold (24)'
-  final bool useBuy;     // true=buy, false=sell
-  final int maxPoints;
-
-  const LiveLineChart({
-    super.key,
-    required this.metalKey,
-    this.useBuy = true,
-    this.maxPoints = 40,
-  });
-
-  @override
-  State<LiveLineChart> createState() => _LiveLineChartState();
-}
-
-class _LiveLineChartState extends State<LiveLineChart> {
-  final List<FlSpot> _spots = [];
-  double _x = 0;
-
-  void _pushPoint(double y) {
-    _x += 1;
-    _spots.add(FlSpot(_x, y));
-    if (_spots.length > widget.maxPoints) _spots.removeAt(0);
-  }
-
-  List<LineChartBarData> _coloredSegments(List<FlSpot> s) {
-    if (s.length < 2) return [];
-
-    final bars = <LineChartBarData>[];
-    for (int i = 1; i < s.length; i++) {
-      final p0 = s[i - 1];
-      final p1 = s[i];
-
-      final isUp = p1.y >= p0.y;
-      final c = isUp ? Colors.green : Colors.red;
-
-      bars.add(
-        LineChartBarData(
-          spots: [p0, p1],
-          isCurved: false, // نفس الشكل الـ sharp زي الصورة
-          barWidth: 2,
-          color: c,
-          dotData: const FlDotData(show: false),
-          belowBarData: BarAreaData(show: false),
-        ),
-      );
-    }
-    return bars;
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final minY = _spots.isEmpty ? 0.0 : _spots.map((e) => e.y).reduce(min);
-    final maxY = _spots.isEmpty ? 1.0 : _spots.map((e) => e.y).reduce(max);
-    final pad = (maxY - minY) == 0 ? 1.0 : (maxY - minY) * 0.15;
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(8),
-      child: BlocListener<LivePriceCubit, LivePriceState>(
-        listenWhen: (_, curr) => curr is LivePriceLive,
-        listener: (context, state) {
-          if (state is LivePriceLive) {
-            final mp = state.metals[widget.metalKey];
-            final y = widget.useBuy ? (mp?.buy ?? 0.0) : (mp?.sell ?? 0.0);
-            if (y > 0) setState(() => _pushPoint(y));
-          }
-        },
-        child: LineChart(
-          LineChartData(
-            // ✅ نفس خلفية الصورة
-            backgroundColor: Colors.black,
-
-            minY: _spots.isEmpty ? 0 : (minY - pad),
-            maxY: _spots.isEmpty ? 1 : (maxY + pad),
-
-            gridData: const FlGridData(show: false),
-            titlesData: const FlTitlesData(show: false),
-            borderData: FlBorderData(show: false),
-            lineTouchData: const LineTouchData(enabled: false),
-
-            // ✅ هنا السحر: Segments متلوّنة
-            lineBarsData: _coloredSegments(_spots),
-          ),
-          // لو عايز حركة انسيابية:
-          // swapAnimationDuration: const Duration(milliseconds: 250),
-          // swapAnimationCurve: Curves.easeOut,
-        ),
-      ),
-    );
-  }
-}
+// class LiveLineChart extends StatefulWidget {
+//   final String metalKey; // مثال: 'Gold (24)'
+//   final bool useBuy;     // true=buy, false=sell
+//   final int maxPoints;
+//
+//   const LiveLineChart({
+//     super.key,
+//     required this.metalKey,
+//     this.useBuy = true,
+//     this.maxPoints = 40,
+//   });
+//
+//   @override
+//   State<LiveLineChart> createState() => _LiveLineChartState();
+// }
+// class _LiveLineChartState extends State<LiveLineChart> {
+//   final List<FlSpot> _spots = [];
+//   double _x = 0;
+//
+//   void _pushPoint(double y) {
+//     _x += 1;
+//     _spots.add(FlSpot(_x, y));
+//     if (_spots.length > widget.maxPoints) _spots.removeAt(0);
+//   }
+//
+//   List<LineChartBarData> _coloredSegments(List<FlSpot> s) {
+//     if (s.length < 2) return [];
+//
+//     final bars = <LineChartBarData>[];
+//     for (int i = 1; i < s.length; i++) {
+//       final p0 = s[i - 1];
+//       final p1 = s[i];
+//
+//       final isUp = p1.y >= p0.y;
+//       final c = isUp ? Colors.green : Colors.red;
+//
+//       bars.add(
+//         LineChartBarData(
+//           spots: [p0, p1],
+//           isCurved: false, // نفس الشكل الـ sharp زي الصورة
+//           barWidth: 2,
+//           color: c,
+//           dotData: const FlDotData(show: false),
+//           belowBarData: BarAreaData(show: false),
+//         ),
+//       );
+//     }
+//     return bars;
+//   }
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final minY = _spots.isEmpty ? 0.0 : _spots.map((e) => e.y).reduce(min);
+//     final maxY = _spots.isEmpty ? 1.0 : _spots.map((e) => e.y).reduce(max);
+//     final pad = (maxY - minY) == 0 ? 1.0 : (maxY - minY) * 0.15;
+//
+//     return ClipRRect(
+//       borderRadius: BorderRadius.circular(8),
+//       child: BlocListener<LivePriceCubit, LivePriceState>(
+//         listenWhen: (_, curr) => curr is LivePriceLive,
+//         listener: (context, state) {
+//           if (state is LivePriceLive) {
+//             final mp = state.metals[widget.metalKey];
+//             final y = widget.useBuy ? (mp?.buy ?? 0.0) : (mp?.sell ?? 0.0);
+//             if (y > 0) setState(() => _pushPoint(y));
+//           }
+//         },
+//         child: LineChart(
+//           LineChartData(
+//             // ✅ نفس خلفية الصورة
+//             backgroundColor: Colors.black,
+//
+//             minY: _spots.isEmpty ? 0 : (minY - pad),
+//             maxY: _spots.isEmpty ? 1 : (maxY + pad),
+//
+//             gridData: const FlGridData(show: false),
+//             titlesData: const FlTitlesData(show: false),
+//             borderData: FlBorderData(show: false),
+//             lineTouchData: const LineTouchData(enabled: false),
+//
+//             // ✅ هنا السحر: Segments متلوّنة
+//             lineBarsData: _coloredSegments(_spots),
+//           ),
+//           // لو عايز حركة انسيابية:
+//           // swapAnimationDuration: const Duration(milliseconds: 250),
+//           // swapAnimationCurve: Curves.easeOut,
+//         ),
+//       ),
+//     );
+//   }
+// }

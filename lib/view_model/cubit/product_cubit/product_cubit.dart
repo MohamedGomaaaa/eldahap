@@ -133,6 +133,9 @@ class ProductCubit extends Cubit<ProductState> {
     emit(GetCategoriesLoadingState());
     await ProductRepository().categories().then((value) {
       categories = value;
+
+      // debugPrint(
+      //     '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>: ${categories.length}');
       emit(GetCategoriesSuccessState(categories));
     }).catchError((error) {
       if (error is DioException) {
@@ -165,7 +168,7 @@ class ProductCubit extends Cubit<ProductState> {
     });
   }
 
-  Future<void> makeOrder(Product product) async {
+  Future<void> makeOrder(Product product,double livePrice) async {
     emit(MakeOrderLoadingState());
     await DioHelper.post(
       path: EndPoints.orderStore,
@@ -193,22 +196,19 @@ class ProductCubit extends Cubit<ProductState> {
         // 'price_gram_14k': product.priceGram14k ?? 36.50,
         // 'price_gram_10k': product.priceGram10k ?? 26.30,
         // 'qty' : num.tryParse(quantityController.text) ?? 0,
+
+
+        //
         // 'stop_loss' : num.tryParse(stopLossController.text) ?? 0,
         // 'take_profit' : num.tryParse(takeProfitController.text) ?? 0,
-        // 'sell_when_price' :  num.tryParse(amountController.text) ?? 0,
-        //
-
+        //  'sell_when_price' :  num.tryParse(amountController.text) ?? 0, // هوه كاتب الكي غلط هي المفروض  اشتري لما السعر يوصل للكنترولر ده و يحولها من اوردر معلق الي صفقه
 //////////////////////////////////////////////////////////////////////////////////// new bu eng gomaa
-
         "metal": product.symbol?.split("/")[0] ?? 'XAU',
         'currency': product.currency ?? 'USD',
-        'open_price': product.openPrice ?? 1892.10,
+        'open_price': livePrice,
         'qty': num.tryParse(quantityController.text) ?? 0,
-
-
         if (stopLossController.text.trim().isNotEmpty)
           'stop_loss': num.parse(stopLossController.text.trim()),
-
         if (takeProfitController.text.trim().isNotEmpty)
           'take_profit': num.parse(takeProfitController.text.trim()),
 

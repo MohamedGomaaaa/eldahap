@@ -34,13 +34,14 @@ import '../../../../components/svg_widget.dart';
 import 'creat_trade.dart';
 
 class TradeWidget extends StatelessWidget {
-  final String wholeTradeName;
+  // final String wholeTradeName;
+  final  GroupOfTradesOrOrders tradeGroup;
   final String groupKey;
 
   const TradeWidget({
     super.key,
-    required this.wholeTradeName,
-    required this.groupKey,
+    // required this.wholeTradeName,
+    required this.groupKey, required this.tradeGroup,
   });
 
   @override
@@ -51,19 +52,19 @@ class TradeWidget extends StatelessWidget {
       builder: (context, state) {
         final isOpen = tradesCubit.isGroupExpanded(groupKey);
 
-        final group = tradesCubit.wholeTrade.firstWhere(
+        final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
           (g) => (g.metal ?? '') == groupKey,
-          orElse: () => Result(orders: []),
+          orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
         );
-        final tradeList = group.orders ?? [];
+        final tradeList = group.tradesOrOrders ?? [];
 
         final totalQty = tradeList.fold<double>(
           0.0,
           (sum, t) => sum + (double.tryParse(t.qty ?? "0") ?? 0.0),
         );
 
-        final Trade summaryTrade =
-            tradeList.isNotEmpty ? tradeList.first : Trade();
+        final TradeOrOrder summaryTrade =
+            tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
 
         // ✅ لو صفقة واحدة: مفيش سهم
         final bool hasMoreThanOne = tradeList.length > 1;
@@ -103,17 +104,19 @@ class TradeWidget extends StatelessWidget {
                             ),
                             SizedBox(width: 6.sp),
                             Text(
-                              wholeTradeName,
+                            tradeGroup.title!,
                               style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
                           ],
                         ),
                       ),
-                      const Text(
-                        '1234.4',
-                        style: TextStyle(color: AppColors.blueColor),
-                      ),
+
+//////////////////////////////////////////////////////  المتغير اليومي لو بعتهولنا اسامه
+                      // const Text(
+                      //   '1234.4',
+                      //   style: TextStyle(color: AppColors.blueColor),
+                      // ),
                     ],
                   ),
                 ),
@@ -155,7 +158,6 @@ class TradeWidget extends StatelessWidget {
                                 onCloseTap: () {
                                   showCloseTradeSheet(
                                     context,
-                                    0.15,
                                     trade,
                                     tradesCubit,
                                   );
@@ -185,11 +187,11 @@ class TradeWidget extends StatelessWidget {
     );
   }
 }
-
+num livePrice=2000;
 void showCloseTradeSheet(
   BuildContext context,
-  double profitOrLosePrice,
-  Trade trad,
+
+  TradeOrOrder trade,
   TradesCubit tradesCubit,
 )
 {
@@ -209,26 +211,40 @@ void showCloseTradeSheet(
             const Text(
               "Close trade?",
               style: TextStyle(
-                color: AppColors.white,
+                color: AppColors.yellow,
                 fontSize: 18,
                 fontWeight: FontWeight.bold,
               ),
             ),
             const SizedBox(height: 12),
-            const Text(
-              "Profit",
+             Text(
+
+
+              num.parse(trade.openPrice!) < livePrice
+                  ? "Profit"
+                  : "lose",
+
+
+
+
               style: TextStyle(
-                color: AppColors.greyText,
+                color: num.parse(trade.openPrice!) < livePrice
+                    ? AppColors.blueColor
+                    : AppColors.red,
                 fontSize: 14,
               ),
             ),
             const SizedBox(height: 4),
             Text(
-              "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
+              (livePrice - num.parse(trade.openPrice!))
+                  .toStringAsFixed(2),
               style: TextStyle(
-                color: profitOrLosePrice >= 0
+
+                color: num.parse(trade.openPrice!) < livePrice
                     ? AppColors.blueColor
                     : AppColors.red,
+
+
                 fontSize: 20,
                 fontWeight: FontWeight.bold,
               ),
@@ -239,7 +255,11 @@ void showCloseTradeSheet(
               child: ElevatedButton(
                 onPressed: () async {
                   tradesCubit.closeTrade(
-                      orderId: trad.id, closePrice: "99899.9");
+                      orderId: trade.id, closePrice:
+                  (livePrice - num.parse(trade.openPrice!)).abs()
+                      .toStringAsFixed(2)
+
+                  );
                   Navigator.pop(context, true);
                 },
                 style: ElevatedButton.styleFrom(

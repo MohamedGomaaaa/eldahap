@@ -5,17 +5,17 @@ import 'package:official_gold/model/trade_model.dart';
 class Tradess {
   bool? success;
   String? message;
-  List<Result>? result;
+  List<GroupOfTradesOrOrders>? groupOfTradesOrOrders;
 
-  Tradess({this.success, this.message, this.result});
+  Tradess({this.success, this.message, this.groupOfTradesOrOrders});
 
   Tradess.fromJson(Map<String, dynamic> json) {
     success = json['success'];
     message = json['message'];
     if (json['result'] != null) {
-      result = <Result>[];
+      groupOfTradesOrOrders = <GroupOfTradesOrOrders>[];
       json['result'].forEach((v) {
-        result!.add(new Result.fromJson(v));
+        groupOfTradesOrOrders!.add(new GroupOfTradesOrOrders.fromJson(v));
       });
     }
   }
@@ -29,27 +29,27 @@ class Tradess {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['success'] = this.success;
     data['message'] = this.message;
-    if (this.result != null) {
-      data['result'] = this.result!.map((v) => v.toJson()).toList();
+    if (this.groupOfTradesOrOrders != null) {
+      data['result'] = this.groupOfTradesOrOrders!.map((v) => v.toJson()).toList();
     }
     return data;
   }
 }
 
-class Result {
+class GroupOfTradesOrOrders {
   String? metal;
   String? title;
-  List<Trade>? orders;
+  List<TradeOrOrder>? tradesOrOrders;
 
-  Result({this.metal, this.title, this.orders});
+  GroupOfTradesOrOrders({this.metal, this.title, this.tradesOrOrders});
 
-  Result.fromJson(Map<String, dynamic> json) {
+  GroupOfTradesOrOrders.fromJson(Map<String, dynamic> json) {
     metal = json['metal']??"";
     title = json['title']??"";
     if (json['orders'] != null) {
-      orders = <Trade>[];
+      tradesOrOrders = <TradeOrOrder>[];
       json['orders'].forEach((v) {
-        orders!.add(new Trade.fromJson(v));
+        tradesOrOrders!.add(new TradeOrOrder.fromJson(v));
       });
     }
   }
@@ -58,8 +58,8 @@ class Result {
     final Map<String, dynamic> data = new Map<String, dynamic>();
     data['metal'] = this.metal;
     data['title'] = this.title;
-    if (this.orders != null) {
-      data['orders'] = this.orders!.map((v) => v.toJson()).toList();
+    if (this.tradesOrOrders != null) {
+      data['orders'] = this.tradesOrOrders!.map((v) => v.toJson()).toList();
     }
     return data;
   }

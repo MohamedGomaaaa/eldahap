@@ -82,23 +82,42 @@ class Validator {
     return null;
   }
 // //////////////////////////////////////////////////////////////////////////////////////////////////////
-//   static String? validateEmpty({required String? value}) {
-//     if (value == null || value.trim().isEmpty) {
-//       return "please_fill_field".tr;       // يرجى ملء الحقل
-//     }
-//     return null;
-//   }
-//
-//   static String? validateEmpty2({required String? value}) {
-//     if (value == null || value.trim().isEmpty) {
-//       return "please_fill".tr;       // يرجى ملء الحقل
-//     }
-//     return null;
-//   }
-//
-//
-//
-//
+
+  static String? validatePriceWithRange({
+  required String? value,
+  required num originalPrice,
+  double percentage = 25,
+  }) {
+  // null or empty
+  if (value == null || value.trim().isEmpty) {
+  return "please_fill_field";
+  }
+
+  // parse number
+  final num? enteredPrice = num.tryParse(value);
+  if (enteredPrice == null) {
+  return "invalid_number";
+  }
+
+  // calculate limits
+  final num minPrice =
+  originalPrice * (1 - percentage / 100); // 75
+  final num maxPrice =
+  originalPrice * (1 + percentage / 100); // 125
+
+  // validate range
+  if (enteredPrice < minPrice || enteredPrice > maxPrice) {
+  return "price_must_be_between" +
+  " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
+  }
+
+  return null;
+  }
+
+
+
+
+
 // //////////////////////////////////////////////////////////////////////////////////////////////////////
   static String? validateEmail({required String? value}) {
     if (value == null || value.trim().isEmpty) {

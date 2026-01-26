@@ -17,7 +17,7 @@ import '../../../../view_model/utils/toast.dart';
 import '../../static_pages/static_page_screen.dart';
 
 class TradeDetailsScreen extends StatelessWidget {
-  Trade trade;
+  TradeOrOrder trade;
   TradeDetailsScreen(this.trade, {super.key});
 
   ApiService _appService = ApiService();

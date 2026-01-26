@@ -35,7 +35,7 @@ abstract class  LocaleKeys {
   static const sell = 'sell';
   static const buy = 'buy';
   static const goldSpot = 'goldSpot';
-  static const quantityTroyOunce = 'quantityTroyOunce';
+  static const quantityTroyOunce = 'quantity';
   static const sellWhenPriceIs = 'buy When Price Is';
   static const marginRequired = 'marginRequired';
   static const available = 'available';
@@ -253,5 +253,5 @@ abstract class  LocaleKeys {
   static const liveChat = 'liveChat';
 
 
-
+  static const ounceFactor = 31.1035;
 }

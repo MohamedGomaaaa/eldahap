@@ -4,27 +4,70 @@ import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view_model/data/local/shared_helper.dart';
-
+import 'package:flutter/foundation.dart';
+import 'view_model/cubit/observer.dart';
 import 'l10n/localization.dart';
 import 'my_app.dart';
-import 'view_model/cubit/observer.dart';
+import 'dart:async';
+import 'dart:io';
+
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await EasyLocalization.ensureInitialized();
   await ScreenUtil.ensureScreenSize();
   await SharedHelper.init();
   await InAppWebViewController.setWebContentsDebuggingEnabled(true);
 
-
   Bloc.observer = MyBlocObserver();
-  // SharedHelper.clear();
-  runApp(
-    EasyLocalization(
-      supportedLocales: L10n.all,
-      path: 'assets/translations',
-      fallbackLocale: const Locale('en'),
-      child: const MyApp(),
-    ),
-  );
+
+  runZonedGuarded(() {
+    // ✅ يمسك Errors اللي خارج try/catch
+    PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
+      if (error is SocketException &&
+          error.message.contains('Reading from a closed socket')) {
+        debugPrint('🟡 Ignored SocketException: Reading from a closed socket');
+        return true; // handled
+      }
+      return false;
+    };
+
+    runApp(
+      EasyLocalization(
+        supportedLocales: L10n.all,
+        path: 'assets/translations',
+        fallbackLocale: const Locale('en'),
+        child: const MyApp(),
+      ),
+    );
+  }, (Object error, StackTrace stack) {
+    // ✅ Zone errors (احتياطي)
+    if (error is SocketException &&
+        error.message.contains('Reading from a closed socket')) {
+      debugPrint('🟡 Ignored (zone) Reading from a closed socket');
+      return;
+    }
+    debugPrint('🔴 Unhandled zone error: $error');
+  });
 }
+
+// void main() async {
+//   WidgetsFlutterBinding.ensureInitialized();
+//   await EasyLocalization.ensureInitialized();
+//   await ScreenUtil.ensureScreenSize();
+//   await SharedHelper.init();
+//   await InAppWebViewController.setWebContentsDebuggingEnabled(true);
+//
+//
+//   Bloc.observer = MyBlocObserver();
+//   // SharedHelper.clear();
+//   runApp(
+//     EasyLocalization(
+//       supportedLocales: L10n.all,
+//       path: 'assets/translations',
+//       fallbackLocale: const Locale('en'),
+//       child: const MyApp(),
+//     ),
+//   );
+// }
