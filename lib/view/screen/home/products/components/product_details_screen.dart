@@ -222,6 +222,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                               downColor: Colors.transparent,
                                               padding: EdgeInsets.zero,
 
+
                                               style: Theme.of(context).textTheme.displayMedium?.copyWith(
                                                 color: AppColors.white,
                                                 // fontSize: 18.sp
