@@ -11,17 +11,7 @@ import '../../../components/live_status_text.dart';
 import '../../../components/live_text.dart';
 
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../l10n/locale_keys.g.dart';
-import '../../../../model/metal_price_model.dart';
-import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
-import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
-import '../../../../view_model/utils/colors.dart';
-import '../../../components/live_status_text.dart';
-import '../../../components/live_text.dart';
 
 class PreciousMetalsWidget extends StatefulWidget {
   const PreciousMetalsWidget({super.key});
@@ -244,6 +234,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                             ),
                           ),
                         ),
+                        SizedBox(width: 8.w,),
                         Expanded(
                           flex: 2,
                           child: Center(

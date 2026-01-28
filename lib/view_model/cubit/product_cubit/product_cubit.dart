@@ -1,3 +1,4 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:dio/dio.dart';
@@ -36,7 +37,7 @@ class ProductCubit extends Cubit<ProductState> {
     }
   }
 
-  TextEditingController amountController = TextEditingController();
+  TextEditingController sellWhenController = TextEditingController();
   bool sellWhenPriceIs = true;
 
   void changeSellWhenPriceIs(bool value) {
@@ -45,15 +46,15 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   void addAmount() {
-    amountController.text =
-        ((num.tryParse(amountController.text) ?? 0) + 1).toString();
+    sellWhenController.text =
+        ((num.tryParse(sellWhenController.text) ?? 0) + 1).toString();
     emit(AddAmountState());
   }
 
   void subtractAmount() {
-    if ((num.tryParse(amountController.text) ?? 0) > 1) {
-      amountController.text =
-          ((num.tryParse(amountController.text) ?? 0) - 1).toString();
+    if ((num.tryParse(sellWhenController.text) ?? 0) > 1) {
+      sellWhenController.text =
+          ((num.tryParse(sellWhenController.text) ?? 0) - 1).toString();
       emit(SubtractAmountState());
     }
   }
@@ -118,7 +119,7 @@ class ProductCubit extends Cubit<ProductState> {
 
   void resetControllers() {
     quantityController.clear();
-    amountController.clear();
+    sellWhenController.clear();
     stopLossController.clear();
     takeProfitController.clear();
     sellWhenPriceIs = false;
@@ -150,11 +151,12 @@ class ProductCubit extends Cubit<ProductState> {
 
   Future<void> getProducts(int index) async {
     if (state is GetProductsLoadingState) return;
+
     emit(GetProductsLoadingState());
     await ProductRepository()
         .products(categoryId: categories[index].id ?? 0)
         .then((value) {
-      categories[index].products= value;
+      categories[index].products = value;
       categories[index].products;
       emit(GetProductsSuccessState(categories));
     }).catchError((error) {
@@ -169,7 +171,132 @@ class ProductCubit extends Cubit<ProductState> {
     });
   }
 
-  Future<void> makeOrder(Product product,double livePrice) async {
+  Future<void> makeOrder(
+      {required Product product, required double livePrice}) async {
+    emit(MakeOrderLoadingState());
+
+    final payload = <String, dynamic>{
+      "product_id": product.id,
+
+      "metal": product.symbol?.split("/")[0] ?? 'XAU',
+      "currency": product.currency ?? 'USD',
+      "open_price": livePrice,
+      "quantity": num.tryParse(quantityController.text) ?? 0,
+      if (stopLossController.text.trim().isNotEmpty)
+        "stop_loss": num.parse(stopLossController.text.trim()),
+      if (takeProfitController.text.trim().isNotEmpty)
+        "take_profit": num.parse(takeProfitController.text.trim()),
+      if (sellWhenController.text.trim().isNotEmpty)
+        "sell_when_price": num.parse(sellWhenController.text.trim()),
+    };
+
+    // ✅ اطبع الداتا قبل الإرسال
+    printOrderPayload(data: payload);
+
+    await DioHelper.post(
+      path: EndPoints.orderStore,
+      data: payload,
+      withToken: true,
+    ).then((value) {
+      log(value.toString());
+      Toast.showMsg(msg: value.data['message'].toString());
+      resetControllers();
+      emit(MakeOrderSuccessState());
+    }).catchError((error) {
+      if (error is DioException) {
+        debugPrint('Error on Make Order: ${error.response?.data?.toString()}');
+        Toast.showError(
+            msg: error.response?.data?.toString() ?? 'Error on Make Order');
+      }
+      emit(MakeOrderErrorState(msg: error.toString()));
+      throw error;
+    });
+  }
+
+  /// ✅ Print map بشكل مفصل ومرتب
+
+  void printOrderPayload({
+    required Map<String, dynamic> data,
+    String tag = '🟦 ORDER PAYLOAD',
+    String? path, // optional: endpoint path
+  }) {
+    final buffer = StringBuffer();
+
+    buffer.writeln('==================== $tag ====================');
+
+    // ✅ اطبع baseUrl + path لو متاحين
+    try {
+      // لو DioHelper.dio موجودة عندك
+      // ignore: unnecessary_statements
+      final baseUrl = DioHelper.dio.options.baseUrl;
+      buffer.writeln('🌐 BASE URL => $baseUrl');
+    } catch (_) {
+      // سيبها عادي لو مش متاحة هنا
+    }
+
+    if (path != null) {
+      buffer.writeln('🔗 PATH => $path');
+    }
+
+    buffer.writeln('📦 FIELDS COUNT => ${data.length}');
+    buffer.writeln('------------------------------------------------');
+
+    // ترتيب keys للوضوح
+    final keys = data.keys.toList()..sort();
+
+    for (final k in keys) {
+      final v = data[k];
+
+      // عرض النوع + القيمة
+      buffer.writeln('• $k => $v    [${v == null ? "null" : v.runtimeType}]');
+    }
+
+    buffer.writeln('------------------------------------------------');
+
+    // ✅ ملاحظات سريعة على أهم الحقول (لو موجودة)
+    if (data.containsKey('open_price')) {
+      buffer.writeln('✅ open_price => ${data['open_price']}');
+    } else {
+      buffer.writeln('⚠️ open_price NOT SENT');
+    }
+
+    if (data.containsKey('quantity')) {
+      buffer.writeln('✅ quantity => ${data['quantity']}');
+    } else {
+      buffer.writeln('⚠️ quantity NOT SENT');
+    }
+
+    if (data.containsKey('sell_when_price')) {
+      buffer.writeln('✅ sell_when_price => ${data['sell_when_price']}');
+    } else {
+      buffer.writeln('ℹ️ sell_when_price NOT SENT (maybe controller empty)');
+    }
+
+    if (!data.containsKey('stop_loss')) {
+      buffer.writeln('ℹ️ stop_loss NOT SENT');
+    }
+    if (!data.containsKey('take_profit')) {
+      buffer.writeln('ℹ️ take_profit NOT SENT');
+    }
+
+    buffer.writeln('-------------------- JSON --------------------');
+
+    // JSON Pretty
+    try {
+      buffer.writeln(const JsonEncoder.withIndent('  ').convert(data));
+    } catch (e) {
+      buffer.writeln('⚠️ Could not JSON encode payload: $e');
+    }
+
+    buffer.writeln('================================================');
+
+    // log أفضل من print عشان ما يتقطعش
+    log(buffer.toString());
+    debugPrint(buffer.toString());
+  }
+
+  Future<void> makeOrderOld(
+      {required Product product, required double livePrice}) async {
     emit(MakeOrderLoadingState());
     await DioHelper.post(
       path: EndPoints.orderStore,
@@ -198,7 +325,6 @@ class ProductCubit extends Cubit<ProductState> {
         // 'price_gram_10k': product.priceGram10k ?? 26.30,
         // 'qty' : num.tryParse(quantityController.text) ?? 0,
 
-
         //
         // 'stop_loss' : num.tryParse(stopLossController.text) ?? 0,
         // 'take_profit' : num.tryParse(takeProfitController.text) ?? 0,
@@ -212,7 +338,6 @@ class ProductCubit extends Cubit<ProductState> {
           'stop_loss': num.parse(stopLossController.text.trim()),
         if (takeProfitController.text.trim().isNotEmpty)
           'take_profit': num.parse(takeProfitController.text.trim()),
-
       },
       withToken: true,
     ).then((value) {

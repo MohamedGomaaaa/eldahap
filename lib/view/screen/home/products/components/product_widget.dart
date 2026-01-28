@@ -281,11 +281,8 @@ class _LiveChartIconState extends State<LiveChartIcon> {
       // ✅ اسمع فقط لما buy بتاع العملة دي يتغير
       listenWhen: (prev, curr) {
         if (prev is! LivePriceLive || curr is! LivePriceLive) return false;
-
         final prevBuy = prev.metals[key]?.buy;
         final currBuy = curr.metals[key]?.buy;
-
-        // لو مفيش سعر أو مفيش تغيير => متسمعش
         if (prevBuy == null || currBuy == null) return false;
         return prevBuy != currBuy;
       },
@@ -307,18 +304,14 @@ class _LiveChartIconState extends State<LiveChartIcon> {
         return GestureDetector(
           onTap: widget.onTap,
           child: Image.asset(
-            AppAssets.tradingChart,
+            'assets/images/trading_chart_white.png', // ✅ الصورة الجديدة
             width: widget.size.w,
             height: widget.size.w,
-
-            // ✅ يساعد التلوين لو الصورة قابلة للتلوين
-            colorBlendMode: BlendMode.srcIn,
-
             color: _dir > 0
                 ? AppColors.green
                 : _dir < 0
                 ? AppColors.red
-                : const Color(0xFF343A40),
+                : const Color(0xFF343A40), // neutralColor نفس LivePriceText
           ),
         );
       },

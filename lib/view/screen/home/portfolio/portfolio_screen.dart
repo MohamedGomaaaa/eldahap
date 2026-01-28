@@ -6,6 +6,7 @@ import 'package:official_gold/view/screen/home/portfolio/trades_section.dart';
 
 import '../../../../l10n/locale_keys.g.dart';
 import '../../../../view_model/utils/colors.dart';
+import '../../../components/live_status_text.dart';
 import 'orders_section.dart';
 
 class PortfolioScreen extends StatelessWidget {
@@ -22,6 +23,12 @@ class PortfolioScreen extends StatelessWidget {
           length: 2,
           child: Column(
             children: [
+
+              const  Center(child: LiveStatusText()),
+
+
+
+
               DecoratedBox(
                 decoration: BoxDecoration(
                   //This is for background color

@@ -6,32 +6,13 @@ import '../../../../../model/trade_model.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
-import '../../../../components/app_loader.dart';
+
+import '../../../../components/live_status_text.dart';
 import '../../../../components/svg_widget.dart';
-import '../../../static_pages/static_page_screen.dart';
+
 import 'creat_trade.dart';
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import '../../../../../model/new_trades.dart';
-import '../../../../../model/trade_model.dart';
-import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
-import '../../../../../view_model/utils/assets.dart';
-import '../../../../../view_model/utils/colors.dart';
-import '../../../../components/svg_widget.dart';
-import 'creat_trade.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../model/new_trades.dart';
-import '../../../../../model/trade_model.dart';
-import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
-import '../../../../../view_model/utils/assets.dart';
-import '../../../../../view_model/utils/colors.dart';
-import '../../../../components/svg_widget.dart';
-import 'creat_trade.dart';
 
 class TradeWidget extends StatelessWidget {
   // final String wholeTradeName;
@@ -60,7 +41,7 @@ class TradeWidget extends StatelessWidget {
 
         final totalQty = tradeList.fold<double>(
           0.0,
-          (sum, t) => sum + (double.tryParse(t.qty ?? "0") ?? 0.0),
+          (sum, t) => sum + (double.tryParse(t.qty .toString()) ?? 0.0),
         );
 
         final TradeOrOrder summaryTrade =
@@ -104,7 +85,7 @@ class TradeWidget extends StatelessWidget {
                             ),
                             SizedBox(width: 6.sp),
                             Text(
-                            tradeGroup.title!,
+                            "${tradeGroup.title}",
                               style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
@@ -121,6 +102,11 @@ class TradeWidget extends StatelessWidget {
                   ),
                 ),
                 const Divider(color: AppColors.yellow2),
+
+
+
+
+
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   child: Row(
@@ -154,14 +140,15 @@ class TradeWidget extends StatelessWidget {
                             children: tradeList.map((trade) {
                               return CreatTrade(
                                 trade: trade,
+                                tradesCubit: tradesCubit,
                                 displayQty: null,
-                                onCloseTap: () {
-                                  showCloseTradeSheet(
-                                    context,
-                                    trade,
-                                    tradesCubit,
-                                  );
-                                },
+                                // onCloseTap: () {
+                                //   showCloseTradeSheet(
+                                //     context,
+                                //     trade,
+                                //     tradesCubit,
+                                //   );
+                                // },
                               );
                             }).toList(),
                           ),
@@ -169,10 +156,11 @@ class TradeWidget extends StatelessWidget {
                           // ✅ CLOSED: ملخص بالتجميعة (يظهر فقط لو فيه أكتر من صفقة)
                           secondChild: CreatTrade(
                             trade: summaryTrade,
-                            displayQty: totalQty.toStringAsFixed(2),
-                            onCloseTap: () {
-                              tradesCubit.toggleGroup(groupKey);
-                            },
+                            tradesCubit: tradesCubit,
+                            displayQty: totalQty.toInt().toString(),
+                            // onCloseTap: () {
+                            //   // tradesCubit.toggleGroup(groupKey);
+                            // },
                           ),
                         ),
                       ),
@@ -187,114 +175,407 @@ class TradeWidget extends StatelessWidget {
     );
   }
 }
-num livePrice=2000;
-void showCloseTradeSheet(
-  BuildContext context,
+// num livePrice=2000;
+// void showCloseTradeSheet(
+//   BuildContext context,
+//
+//   TradeOrOrder trade,
+//   TradesCubit tradesCubit,
+// )
+// {
+//   showModalBottomSheet(
+//     context: context,
+//     isDismissible: false,
+//     backgroundColor: AppColors.background,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+//     ),
+//     builder: (context) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             const Text(
+//               "Close trade?",
+//               style: TextStyle(
+//                 color: AppColors.yellow,
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//              Text(
+//
+//
+//              trade.openPrice! < livePrice
+//                   ? "Profit"
+//                   : "lose",
+//
+//
+//
+//
+//               style: TextStyle(
+//                 color: trade.openPrice! < livePrice
+//                     ? AppColors.blueColor
+//                     : AppColors.red,
+//                 fontSize: 14,
+//               ),
+//             ),
+//             const SizedBox(height: 4),
+//             Text(
+//               (livePrice - trade.openPrice!)
+//                   .toStringAsFixed(2),
+//               style: TextStyle(
+//
+//                 color:trade.openPrice! < livePrice
+//                     ? AppColors.blueColor
+//                     : AppColors.red,
+//
+//
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 24),
+//             SizedBox(
+//               width: double.infinity,
+//               child: ElevatedButton(
+//                 onPressed: () async {
+//                   tradesCubit.closeTrade(
+//                       orderId: trade.id, closePrice:
+//                   (livePrice - trade.openPrice!).abs()
+//                       .toStringAsFixed(2)
+//
+//                   );
+//                   Navigator.pop(context, true);
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: AppColors.yellow2,
+//                   foregroundColor: AppColors.white,
+//                   padding: const EdgeInsets.symmetric(vertical: 14),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text(
+//                   "Close",
+//                   style: TextStyle(fontWeight: FontWeight.bold),
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             GestureDetector(
+//               onTap: () => Navigator.pop(context, false),
+//               child: const Text(
+//                 "Cancel",
+//                 style: TextStyle(
+//                   color: AppColors.yellow2,
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }
 
-  TradeOrOrder trade,
-  TradesCubit tradesCubit,
-)
-{
-  showModalBottomSheet(
-    context: context,
-    isDismissible: false,
-    backgroundColor: AppColors.background,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Close trade?",
-              style: TextStyle(
-                color: AppColors.yellow,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 12),
-             Text(
 
-
-              num.parse(trade.openPrice!) < livePrice
-                  ? "Profit"
-                  : "lose",
+//////////////////////////////////////////////////////////////////// before osama in creat trade and trade widget and trade details
 
 
 
+//
+// class TradeWidget extends StatelessWidget {
+//   // final String wholeTradeName;
+//   final  GroupOfTradesOrOrders tradeGroup;
+//   final String groupKey;
+//
+//   const TradeWidget({
+//     super.key,
+//     // required this.wholeTradeName,
+//     required this.groupKey, required this.tradeGroup,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     final tradesCubit = context.read<TradesCubit>();
+//
+//     return BlocBuilder<TradesCubit, TradesState>(
+//       builder: (context, state) {
+//         final isOpen = tradesCubit.isGroupExpanded(groupKey);
+//
+//         final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
+//               (g) => (g.metal ?? '') == groupKey,
+//           orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
+//         );
+//         final tradeList = group.tradesOrOrders ?? [];
+//
+//         final totalQty = tradeList.fold<double>(
+//           0.0,
+//               (sum, t) => sum + (double.tryParse(t.qty ?? "0") ?? 0.0),
+//         );
+//
+//         final TradeOrOrder summaryTrade =
+//         tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
+//
+//         // ✅ لو صفقة واحدة: مفيش سهم
+//         final bool hasMoreThanOne = tradeList.length > 1;
+//
+//         // ✅ لو صفقة واحدة نخليها تظهر كأنها مفتوحة على طول
+//         final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
+//
+//         return Material(
+//           color: AppColors.transparent,
+//           borderRadius: BorderRadius.circular(12.sp),
+//           child: AnimatedContainer(
+//             duration: const Duration(milliseconds: 250),
+//             curve: Curves.easeInOut,
+//             decoration: BoxDecoration(
+//               borderRadius: BorderRadius.circular(12.sp),
+//               border: Border.all(color: AppColors.yellow2, width: 1.sp),
+//             ),
+//             child: Column(
+//               mainAxisSize: MainAxisSize.min,
+//               children: [
+//                 Padding(
+//                   padding: EdgeInsets.all(8.sp),
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Material(
+//                         color: AppColors.black,
+//                         borderRadius: BorderRadius.circular(50.sp),
+//                         child: Row(
+//                           children: [
+//                             Padding(
+//                               padding: const EdgeInsets.all(6.0),
+//                               child: SvgWidget(
+//                                 assetName: AppAssets.gold3,
+//                                 width: 20.sp,
+//                               ),
+//                             ),
+//                             SizedBox(width: 6.sp),
+//                             Text(
+//                               tradeGroup.title!,
+//                               style: const TextStyle(color: AppColors.white),
+//                             ),
+//                             SizedBox(width: 6.w),
+//                           ],
+//                         ),
+//                       ),
+//
+// //////////////////////////////////////////////////////  المتغير اليومي لو بعتهولنا اسامه
+//                       // const Text(
+//                       //   '1234.4',
+//                       //   style: TextStyle(color: AppColors.blueColor),
+//                       // ),
+//                     ],
+//                   ),
+//                 ),
+//                 const Divider(color: AppColors.yellow2),
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
+//                   child: Row(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       // ✅ السهم يظهر فقط لو فيه أكتر من صفقة
+//                       if (hasMoreThanOne) ...[
+//                         InkWell(
+//                           onTap: () => tradesCubit.toggleGroup(groupKey),
+//                           child: AnimatedRotation(
+//                             duration: const Duration(milliseconds: 200),
+//                             turns: isOpen ? 0.5 : 0.0,
+//                             child: Icon(
+//                               Icons.keyboard_arrow_down_outlined,
+//                               color: AppColors.yellow2,
+//                               size: 26.sp,
+//                             ),
+//                           ),
+//                         ),
+//                       ],
+//
+//                       Expanded(
+//                         child: AnimatedCrossFade(
+//                           duration: const Duration(milliseconds: 250),
+//                           crossFadeState: effectiveOpen
+//                               ? CrossFadeState.showFirst
+//                               : CrossFadeState.showSecond,
+//
+//                           // ✅ OPEN: قائمة trades
+//                           firstChild: Column(
+//                             children: tradeList.map((trade) {
+//                               return CreatTrade(
+//                                 trade: trade,
+//                                 displayQty: null,
+//                                 onCloseTap: () {
+//                                   showCloseTradeSheet(
+//                                     context,
+//                                     trade,
+//                                     tradesCubit,
+//                                   );
+//                                 },
+//                               );
+//                             }).toList(),
+//                           ),
+//
+//                           // ✅ CLOSED: ملخص بالتجميعة (يظهر فقط لو فيه أكتر من صفقة)
+//                           secondChild: CreatTrade(
+//                             trade: summaryTrade,
+//                             displayQty: totalQty.toStringAsFixed(2),
+//                             onCloseTap: () {
+//                               tradesCubit.toggleGroup(groupKey);
+//                             },
+//                           ),
+//                         ),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+//               ],
+//             ),
+//           ),
+//         );
+//       },
+//     );
+//   }
+// }
+// num livePrice=2000;
+// void showCloseTradeSheet(
+//     BuildContext context,
+//
+//     TradeOrOrder trade,
+//     TradesCubit tradesCubit,
+//     )
+// {
+//   showModalBottomSheet(
+//     context: context,
+//     isDismissible: false,
+//     backgroundColor: AppColors.background,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+//     ),
+//     builder: (context) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             const Text(
+//               "Close trade?",
+//               style: TextStyle(
+//                 color: AppColors.yellow,
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             Text(
+//
+//
+//               num.parse(trade.openPrice!) < livePrice
+//                   ? "Profit"
+//                   : "lose",
+//
+//
+//
+//
+//               style: TextStyle(
+//                 color: num.parse(trade.openPrice!) < livePrice
+//                     ? AppColors.blueColor
+//                     : AppColors.red,
+//                 fontSize: 14,
+//               ),
+//             ),
+//             const SizedBox(height: 4),
+//             Text(
+//               (livePrice - num.parse(trade.openPrice!))
+//                   .toStringAsFixed(2),
+//               style: TextStyle(
+//
+//                 color: num.parse(trade.openPrice!) < livePrice
+//                     ? AppColors.blueColor
+//                     : AppColors.red,
+//
+//
+//                 fontSize: 20,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             const SizedBox(height: 24),
+//             SizedBox(
+//               width: double.infinity,
+//               child: ElevatedButton(
+//                 onPressed: () async {
+//                   tradesCubit.closeTrade(
+//                       orderId: trade.id, closePrice:
+//                   (livePrice - num.parse(trade.openPrice!)).abs()
+//                       .toStringAsFixed(2)
+//
+//                   );
+//                   Navigator.pop(context, true);
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: AppColors.yellow2,
+//                   foregroundColor: AppColors.white,
+//                   padding: const EdgeInsets.symmetric(vertical: 14),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text(
+//                   "Close",
+//                   style: TextStyle(fontWeight: FontWeight.bold),
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             GestureDetector(
+//               onTap: () => Navigator.pop(context, false),
+//               child: const Text(
+//                 "Cancel",
+//                 style: TextStyle(
+//                   color: AppColors.yellow2,
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+// }
+//
 
-              style: TextStyle(
-                color: num.parse(trade.openPrice!) < livePrice
-                    ? AppColors.blueColor
-                    : AppColors.red,
-                fontSize: 14,
-              ),
-            ),
-            const SizedBox(height: 4),
-            Text(
-              (livePrice - num.parse(trade.openPrice!))
-                  .toStringAsFixed(2),
-              style: TextStyle(
-
-                color: num.parse(trade.openPrice!) < livePrice
-                    ? AppColors.blueColor
-                    : AppColors.red,
 
 
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  tradesCubit.closeTrade(
-                      orderId: trade.id, closePrice:
-                  (livePrice - num.parse(trade.openPrice!)).abs()
-                      .toStringAsFixed(2)
 
-                  );
-                  Navigator.pop(context, true);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.yellow2,
-                  foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  "Close",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => Navigator.pop(context, false),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: AppColors.yellow2,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      );
-    },
-  );
-}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 ////////////////////////////////////////////////////////////////////////////////////// old
 

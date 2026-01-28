@@ -25,8 +25,8 @@ class TradeDetailsScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     var cubit = ProductCubit.get(context);
 
-    cubit.takeProfitController.text = trade.takeProfit ?? "0";
-    cubit.stopLossController.text = trade.stopLoss ?? "0";
+    // cubit.takeProfitController.text = trade.takeProfit ?? "0";
+    // cubit.stopLossController.text = trade.stopLoss ?? "0";
     return Scaffold(
       // extendBodyBehindAppBar: true,
       backgroundColor: AppColors.transparent,
@@ -1221,6 +1221,1234 @@ class TradeDetailsScreen extends StatelessWidget {
     );
   }
 }
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////// before osama
+
+
+// class TradeDetailsScreen extends StatelessWidget {
+//   TradeOrOrder trade;
+//   TradeDetailsScreen(this.trade, {super.key});
+//
+//   ApiService _appService = ApiService();
+//   @override
+//   Widget build(BuildContext context) {
+//     var cubit = ProductCubit.get(context);
+//
+//     cubit.takeProfitController.text = trade.takeProfit ?? "0";
+//     cubit.stopLossController.text = trade.stopLoss ?? "0";
+//     return Scaffold(
+//       // extendBodyBehindAppBar: true,
+//       backgroundColor: AppColors.transparent,
+//       body: GradientWidget(
+//         child: ListView(
+//           padding: EdgeInsets.all(12.sp),
+//           children: [
+//             const AppBarCustom(
+//               showBalance: true,
+//             ),
+//             Align(
+//               alignment: Alignment.center,
+//               child: Text(
+//                 LocaleKeys.gold.tr(),
+//                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
+//                   color: AppColors.white,
+//                 ),
+//               ),
+//             ),
+//             Align(
+//               alignment: Alignment.center,
+//               child: Text(
+//                 LocaleKeys.goldSpot.tr(),
+//                 style: Theme.of(context).textTheme.labelLarge?.copyWith(
+//                   color: AppColors.greyText,
+//                 ),
+//               ),
+//             ),
+//             SizedBox(
+//               height: 12.sp,
+//             ),
+//             Container(
+//               padding: EdgeInsets.all(12.sp),
+//               decoration: BoxDecoration(
+//                 color: AppColors.purple2,
+//                 borderRadius: BorderRadius.circular(12.sp),
+//               ),
+//               child: Text(
+//                 LocaleKeys.marketIsClosedItOpensIn.tr(
+//                   namedArgs: {
+//                     'days': '1',
+//                   },
+//                 ),
+//                 textAlign: TextAlign.center,
+//                 style: Theme.of(context)
+//                     .textTheme
+//                     .labelMedium
+//                     ?.copyWith(color: AppColors.white, fontSize: 13.sp),
+//               ),
+//             ),
+//             SizedBox(
+//               height: 12.sp,
+//             ),
+//             Text(
+//               //"${trad.}",
+//               '5-1-2024, 10:44 pm',
+//               style: Theme.of(context).textTheme.labelMedium?.copyWith(
+//                 color: AppColors.greyText,
+//               ),
+//             ),
+//             SizedBox(
+//               height: 12.sp,
+//             ),
+//             Row(
+//               children: [
+//                 Text(
+//                   LocaleKeys.bought.tr(),
+//                   style: Theme.of(context).textTheme.displayLarge?.copyWith(
+//                     color: AppColors.white,
+//                   ),
+//                 ),
+//                 SizedBox(
+//                   width: 6.sp,
+//                 ),
+//                 Material(
+//                   color: AppColors.blueColor,
+//                   borderRadius: BorderRadius.circular(8.sp),
+//                   child: Container(
+//                     padding: EdgeInsets.symmetric(
+//                       horizontal: 12.sp,
+//                       vertical: 3.h,
+//                     ),
+//                     child: Text(
+//                       '+${trade.qty}',
+//                       style: Theme.of(context)
+//                           .textTheme
+//                           .headlineSmall
+//                           ?.copyWith(color: AppColors.white, fontSize: 13),
+//                     ),
+//                   ),
+//                 ),
+//                 const Spacer(),
+//                 Text(
+//                   '@ ',
+//                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                     color: AppColors.greyText,
+//                   ),
+//                 ),
+//                 Text(
+//                   '2,025.8',
+//                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
+//                     color: AppColors.white,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             SizedBox(
+//               height: 12.sp,
+//             ),
+//             Row(
+//               children: [
+//                 Text(
+//                   LocaleKeys.currentPrice.tr().toUpperCase(),
+//                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                     color: AppColors.greyText,
+//                   ),
+//                 ),
+//                 const Spacer(),
+//                 Text(
+//                   '2,025.8',
+//                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                     color: AppColors.white,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             Divider(
+//               height: 20.h,
+//               color: AppColors.greyText,
+//             ),
+//             Row(
+//               children: [
+//                 Text(
+//                   LocaleKeys.profit.tr().toUpperCase(),
+//                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                     color: AppColors.greyText,
+//                   ),
+//                 ),
+//                 const Spacer(),
+//                 Text(
+//                   '+\$ 45.85',
+//                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                     color: AppColors.blueColor,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             Divider(
+//               height: 20.h,
+//               color: AppColors.greyText,
+//             ),
+//             Row(
+//               children: [
+//                 Text(
+//                   LocaleKeys.appCommision.tr().toUpperCase(),
+//                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                     color: AppColors.greyText,
+//                   ),
+//                 ),
+//                 const Spacer(),
+//                 Text(
+//                   "12223",
+//                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                     color: AppColors.white,
+//                   ),
+//                 ),
+//               ],
+//             ),
+//             Divider(
+//               height: 20.h,
+//               color: AppColors.greyText,
+//             ),
+//
+//             InkWell(
+//               onTap: () => _showOrderDetailsSheet(context),
+//               child: Row(
+//                 children: [
+//                   Text(
+//                     LocaleKeys.positionDetails.tr().toUpperCase(),
+//                     style: Theme.of(context).textTheme.titleMedium?.copyWith(
+//                       color: AppColors.greyText,
+//                     ),
+//                   ),
+//                   SizedBox(
+//                     width: 6.sp,
+//                   ),
+//                   const Icon(
+//                     Icons.info_outline_rounded,
+//                     color: AppColors.greyText,
+//                   ),
+//                 ],
+//               ),
+//             ),
+//
+//
+//
+//             SizedBox(
+//               height: 0.5.sh,
+//               child: DefaultTabController(
+//                 initialIndex: 0,
+//                 length: 2,
+//                 child: Column(
+//                   children: [
+//                     DecoratedBox(
+//                       decoration: BoxDecoration(
+//                         //This is for background color
+//                         color: AppColors.transparent,
+//                         //This is for bottom border that is needed
+//                         border: Border(
+//                           bottom: BorderSide(
+//                             color: AppColors.grey,
+//                             width: 0.8.sp,
+//                           ),
+//                         ),
+//                       ),
+//                       child: TabBar(
+//                         tabs: [
+//                           Tab(
+//                             text: LocaleKeys.edit.tr(),
+//                           ),
+//                           Tab(
+//                             text: LocaleKeys.sell.tr(),
+//                           ),
+//                         ],
+//                         onTap: (index) {
+//                           // productCubit.getProducts(index);
+//                         },
+//                       ),
+//                     ),
+//                     Expanded(
+//                       child: TabBarView(
+//                         children: [
+//                           ListView(
+//                             padding: EdgeInsets.symmetric(vertical: 12.h),
+//                             children: [
+//                               /// Stop Loss
+//                               Container(
+//                                 padding: EdgeInsets.all(12.sp),
+//                                 decoration: BoxDecoration(
+//                                   borderRadius: BorderRadius.circular(12.r),
+//                                   border: Border.all(
+//                                     color: AppColors.yellowBorder,
+//                                     width: 1.w,
+//                                   ),
+//                                 ),
+//                                 child: Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Row(
+//                                       children: [
+//                                         Expanded(
+//                                           child: Text(
+//                                             LocaleKeys.stopLoss.tr(),
+//                                             style: Theme.of(context)
+//                                                 .textTheme
+//                                                 .bodyLarge
+//                                                 ?.copyWith(
+//                                               color: AppColors.white,
+//                                             ),
+//                                           ),
+//                                         ),
+//                                         SizedBox(
+//                                           width: 12.w,
+//                                         ),
+//                                         BlocBuilder<ProductCubit, ProductState>(
+//                                           buildWhen: (previous, current) {
+//                                             return current
+//                                             is ChangeStopLossState ||
+//                                                 current
+//                                                 is ResetControllersState;
+//                                           },
+//                                           builder: (context, state) {
+//                                             var cubit =
+//                                             ProductCubit.get(context);
+//                                             return Switch.adaptive(
+//                                               value: cubit.stopLoss,
+//                                               onChanged: (value) {
+//                                                 cubit.changeStopLoss(value);
+//                                               },
+//                                               activeColor: AppColors.yellow,
+//                                               inactiveThumbColor:
+//                                               AppColors.grey,
+//                                               inactiveTrackColor: AppColors.grey
+//                                                   .withOpacity(0.8),
+//                                             );
+//                                           },
+//                                         ),
+//                                       ],
+//                                     ),
+//                                     BlocBuilder<ProductCubit, ProductState>(
+//                                       buildWhen: (previous, current) {
+//                                         return current is ChangeStopLossState ||
+//                                             current is ResetControllersState;
+//                                       },
+//                                       builder: (context, state) {
+//                                         var cubit = ProductCubit.get(context);
+//                                         return Visibility(
+//                                           visible: cubit.stopLoss,
+//                                           child: Column(
+//                                             children: [
+//                                               SizedBox(
+//                                                 height: 12.h,
+//                                               ),
+//                                               Container(
+//                                                 width: double.infinity,
+//                                                 padding: EdgeInsets.all(8.sp),
+//                                                 decoration: BoxDecoration(
+//                                                   borderRadius:
+//                                                   BorderRadius.circular(
+//                                                       12.r),
+//                                                   border: Border.all(
+//                                                     color:
+//                                                     AppColors.yellowBorder,
+//                                                     width: 1.w,
+//                                                   ),
+//                                                 ),
+//                                                 child: Text(
+//                                                   LocaleKeys.amount.tr(),
+//                                                   style: Theme.of(context)
+//                                                       .textTheme
+//                                                       .headlineMedium
+//                                                       ?.copyWith(
+//                                                     color: AppColors.white,
+//                                                   ),
+//                                                 ),
+//                                               ),
+//                                               SizedBox(
+//                                                 height: 12.h,
+//                                               ),
+//                                               BlocBuilder<ProductCubit,
+//                                                   ProductState>(
+//                                                 buildWhen: (previous, current) {
+//                                                   return current
+//                                                   is AddAmountStopLossState ||
+//                                                       current
+//                                                       is SubtractAmountStopLossState ||
+//                                                       current
+//                                                       is ResetControllersState;
+//                                                 },
+//                                                 builder: (context, state) {
+//                                                   var cubit =
+//                                                   ProductCubit.get(context);
+//
+//                                                   return TextFormField(
+//                                                     controller: cubit
+//                                                         .stopLossController,
+//                                                     textInputAction:
+//                                                     TextInputAction.done,
+//                                                     style: Theme.of(context)
+//                                                         .textTheme
+//                                                         .headlineMedium
+//                                                         ?.copyWith(
+//                                                       color:
+//                                                       AppColors.white,
+//                                                     ),
+//                                                     keyboardType:
+//                                                     const TextInputType
+//                                                         .numberWithOptions(
+//                                                         decimal: true),
+//                                                     inputFormatters: [
+//                                                       FilteringTextInputFormatter
+//                                                           .allow(
+//                                                         RegExp(
+//                                                             r'^\d+\.?\d{0,2}'),
+//                                                       ),
+//                                                     ],
+//                                                     onTapOutside: (_) {
+//                                                       FocusScope.of(context)
+//                                                           .unfocus();
+//                                                     },
+//                                                     decoration: InputDecoration(
+//                                                       // hintText: '123',
+//                                                       // hintStyle: Theme.of(context)
+//                                                       //     .textTheme
+//                                                       //     .headlineMedium
+//                                                       //     ?.copyWith(
+//                                                       //   color: AppColors.red,
+//                                                       // ),
+//                                                       // prefix: Text(
+//                                                       //   '\$',
+//                                                       //   style: Theme.of(context)
+//                                                       //       .textTheme
+//                                                       //       .headlineMedium
+//                                                       //       ?.copyWith(
+//                                                       //     color: AppColors.red,
+//                                                       //   ),
+//                                                       // ),
+//                                                       isDense: true,
+//                                                       contentPadding:
+//                                                       EdgeInsets.symmetric(
+//                                                         horizontal: 12.sp,
+//                                                         vertical: 6.sp,
+//                                                       ),
+//                                                       isCollapsed: true,
+//                                                       alignLabelWithHint: true,
+//                                                       suffix: Row(
+//                                                         mainAxisSize:
+//                                                         MainAxisSize.min,
+//                                                         children: [
+//                                                           FloatingActionButton(
+//                                                             onPressed: () {
+//                                                               cubit
+//                                                                   .subtractAmountStopLoss();
+//                                                             },
+//                                                             heroTag: null,
+//                                                             shape:
+//                                                             const CircleBorder(),
+//                                                             mini: true,
+//                                                             materialTapTargetSize:
+//                                                             MaterialTapTargetSize
+//                                                                 .shrinkWrap,
+//                                                             backgroundColor:
+//                                                             AppColors
+//                                                                 .transparent,
+//                                                             child: const Center(
+//                                                               child: Icon(
+//                                                                 FontAwesomeIcons
+//                                                                     .minus,
+//                                                                 color: AppColors
+//                                                                     .white,
+//                                                               ),
+//                                                             ),
+//                                                           ),
+//                                                           FloatingActionButton(
+//                                                             onPressed: () {
+//                                                               cubit
+//                                                                   .addAmountStopLoss();
+//                                                             },
+//                                                             heroTag: null,
+//                                                             shape:
+//                                                             const CircleBorder(),
+//                                                             mini: true,
+//                                                             materialTapTargetSize:
+//                                                             MaterialTapTargetSize
+//                                                                 .shrinkWrap,
+//                                                             backgroundColor:
+//                                                             AppColors
+//                                                                 .transparent,
+//                                                             child: const Center(
+//                                                               child: Icon(
+//                                                                 FontAwesomeIcons
+//                                                                     .plus,
+//                                                                 color: AppColors
+//                                                                     .white,
+//                                                               ),
+//                                                             ),
+//                                                           ),
+//                                                         ],
+//                                                       ),
+//                                                     ),
+//                                                   );
+//                                                 },
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         );
+//                                       },
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                               SizedBox(
+//                                 height: 12.sp,
+//                               ),
+//
+//                               /// Take Profit
+//                               Container(
+//                                 padding: EdgeInsets.all(12.sp),
+//                                 decoration: BoxDecoration(
+//                                   borderRadius: BorderRadius.circular(12.r),
+//                                   border: Border.all(
+//                                     color: AppColors.yellowBorder,
+//                                     width: 1.w,
+//                                   ),
+//                                 ),
+//                                 child: Column(
+//                                   crossAxisAlignment: CrossAxisAlignment.start,
+//                                   children: [
+//                                     Row(
+//                                       children: [
+//                                         Expanded(
+//                                           child: Text(
+//                                             LocaleKeys.takeProfit.tr(),
+//                                             style: Theme.of(context)
+//                                                 .textTheme
+//                                                 .bodyLarge
+//                                                 ?.copyWith(
+//                                               color: AppColors.white,
+//                                             ),
+//                                           ),
+//                                         ),
+//                                         SizedBox(
+//                                           width: 12.w,
+//                                         ),
+//                                         BlocBuilder<ProductCubit, ProductState>(
+//                                           buildWhen: (previous, current) {
+//                                             return current
+//                                             is ChangeTakeProfitState ||
+//                                                 current
+//                                                 is ResetControllersState;
+//                                           },
+//                                           builder: (context, state) {
+//                                             var cubit =
+//                                             ProductCubit.get(context);
+//                                             return Switch.adaptive(
+//                                               value: cubit.takeProfit,
+//                                               onChanged: (value) {
+//                                                 cubit.changeTakeProfit(value);
+//                                               },
+//                                               activeColor: AppColors.yellow,
+//                                               inactiveThumbColor:
+//                                               AppColors.grey,
+//                                               inactiveTrackColor: AppColors.grey
+//                                                   .withOpacity(0.8),
+//                                             );
+//                                           },
+//                                         ),
+//                                       ],
+//                                     ),
+//                                     BlocBuilder<ProductCubit, ProductState>(
+//                                       buildWhen: (previous, current) {
+//                                         return current
+//                                         is ChangeTakeProfitState ||
+//                                             current is ResetControllersState;
+//                                       },
+//                                       builder: (context, state) {
+//                                         var cubit = ProductCubit.get(context);
+//                                         return Visibility(
+//                                           visible: cubit.takeProfit,
+//                                           child: Column(
+//                                             children: [
+//                                               SizedBox(
+//                                                 height: 12.h,
+//                                               ),
+//                                               Container(
+//                                                 width: double.infinity,
+//                                                 padding: EdgeInsets.all(8.sp),
+//                                                 decoration: BoxDecoration(
+//                                                   borderRadius:
+//                                                   BorderRadius.circular(
+//                                                       12.r),
+//                                                   border: Border.all(
+//                                                     color:
+//                                                     AppColors.yellowBorder,
+//                                                     width: 1.w,
+//                                                   ),
+//                                                 ),
+//                                                 child: Text(
+//                                                   LocaleKeys.amount.tr(),
+//                                                   style: Theme.of(context)
+//                                                       .textTheme
+//                                                       .headlineMedium
+//                                                       ?.copyWith(
+//                                                     color: AppColors.white,
+//                                                   ),
+//                                                 ),
+//                                               ),
+//                                               SizedBox(
+//                                                 height: 12.h,
+//                                               ),
+//                                               BlocBuilder<ProductCubit,
+//                                                   ProductState>(
+//                                                 buildWhen: (previous, current) {
+//                                                   return current
+//                                                   is AddAmountTakeProfitState ||
+//                                                       current
+//                                                       is SubtractAmountTakeProfitState ||
+//                                                       current
+//                                                       is ResetControllersState;
+//                                                 },
+//                                                 builder: (context, state) {
+//                                                   var cubit =
+//                                                   ProductCubit.get(context);
+//                                                   return TextFormField(
+//                                                     controller: cubit
+//                                                         .takeProfitController,
+//                                                     textInputAction:
+//                                                     TextInputAction.done,
+//                                                     style: Theme.of(context)
+//                                                         .textTheme
+//                                                         .headlineMedium
+//                                                         ?.copyWith(
+//                                                       color:
+//                                                       AppColors.white,
+//                                                     ),
+//                                                     keyboardType:
+//                                                     const TextInputType
+//                                                         .numberWithOptions(
+//                                                         decimal: true),
+//                                                     inputFormatters: [
+//                                                       FilteringTextInputFormatter
+//                                                           .allow(
+//                                                         RegExp(
+//                                                             r'^\d+\.?\d{0,2}'),
+//                                                       ),
+//                                                     ],
+//                                                     onTapOutside: (_) {
+//                                                       FocusScope.of(context)
+//                                                           .unfocus();
+//                                                     },
+//                                                     decoration: InputDecoration(
+//                                                       // hintText: '123',
+//                                                       // hintStyle: Theme.of(context)
+//                                                       //     .textTheme
+//                                                       //     .headlineMedium
+//                                                       //     ?.copyWith(
+//                                                       //   color: AppColors.red,
+//                                                       // ),
+//                                                       // prefix: Text(
+//                                                       //   '\$',
+//                                                       //   style: Theme.of(context)
+//                                                       //       .textTheme
+//                                                       //       .headlineMedium
+//                                                       //       ?.copyWith(
+//                                                       //     color: AppColors.red,
+//                                                       //   ),
+//                                                       // ),
+//                                                       isDense: true,
+//                                                       contentPadding:
+//                                                       EdgeInsets.symmetric(
+//                                                         horizontal: 12.sp,
+//                                                         vertical: 6.sp,
+//                                                       ),
+//                                                       isCollapsed: true,
+//                                                       alignLabelWithHint: true,
+//                                                       suffix: Row(
+//                                                         mainAxisSize:
+//                                                         MainAxisSize.min,
+//                                                         children: [
+//                                                           FloatingActionButton(
+//                                                             onPressed: () {
+//                                                               cubit
+//                                                                   .subtractAmountTakeProfit();
+//                                                             },
+//                                                             heroTag: null,
+//                                                             shape:
+//                                                             const CircleBorder(),
+//                                                             mini: true,
+//                                                             materialTapTargetSize:
+//                                                             MaterialTapTargetSize
+//                                                                 .shrinkWrap,
+//                                                             backgroundColor:
+//                                                             AppColors
+//                                                                 .transparent,
+//                                                             child: const Center(
+//                                                               child: Icon(
+//                                                                 FontAwesomeIcons
+//                                                                     .minus,
+//                                                                 color: AppColors
+//                                                                     .white,
+//                                                               ),
+//                                                             ),
+//                                                           ),
+//                                                           FloatingActionButton(
+//                                                             onPressed: () {
+//                                                               cubit
+//                                                                   .addAmountTakeProfit();
+//                                                             },
+//                                                             heroTag: null,
+//                                                             shape:
+//                                                             const CircleBorder(),
+//                                                             mini: true,
+//                                                             materialTapTargetSize:
+//                                                             MaterialTapTargetSize
+//                                                                 .shrinkWrap,
+//                                                             backgroundColor:
+//                                                             AppColors
+//                                                                 .transparent,
+//                                                             child: const Center(
+//                                                               child: Icon(
+//                                                                 FontAwesomeIcons
+//                                                                     .plus,
+//                                                                 color: AppColors
+//                                                                     .white,
+//                                                               ),
+//                                                             ),
+//                                                           ),
+//                                                         ],
+//                                                       ),
+//                                                     ),
+//                                                   );
+//                                                 },
+//                                               ),
+//                                             ],
+//                                           ),
+//                                         );
+//                                       },
+//                                     ),
+//                                   ],
+//                                 ),
+//                               ),
+//                               SizedBox(
+//                                 height: 12.sp,
+//                               ),
+//
+//                               /// Sell when Price
+//                               // Container(
+//                               //   padding: EdgeInsets.all(12.sp),
+//                               //   decoration: BoxDecoration(
+//                               //     borderRadius: BorderRadius.circular(12.r),
+//                               //     border: Border.all(
+//                               //       color: AppColors.yellowBorder,
+//                               //       width: 1.w,
+//                               //     ),
+//                               //   ),
+//                               //   child: Column(
+//                               //     crossAxisAlignment: CrossAxisAlignment.start,
+//                               //     children: [
+//                               //       Row(
+//                               //         children: [
+//                               //           Expanded(
+//                               //             child: Text(
+//                               //               LocaleKeys.sellWhenPrice.tr(),
+//                               //               style: Theme.of(context)
+//                               //                   .textTheme
+//                               //                   .bodyLarge
+//                               //                   ?.copyWith(
+//                               //                 color: AppColors.white,
+//                               //               ),
+//                               //             ),
+//                               //           ),
+//                               //           SizedBox(
+//                               //             width: 12.w,
+//                               //           ),
+//                               //           BlocBuilder<ProductCubit, ProductState>(
+//                               //             buildWhen: (previous, current) {
+//                               //               return current is ChangeSellWhenPriceState ||
+//                               //                   current is ResetControllersState;
+//                               //             },
+//                               //             builder: (context, state) {
+//                               //               var cubit = ProductCubit.get(context);
+//                               //               return Switch.adaptive(
+//                               //                 value: cubit.sellWhenPrice,
+//                               //                 onChanged: (value) {
+//                               //                   print("value >>>>> $value");
+//                               //                   cubit.changeSellWhenPrice(value);
+//                               //                 },
+//                               //                 activeColor: AppColors.green,
+//                               //                 inactiveThumbColor: AppColors.grey,
+//                               //                 inactiveTrackColor:
+//                               //                 AppColors.grey.withOpacity(0.8),
+//                               //               );
+//                               //             },
+//                               //           ),
+//                               //         ],
+//                               //       ),
+//                               //       BlocBuilder<ProductCubit, ProductState>(
+//                               //         buildWhen: (previous, current) {
+//                               //           return current is ChangeSellWhenPriceState ||
+//                               //               current is ResetControllersState;
+//                               //         },
+//                               //         builder: (context, state) {
+//                               //           var cubit = ProductCubit.get(context);
+//                               //           return Visibility(
+//                               //             visible: cubit.sellWhenPrice,
+//                               //             child: Column(
+//                               //               children: [
+//                               //                 SizedBox(
+//                               //                   height: 12.h,
+//                               //                 ),
+//                               //                 Container(
+//                               //                   width: double.infinity,
+//                               //                   padding: EdgeInsets.all(8.sp),
+//                               //                   decoration: BoxDecoration(
+//                               //                     borderRadius:
+//                               //                     BorderRadius.circular(12.r),
+//                               //                     border: Border.all(
+//                               //                       color: AppColors.yellowBorder,
+//                               //                       width: 1.w,
+//                               //                     ),
+//                               //                   ),
+//                               //                   child: Text(
+//                               //                     LocaleKeys.amount.tr(),
+//                               //                     style: Theme.of(context)
+//                               //                         .textTheme
+//                               //                         .headlineMedium
+//                               //                         ?.copyWith(
+//                               //                       color: AppColors.white,
+//                               //                     ),
+//                               //                   ),
+//                               //                 ),
+//                               //                 SizedBox(
+//                               //                   height: 12.h,
+//                               //                 ),
+//                               //                 BlocBuilder<ProductCubit, ProductState>(
+//                               //                   buildWhen: (previous, current) {
+//                               //                     return current
+//                               //                     is AddAmountTakeProfitState ||
+//                               //                         current
+//                               //                         is SubtractAmountTakeProfitState ||
+//                               //                         current is ResetControllersState;
+//                               //                   },
+//                               //                   builder: (context, state) {
+//                               //                     var cubit = ProductCubit.get(context);
+//                               //                     return TextFormField(
+//                               //                       controller:
+//                               //                       cubit.sellWhenPriceController,
+//                               //                       textInputAction: TextInputAction.done,
+//                               //                       style: Theme.of(context)
+//                               //                           .textTheme
+//                               //                           .headlineMedium
+//                               //                           ?.copyWith(
+//                               //                         color: AppColors.red,
+//                               //                       ),
+//                               //                       keyboardType: const TextInputType
+//                               //                           .numberWithOptions(decimal: true),
+//                               //                       inputFormatters: [
+//                               //                         FilteringTextInputFormatter.allow(
+//                               //                           RegExp(r'^\d+\.?\d{0,2}'),
+//                               //                         ),
+//                               //                       ],
+//                               //                       onTapOutside: (_) {
+//                               //                         FocusScope.of(context).unfocus();
+//                               //                       },
+//                               //                       decoration: InputDecoration(
+//                               //                         hintText: '123',
+//                               //                         hintStyle: Theme.of(context)
+//                               //                             .textTheme
+//                               //                             .headlineMedium
+//                               //                             ?.copyWith(
+//                               //                           color: AppColors.red,
+//                               //                         ),
+//                               //                         prefix: Text(
+//                               //                           '\$',
+//                               //                           style: Theme.of(context)
+//                               //                               .textTheme
+//                               //                               .headlineMedium
+//                               //                               ?.copyWith(
+//                               //                             color: AppColors.red,
+//                               //                           ),
+//                               //                         ),
+//                               //                         isDense: true,
+//                               //                         contentPadding:
+//                               //                         EdgeInsets.symmetric(
+//                               //                           horizontal: 12.sp,
+//                               //                           vertical: 6.sp,
+//                               //                         ),
+//                               //                         isCollapsed: true,
+//                               //                         alignLabelWithHint: true,
+//                               //                         suffix: Row(
+//                               //                           mainAxisSize: MainAxisSize.min,
+//                               //                           children: [
+//                               //                             FloatingActionButton(
+//                               //                               onPressed: () {
+//                               //                                 cubit
+//                               //                                     .subtractAmountTakeProfit();
+//                               //                               },
+//                               //                               heroTag: null,
+//                               //                               shape: const CircleBorder(),
+//                               //                               mini: true,
+//                               //                               materialTapTargetSize:
+//                               //                               MaterialTapTargetSize
+//                               //                                   .shrinkWrap,
+//                               //                               backgroundColor:
+//                               //                               AppColors.transparent,
+//                               //                               child: const Center(
+//                               //                                 child: Icon(
+//                               //                                   FontAwesomeIcons.minus,
+//                               //                                   color: AppColors.white,
+//                               //                                 ),
+//                               //                               ),
+//                               //                             ),
+//                               //                             FloatingActionButton(
+//                               //                               onPressed: () {
+//                               //                                 cubit.addSellWhenPriceProfit();
+//                               //                               },
+//                               //                               heroTag: null,
+//                               //                               shape: const CircleBorder(),
+//                               //                               mini: true,
+//                               //                               materialTapTargetSize:
+//                               //                               MaterialTapTargetSize
+//                               //                                   .shrinkWrap,
+//                               //                               backgroundColor:
+//                               //                               AppColors.transparent,
+//                               //                               child: const Center(
+//                               //                                 child: Icon(
+//                               //                                   FontAwesomeIcons.plus,
+//                               //                                   color: AppColors.white,
+//                               //                                 ),
+//                               //                               ),
+//                               //                             ),
+//                               //                           ],
+//                               //                         ),
+//                               //                       ),
+//                               //                     );
+//                               //                   },
+//                               //                 ),
+//                               //               ],
+//                               //             ),
+//                               //           );
+//                               //         },
+//                               //       ),
+//                               //
+//                               //
+//                               //
+//                               //     ],
+//                               //   ),
+//                               // ),
+//                               //
+//                               // SizedBox(
+//                               //   height: 12.sp,
+//                               // ),
+//
+//                               SizedBox(
+//                                 width: double.infinity,
+//                                 height: 40.h,
+//                                 child: ElevatedButton(
+//                                   onPressed: () async {
+//                                     var cubit = ProductCubit.get(context);
+//
+//                                     if (cubit.stopLoss == false &&
+//                                         cubit.takeProfit == false) {
+//                                       Toast.showMsg(
+//                                           msg: LocaleKeys.canNotDoOpreation
+//                                               .tr());
+//                                       return;
+//                                     }
+//                                     AppLoader.showLoader(
+//                                         context, ValueKey("updateOrder"));
+//
+//                                     print(" trad.id >>> ${trade.id}");
+//                                     print(
+//                                         " takeProfitController >>> ${cubit.takeProfitController.text}");
+//                                     print(
+//                                         " stopLossController >>> ${cubit.stopLossController.text}");
+//                                     print(
+//                                         " cubit.sellWhenPriceController >>> ${cubit.sellWhenPriceController.text}");
+//
+//                                     if (cubit.takeProfit == false) {
+//                                       cubit.takeProfitController.text = "0";
+//                                     }
+//                                     if (cubit.stopLoss == false) {
+//                                       cubit.stopLossController.text = "0";
+//                                     }
+//                                     // if(cubit.sellWhenPrice==false){
+//                                     //   cubit.sellWhenPriceController.text="0";
+//                                     // }
+//
+//                                     try {
+//                                       await _appService.updateOrder(
+//                                           orderId: trade.id ?? 0,
+//                                           stopLoss: double.parse(cubit
+//                                               .stopLossController
+//                                               .text
+//                                               .isEmpty
+//                                               ? "0"
+//                                               : cubit.stopLossController.text),
+//                                           takeProfit: double.parse(cubit
+//                                               .takeProfitController
+//                                               .text
+//                                               .isEmpty
+//                                               ? "0"
+//                                               : cubit
+//                                               .takeProfitController.text),
+//                                           ctx: context
+//                                         // sellWhenPrice: double.parse(cubit.sellWhenPriceController.text.isEmpty?"0":cubit.sellWhenPriceController.text),
+//                                       );
+//                                       AppLoader.closeLoader(
+//                                           context, ValueKey("updateOrder"));
+//                                     } on DioException catch (e) {
+//                                     } catch (e) {
+//                                       AppLoader.closeLoader(
+//                                           context, ValueKey("updateOrder"));
+//                                     }
+//                                   },
+//                                   style: ElevatedButton.styleFrom(
+//                                     backgroundColor: AppColors.yellow,
+//                                     disabledBackgroundColor: AppColors.grey,
+//                                     shape: RoundedRectangleBorder(
+//                                       borderRadius: BorderRadius.circular(12.r),
+//                                     ),
+//                                   ),
+//                                   child: Text(
+//                                     LocaleKeys.updatePosition.tr(),
+//                                     style: Theme.of(context)
+//                                         .textTheme
+//                                         .headlineMedium
+//                                         ?.copyWith(
+//                                       color: AppColors.white,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                           ListView(
+//                             children: [
+//                               SizedBox(
+//                                 width: double.infinity,
+//                                 height: 40.h,
+//                                 child: ElevatedButton(
+//                                   onPressed: () async {
+//                                     AppLoader.showLoader(
+//                                         context, ValueKey("sell_price"));
+//                                     await _appService.sellOrder(
+//                                         orderId: trade.id ?? 0, ctx: context);
+//                                   },
+//                                   style: ElevatedButton.styleFrom(
+//                                     backgroundColor: AppColors.yellow,
+//                                     disabledBackgroundColor: AppColors.grey,
+//                                     shape: RoundedRectangleBorder(
+//                                       borderRadius: BorderRadius.circular(12.r),
+//                                     ),
+//                                   ),
+//                                   child: Text(
+//                                     LocaleKeys.close.tr(),
+//                                     style: Theme.of(context)
+//                                         .textTheme
+//                                         .headlineMedium
+//                                         ?.copyWith(
+//                                       color: AppColors.white,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                               SizedBox(
+//                                 height: 12.sp,
+//                               ),
+//                               SizedBox(
+//                                 width: double.infinity,
+//                                 height: 40.h,
+//                                 child: ElevatedButton(
+//                                   onPressed: () async {
+//                                     final deliveryData =
+//                                     await showDialog<Map<String, String>>(
+//                                       context: context,
+//                                       builder: (context) =>
+//                                       const DeliveryDataDialog(),
+//                                     );
+//
+//                                     if (deliveryData != null) {
+//                                       print('البيانات: $deliveryData');
+//
+//                                       /*
+//                                           print('Delivery Address: ${result['delivery_address']}');
+//       print('Delivery City: ${result['delivery_city']}');
+//       print('Delivery Phone: ${result['delivery_phone']}');
+//                                        */
+//                                       AppLoader.showLoader(
+//                                           context, ValueKey("requestDelivery"));
+//                                       _appService.requestDelivery(
+//                                           orderId: trade.id ?? 0,
+//                                           deliveryAddress: deliveryData[
+//                                           "delivery_address"] ??
+//                                               '',
+//                                           deliveryCity:
+//                                           deliveryData["delivery_city"] ??
+//                                               '',
+//                                           deliveryPhone:
+//                                           deliveryData["delivery_phone"] ??
+//                                               '',
+//                                           ctx: context);
+//                                     }
+//                                   },
+//                                   style: ElevatedButton.styleFrom(
+//                                     backgroundColor: AppColors.yellow,
+//                                     disabledBackgroundColor: AppColors.grey,
+//                                     shape: RoundedRectangleBorder(
+//                                       borderRadius: BorderRadius.circular(12.r),
+//                                     ),
+//                                   ),
+//                                   child: Text(
+//                                     LocaleKeys.delivery.tr(),
+//                                     style: Theme.of(context)
+//                                         .textTheme
+//                                         .headlineMedium
+//                                         ?.copyWith(
+//                                       color: AppColors.white,
+//                                     ),
+//                                   ),
+//                                 ),
+//                               ),
+//                             ],
+//                           ),
+//                         ],
+//                       ),
+//                     ),
+//                   ],
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//   void _showOrderDetailsSheet(BuildContext context) {
+//
+//
+//
+//     showModalBottomSheet(
+//       context: context,
+//       backgroundColor: AppColors.grey,
+//       shape: RoundedRectangleBorder(
+//         borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+//       ),
+//       builder: (context) => Container(
+//         padding: EdgeInsets.all(24.sp),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             Text(
+//               'Order details',
+//               style: TextStyle(
+//                 color: AppColors.white,
+//                 fontSize: 20.sp,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             SizedBox(height: 24.h),
+//             _buildSheetRow(
+//               'Trade size',
+//               '\$${ '1,750.00'}',
+//               hasInfo: true,
+//             ),
+//             Divider(color: AppColors.lightGrey, height: 32.h),
+//             _buildSheetRow(
+//               'Leverage',
+//               ' 1:1 ',
+//             ),
+// // Divider(color: AppColors.lightGrey, height: 32.h),
+// // _buildSheetRow(
+// //   'Margin',
+// //   '\$${order?.margin.toStringAsFixed(2) ?? '17.50'}',
+// //   hasInfo: true,
+// // ),
+//             Divider(color: AppColors.lightGrey, height: 32.h),
+//             _buildSheetRow(
+//               'app commision',
+//               '-\$${ '0.27'}',
+//               hasInfo: true,
+//             ),
+//             SizedBox(height: 24.h),
+//             InkWell(
+//               onTap: () => Navigator.pop(context),
+//               child: Container(
+//                 width: double.infinity,
+//                 padding: EdgeInsets.symmetric(vertical: 16.h),
+//                 decoration: BoxDecoration(
+//                   color: AppColors.yellow,
+//                   borderRadius: BorderRadius.circular(12.r),
+//                 ),
+//                 child: Center(
+//                   child: Text(
+//                     'Close',
+//                     style: TextStyle(
+//                       color: AppColors.black,
+//                       fontSize: 16.sp,
+//                       fontWeight: FontWeight.bold,
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//   Widget _buildSheetRow(String label, String value, {bool hasInfo = false}) {
+//     return Row(
+//       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//       children: [
+//         Row(
+//           children: [
+//             Text(
+//               label,
+//               style: TextStyle(
+//                 color: AppColors.greyText,
+//                 fontSize: 16.sp,
+//               ),
+//             ),
+//             // if (hasInfo) ...[
+//             //   SizedBox(width: 8.w),
+//             //   Icon(
+//             //     Icons.info_outline,
+//             //     color: AppColors.greyText,
+//             //     size: 18.sp,
+//             //   ),
+//             // ],
+//           ],
+//         ),
+//         Text(
+//           value,
+//           style: TextStyle(
+//             color: AppColors.white,
+//             fontSize: 16.sp,
+//             fontWeight: FontWeight.w600,
+//           ),
+//         ),
+//       ],
+//     );
+//   }
+// }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class DeliveryDataDialog extends StatefulWidget {
   const DeliveryDataDialog({Key? key}) : super(key: key);

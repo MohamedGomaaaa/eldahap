@@ -5,6 +5,7 @@ import 'package:official_gold/view/components/shimmer_widget.dart';
 import 'package:official_gold/view/screen/home/portfolio/widgets/trade_widget.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
+import '../../../components/live_status_text.dart';
 class TradesSection extends StatelessWidget {
   const TradesSection({super.key});
 
@@ -45,6 +46,8 @@ class TradesSection extends StatelessWidget {
                 itemCount: 6,
               );
             }
+
+
 /////////////////////////////////////////////////////////////////////////////////////// Whole Trade List
             return ListView.separated(
               padding: EdgeInsets.symmetric(

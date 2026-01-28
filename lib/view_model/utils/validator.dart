@@ -86,8 +86,9 @@ class Validator {
   static String? validatePriceWithRange({
   required String? value,
   required num originalPrice,
-  double percentage = 25,
-  }) {
+  double percentage = 50,
+  })
+  {
   // null or empty
   if (value == null || value.trim().isEmpty) {
   return "please_fill_field";
@@ -116,7 +117,55 @@ class Validator {
 
 
 
+  static String? validateStopLoss({
+    required String? value,
+    required num livePrice,
+    bool requiredField = false,
+  }) {
+    // null or empty
+    if (value == null || value.trim().isEmpty) {
+      return requiredField ? "please_fill_field" : null;
+    }
 
+    // parse number
+    final num? entered = num.tryParse(value.trim());
+    if (entered == null) {
+      return "invalid_number";
+    }
+
+    // ✅ stop loss لازم يكون <= livePrice
+    if (entered > livePrice) {
+      return "stop_loss_must_be_less_or_equal_live"
+    ;
+    }
+
+    return null;
+  }
+
+  static String? validateTakeProfit({
+    required String? value,
+    required num livePrice,
+    bool requiredField = false,
+  }) {
+    // null or empty
+    if (value == null || value.trim().isEmpty) {
+      return requiredField ? "please_fill_field" : null;
+    }
+
+    // parse number
+    final num? entered = num.tryParse(value.trim());
+    if (entered == null) {
+      return "invalid_number";
+    }
+
+    // ✅ take profit لازم يكون >= livePrice
+    if (entered < livePrice) {
+      return "take_profit_must_be_greater_or_equal_live";
+
+    }
+
+    return null;
+  }
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////
   static String? validateEmail({required String? value}) {
