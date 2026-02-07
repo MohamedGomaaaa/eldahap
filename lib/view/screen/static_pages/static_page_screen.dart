@@ -268,25 +268,35 @@ class ApiService {
     }
   }
 
+
+
+
   Future<ApiResponse> updateOrder({
     required int orderId,
     required double stopLoss,
     required double takeProfit,
     required BuildContext ctx,
-    // required double sellWhenPrice,
   }) async {
     try {
+      // ✅ ابني الـ data بشكل شرطي
+      final Map<String, dynamic> data = {
+        "order_id": orderId,
+      };
+
+      // ✅ متبعتش stop_loss لو = 0
+      if (stopLoss > 0) {
+        data["stop_loss"] = stopLoss;
+      }
+
+      // ✅ متبعتش take_profit لو = 0
+      if (takeProfit > 0) {
+        data["take_profit"] = takeProfit;
+      }
+
       final response = await _dio.put(
         '$baseUrl'
-        'order/update',
-        data: {
-          "order_id": orderId,
-          "stop_loss": stopLoss,
-          "take_profit": takeProfit,
-          // "sell_when_price": sellWhenPrice
-        },
-
-        ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
+            'order/update',
+        data: data,
         options: Options(
           headers: {
             'Authorization': 'Bearer $token',
@@ -294,35 +304,108 @@ class ApiService {
           },
         ),
       );
+
       Toast.showMsg(msg: response.data["message"] ?? '');
       return ApiResponse.fromJson(response.data);
     } on DioException catch (e) {
-      print("nojojlkhjklhkjhkjhgjghj");
       if (e.response != null) {
-        Toast.showMsg(
-            msg: e.response?.data['message'] ?? 'Server error occurred');
-        AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
+        Toast.showMsg(msg: e.response?.data['message'] ?? 'Server error occurred');
+        AppLoader.closeLoader(ctx, const ValueKey("updateOrder"));
         return ApiResponse(
           success: false,
           message: e.response?.data['message'] ?? 'Server error occurred',
         );
       } else {
-        AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
-
+        AppLoader.closeLoader(ctx, const ValueKey("updateOrder"));
         return ApiResponse(
           success: false,
           message: 'Network error occurred',
         );
       }
     } catch (e) {
-      AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
-
+      AppLoader.closeLoader(ctx, const ValueKey("updateOrder"));
       return ApiResponse(
         success: false,
         message: 'An unexpected error occurred',
       );
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // Future<ApiResponse> updateOrder({
+  //   required int orderId,
+  //   required double stopLoss,
+  //   required double takeProfit,
+  //   required BuildContext ctx,
+  //
+  // }) async
+  // {
+  //   try {
+  //     final response = await _dio.put(
+  //       '$baseUrl'
+  //       'order/update',
+  //       data: {
+  //         "order_id": orderId,
+  //         "stop_loss": stopLoss,
+  //          "take_profit": takeProfit,
+  //
+  //       },
+  //       ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
+  //       options: Options(
+  //         headers: {
+  //           'Authorization': 'Bearer $token',
+  //           'Accept': 'application/json',
+  //         },
+  //       ),
+  //     );
+  //     Toast.showMsg(msg: response.data["message"] ?? '');
+  //     return ApiResponse.fromJson(response.data);
+  //   } on DioException catch (e) {
+  //
+  //     if (e.response != null) {
+  //       Toast.showMsg(
+  //           msg: e.response?.data['message'] ?? 'Server error occurred');
+  //       AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
+  //       return ApiResponse(
+  //         success: false,
+  //         message: e.response?.data['message'] ?? 'Server error occurred',
+  //       );
+  //     } else {
+  //       AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
+  //
+  //       return ApiResponse(
+  //         success: false,
+  //         message: 'Network error occurred',
+  //       );
+  //     }
+  //   } catch (e) {
+  //     AppLoader.closeLoader(ctx, ValueKey("updateOrder"));
+  //
+  //     return ApiResponse(
+  //       success: false,
+  //       message: 'An unexpected error occurred',
+  //     );
+  //   }
+  // }
+
+
+
 
 // /order/sell
 
@@ -393,7 +476,7 @@ class ApiService {
         '$baseUrl' 'order/request-delivery',
         data: {
           "order_id": orderId,
-          "delivery_method": "courier",
+          "delivery_method": "shipping",
           "delivery_address": deliveryAddress,
           "delivery_city": deliveryCity,
           "delivery_phone": deliveryPhone,
@@ -741,6 +824,163 @@ class PageContent extends StatelessWidget {
         //     ),
         //   ),
       ],
+    );
+  }
+}
+class DeliveryFeesDialog extends StatelessWidget {
+  final String deliveryFees;
+
+  const DeliveryFeesDialog({
+    Key? key,
+    required this.deliveryFees,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      backgroundColor: AppColors.backgroundGrey,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(16.r),
+        side: BorderSide(
+          color: AppColors.grey,
+          width: 1.w,
+        ),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: AppColors.backgroundGrey,
+          borderRadius: BorderRadius.circular(16.r),
+          border: Border.all(
+            color: AppColors.grey,
+            width: 1.w,
+          ),
+        ),
+        child: Padding(
+          padding: EdgeInsets.all(24.w),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              // Header
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Delivery Fees',
+                    style: TextStyle(
+                      color: AppColors.yellow,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 18.sp,
+                    ),
+                  ),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: AppColors.grey,
+                      borderRadius: BorderRadius.circular(8.r),
+                    ),
+                    child: IconButton(
+                      onPressed: () => Navigator.of(context).pop(),
+                      icon: Icon(
+                        Icons.close,
+                        color: AppColors.white,
+                        size: 20.sp,
+                      ),
+                      padding: EdgeInsets.all(8.w),
+                    ),
+                  ),
+                ],
+              ),
+
+              SizedBox(height: 24.h),
+
+              // Delivery Icon
+              Container(
+                width: 60.w,
+                height: 60.h,
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundGrey2,
+                  borderRadius: BorderRadius.circular(30.r),
+                  border: Border.all(
+                    color: AppColors.yellow,
+                    width: 2.w,
+                  ),
+                ),
+                child: Icon(
+                  Icons.delivery_dining,
+                  color: AppColors.yellow,
+                  size: 30.sp,
+                ),
+              ),
+
+              SizedBox(height: 16.h),
+
+              // Fees Amount
+              Container(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 20.w,
+                  vertical: 12.h,
+                ),
+                decoration: BoxDecoration(
+                  color: AppColors.backgroundGrey2,
+                  borderRadius: BorderRadius.circular(12.r),
+                  border: Border.all(
+                    color: AppColors.grey,
+                    width: 1.w,
+                  ),
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      'Fees: ',
+                      style: TextStyle(
+                        color: AppColors.white,
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                    Text(
+                      deliveryFees,
+                      style: TextStyle(
+                        color: AppColors.yellow,
+                        fontSize: 18.sp,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+
+              SizedBox(height: 24.h),
+
+              // OK Button
+              SizedBox(
+                width: double.infinity,
+                height: 48.h,
+                child: ElevatedButton(
+                  onPressed: () => Navigator.of(context).pop(),
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.yellow,
+                    foregroundColor: AppColors.black,
+                    elevation: 0,
+                    shadowColor: Colors.transparent,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                  ),
+                  child: Text(
+                    'OK',
+                    style: TextStyle(
+                      color: AppColors.black,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

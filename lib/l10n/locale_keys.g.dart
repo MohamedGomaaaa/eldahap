@@ -42,7 +42,7 @@ abstract class  LocaleKeys {
   static const stopLoss = 'stopLoss';
   static const takeProfit = 'takeProfit';
   static const sellWhenPrice = 'sellWhenPrice';
-  static const amount = 'amount';
+  static const amount = 'Price';
   static const myAccount = 'myAccount';
   static const demoUsd = 'demoUsd';
   static const settings = 'settings';
@@ -66,6 +66,7 @@ abstract class  LocaleKeys {
   static const total = 'total';
   static const details = 'details';
   static const profit = 'profit';
+  static const lose = 'lose';
   static const dateAndTime = 'dateAndTime';
   static const detailsDeposit = 'detailsDeposit';
   static const detailsWithdraw = 'detailsWithdraw';

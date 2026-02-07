@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../../model/trade_model.dart';
 import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/data/network/repos/trades_repository.dart';
 import 'order_model.dart';
@@ -22,12 +23,28 @@ class OrderCubit extends Cubit<OrderState> {
   double stopLossAmount = 0.0;
   double takeProfitAmount = 0.0;
 
-  OrderModel? currentOrder;
 
-  void loadOrder(OrderModel order) {
+
+  // OrderModel? currentOrder;
+  //
+  // void loadOrder(OrderModel order) {
+  //   currentOrder = order;
+  //   emit(OrderLoaded(order));
+  // }kllkkl
+
+
+
+
+
+
+  TradeOrOrder? currentOrder;
+
+  void loadOrder(TradeOrOrder order) {
     currentOrder = order;
     emit(OrderLoaded(order));
   }
+
+
 
   void toggleStopLoss(bool value) {
     stopLossEnabled = value;

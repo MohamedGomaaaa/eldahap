@@ -1,3 +1,4 @@
+import '../../../../model/trade_model.dart';
 import 'order_model.dart';
 
 abstract class OrderState {}
@@ -7,7 +8,7 @@ class OrderInitial extends OrderState {}
 class OrderLoading extends OrderState {}
 
 class OrderLoaded extends OrderState {
-  final OrderModel order;
+  final TradeOrOrder order;
   OrderLoaded(this.order);
 }
 

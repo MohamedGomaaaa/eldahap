@@ -4,6 +4,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/components/shimmer_widget.dart';
 import 'package:official_gold/view/screen/home/portfolio/widgets/trade_widget.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
+import 'package:official_gold/view_model/utils/text_style.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../components/live_status_text.dart';
 class TradesSection extends StatelessWidget {
@@ -22,11 +23,13 @@ class TradesSection extends StatelessWidget {
             return current is GetTradesLoadingState ||
                 current is GetTradesSuccessState ||
                 current is GetTradesErrorState ||
+                current is CloseTradeLoadingState ||
+
                 current is TradesRefreshingState || // ✅ NEW
                 current is TradesExpandedChanged; // ✅ مهم
           },
           builder: (context, state) {
-            if (state is GetTradesLoadingState) {
+            if (state is GetTradesLoadingState|| state is  CloseTradeLoadingState ) {
               return ListView.separated(
                 padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 12.sp),
                 itemBuilder: (context, index) {
@@ -59,9 +62,11 @@ class TradesSection extends StatelessWidget {
                 final g = TradesCubit.get(context).groupOfTradesOrOrders[index];
                 final key = g.metal ?? 'unknown_$index';
                 return
+
+
+
                   TradeWidget(
                   tradeGroup:g,
-                  // wholeTradeName: g.title ?? '',
                   groupKey: key, // ✅ نفس المفتاح اللي الكيوبت بيستخدمه
                 );
               },
@@ -74,6 +79,35 @@ class TradesSection extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // class TradesSection extends StatelessWidget {
 //   const TradesSection({super.key});

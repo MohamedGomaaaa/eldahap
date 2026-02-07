@@ -146,7 +146,8 @@ class Validator {
     required String? value,
     required num livePrice,
     bool requiredField = false,
-  }) {
+  })
+  {
     // null or empty
     if (value == null || value.trim().isEmpty) {
       return requiredField ? "please_fill_field" : null;
@@ -166,6 +167,42 @@ class Validator {
 
     return null;
   }
+
+
+
+  static String? validateQuantity({
+    required String? value,
+    required num finalPrice,      // ✅ السعر النهائي (الإجمالي)
+    required num walletBalance,   // ✅ رصيد المحفظة
+    bool requiredField = false,
+  }) {
+    ////////////////////////////////// finalPrice=  live *quantity*weight
+
+    // null or empty
+    if (value == null || value.trim().isEmpty) {
+      return requiredField ? "please_fill_field" : null;
+    }
+
+    // parse number
+    final num? entered = num.tryParse(value.trim());
+    if (entered == null) {
+      return "invalid_number";
+    }
+
+    // optional: quantity لازم تكون > 0
+    if (entered <= 0) {
+      return "quantity_must_be_greater_than_zero";
+    }
+
+    // ✅ لو السعر النهائي أكبر من المحفظة -> error
+    if (finalPrice > walletBalance) {
+      return "insufficient_wallet_balance";
+    }
+
+    return null;
+  }
+
+
 
 // //////////////////////////////////////////////////////////////////////////////////////////////////////
   static String? validateEmail({required String? value}) {

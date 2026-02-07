@@ -6,23 +6,17 @@ import '../../../../../model/trade_model.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
-
-import '../../../../components/live_status_text.dart';
 import '../../../../components/svg_widget.dart';
-
 import 'creat_trade.dart';
 
-
-
 class TradeWidget extends StatelessWidget {
-  // final String wholeTradeName;
-  final  GroupOfTradesOrOrders tradeGroup;
+  final GroupOfTradesOrOrders tradeGroup;
   final String groupKey;
 
   const TradeWidget({
     super.key,
-    // required this.wholeTradeName,
-    required this.groupKey, required this.tradeGroup,
+    required this.groupKey,
+    required this.tradeGroup,
   });
 
   @override
@@ -41,7 +35,7 @@ class TradeWidget extends StatelessWidget {
 
         final totalQty = tradeList.fold<double>(
           0.0,
-          (sum, t) => sum + (double.tryParse(t.qty .toString()) ?? 0.0),
+          (sum, t) => sum + (double.tryParse(t.quantity.toString()) ?? 0.0),
         );
 
         final TradeOrOrder summaryTrade =
@@ -85,7 +79,7 @@ class TradeWidget extends StatelessWidget {
                             ),
                             SizedBox(width: 6.sp),
                             Text(
-                            "${tradeGroup.title}",
+                              "${tradeGroup.title}",
                               style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
@@ -102,11 +96,6 @@ class TradeWidget extends StatelessWidget {
                   ),
                 ),
                 const Divider(color: AppColors.yellow2),
-
-
-
-
-
                 Padding(
                   padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
                   child: Row(
@@ -134,33 +123,28 @@ class TradeWidget extends StatelessWidget {
                           crossFadeState: effectiveOpen
                               ? CrossFadeState.showFirst
                               : CrossFadeState.showSecond,
-
                           // ✅ OPEN: قائمة trades
-                          firstChild: Column(
-                            children: tradeList.map((trade) {
+                          firstChild:
+                          Column(
+                            children: List.generate(tradeList.length, (index) {
+                              final trade = tradeList[index];
+                              final isLast = index == tradeList.length - 1||index==0;
                               return CreatTrade(
+                                productTitle:tradeGroup.title! ,
                                 trade: trade,
                                 tradesCubit: tradesCubit,
                                 displayQty: null,
-                                // onCloseTap: () {
-                                //   showCloseTradeSheet(
-                                //     context,
-                                //     trade,
-                                //     tradesCubit,
-                                //   );
-                                // },
+                                lastIndex:isLast,
                               );
-                            }).toList(),
+                            }),
                           ),
-
                           // ✅ CLOSED: ملخص بالتجميعة (يظهر فقط لو فيه أكتر من صفقة)
                           secondChild: CreatTrade(
+                            productTitle:tradeGroup.title! ,
+                            lastIndex: true,
                             trade: summaryTrade,
                             tradesCubit: tradesCubit,
                             displayQty: totalQty.toInt().toString(),
-                            // onCloseTap: () {
-                            //   // tradesCubit.toggleGroup(groupKey);
-                            // },
                           ),
                         ),
                       ),
@@ -284,10 +268,7 @@ class TradeWidget extends StatelessWidget {
 //   );
 // }
 
-
 //////////////////////////////////////////////////////////////////// before osama in creat trade and trade widget and trade details
-
-
 
 //
 // class TradeWidget extends StatelessWidget {
@@ -553,29 +534,6 @@ class TradeWidget extends StatelessWidget {
 //   );
 // }
 //
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////// old
 

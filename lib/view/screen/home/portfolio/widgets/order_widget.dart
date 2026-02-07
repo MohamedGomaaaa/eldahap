@@ -26,12 +26,12 @@ import '../../../../components/svg_widget.dart';
 import 'creat_order.dart';
 
 class OrderWidget extends StatelessWidget {
-  final String wholeOrderName;
+  final GroupOfTradesOrOrders tradeGroup;
   final String groupKey;
 
   const OrderWidget({
     super.key,
-    required this.wholeOrderName,
+    required this.tradeGroup,
     required this.groupKey,
   });
 
@@ -95,7 +95,7 @@ class OrderWidget extends StatelessWidget {
 
                             // whole order type
                             Text(
-                              wholeOrderName,
+                                "${tradeGroup.title}  ",// سيب المسافه
                               style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
@@ -125,21 +125,32 @@ class OrderWidget extends StatelessWidget {
                 ),
 
                 // ✅ اعرض الليست على طول زي ما هي
+
+
+
                 Column(
-                  children: orderList.map((order) {
+                  children: List.generate(orderList.length, (index) {
+
+                    final isLast = index == orderList.length - 1;
                     return CreatOrder(
-                      order: order,
-                      onCloseTap: () {
-                        showCloseTradeSheet(
-                          context,
-                          0.15,
-                          order,
-                          tradesCubit,
-                        );
-                      },
+                      productTitle: "${tradeGroup.title}",
+                      lastIndex:isLast,
+                      order: orderList[index],
+                      tradesCubit: tradesCubit,
+
                     );
-                  }).toList(),
+                  }),
                 ),
+
+
+
+
+
+
+
+
+
+
               ],
             ),
           ),
@@ -149,104 +160,105 @@ class OrderWidget extends StatelessWidget {
   }
 }
 
-void showCloseTradeSheet(
-  BuildContext context,
-  double profitOrLosePrice,
-  TradeOrOrder order,
-  TradesCubit tradesCubit,
-) {
-  showModalBottomSheet(
-    context: context,
-    isDismissible: false,
-    backgroundColor: AppColors.background,
-    shape: const RoundedRectangleBorder(
-      borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-    ),
-    builder: (context) {
-      return Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            const Text(
-              "Delete trade?",
-              style: TextStyle(
-                color: AppColors.yellow,
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            // const SizedBox(height: 12),
-            // const Text(
-            //   "Profit",
-            //   style: TextStyle(
-            //     color: AppColors.greyText,
-            //     fontSize: 14,
-            //   ),
-            // ),
-            // const SizedBox(height: 4),
-            // Text(
-            //   "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
-            //   style: TextStyle(
-            //     color: profitOrLosePrice >= 0
-            //         ? AppColors.blueColor
-            //         : AppColors.red,
-            //     fontSize: 20,
-            //     fontWeight: FontWeight.bold,
-            //   ),
-            // ),
-            const SizedBox(height: 24),
-            SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () async {
-                  if (order.status == "pending"&&order.type=="order") {
-                    tradesCubit.closeOrder(
-                      orderId: order.id,
-                    );
-                   } else {
-                    Toast.showMsg(msg: "this order is not pending");
-                   }
-
-                  Navigator.pop(context, true);
-                },
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: AppColors.yellow2,
-                  foregroundColor: AppColors.white,
-                  padding: const EdgeInsets.symmetric(vertical: 14),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                ),
-                child: const Text(
-                  "Delete",
-                  style: TextStyle(fontWeight: FontWeight.bold),
-                ),
-              ),
-            ),
-            const SizedBox(height: 12),
-            GestureDetector(
-              onTap: () => Navigator.pop(context, false),
-              child: const Text(
-                "Cancel",
-                style: TextStyle(
-                  color: AppColors.yellow2,
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-            ),
-            const SizedBox(height: 10),
-          ],
-        ),
-      );
-    },
-  );
-
-
-
-
-}
+// void showCloseTradeSheet(
+//   BuildContext context,
+//   double profitOrLosePrice,
+//   TradeOrOrder order,
+//   TradesCubit tradesCubit,
+// )
+// {
+//   showModalBottomSheet(
+//     context: context,
+//     isDismissible: false,
+//     backgroundColor: AppColors.background,
+//     shape: const RoundedRectangleBorder(
+//       borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+//     ),
+//     builder: (context) {
+//       return Padding(
+//         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+//         child: Column(
+//           mainAxisSize: MainAxisSize.min,
+//           children: [
+//             const Text(
+//               "Delete trade?",
+//               style: TextStyle(
+//                 color: AppColors.yellow,
+//                 fontSize: 18,
+//                 fontWeight: FontWeight.bold,
+//               ),
+//             ),
+//             // const SizedBox(height: 12),
+//             // const Text(
+//             //   "Profit",
+//             //   style: TextStyle(
+//             //     color: AppColors.greyText,
+//             //     fontSize: 14,
+//             //   ),
+//             // ),
+//             // const SizedBox(height: 4),
+//             // Text(
+//             //   "${profitOrLosePrice >= 0 ? "+" : ""}\$${profitOrLosePrice.toStringAsFixed(2)}",
+//             //   style: TextStyle(
+//             //     color: profitOrLosePrice >= 0
+//             //         ? AppColors.blueColor
+//             //         : AppColors.red,
+//             //     fontSize: 20,
+//             //     fontWeight: FontWeight.bold,
+//             //   ),
+//             // ),
+//             const SizedBox(height: 24),
+//             SizedBox(
+//               width: double.infinity,
+//               child: ElevatedButton(
+//                 onPressed: () async {
+//                   if (order.status == "pending"&&order.type=="order") {
+//                     tradesCubit.closeOrder(
+//                       orderId: order.id,
+//                     );
+//                    } else {
+//                     Toast.showMsg(msg: "this order is not pending");
+//                    }
+//
+//                   Navigator.pop(context, true);
+//                 },
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: AppColors.yellow2,
+//                   foregroundColor: AppColors.white,
+//                   padding: const EdgeInsets.symmetric(vertical: 14),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(8),
+//                   ),
+//                 ),
+//                 child: const Text(
+//                   "Delete",
+//                   style: TextStyle(fontWeight: FontWeight.bold),
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 12),
+//             GestureDetector(
+//               onTap: () => Navigator.pop(context, false),
+//               child: const Text(
+//                 "Cancel",
+//                 style: TextStyle(
+//                   color: AppColors.yellow2,
+//                   fontSize: 14,
+//                   fontWeight: FontWeight.w600,
+//                 ),
+//               ),
+//             ),
+//             const SizedBox(height: 10),
+//           ],
+//         ),
+//       );
+//     },
+//   );
+//
+//
+//
+//
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////// old
 

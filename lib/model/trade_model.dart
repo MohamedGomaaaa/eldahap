@@ -155,7 +155,7 @@ import 'package:official_gold/model/product.dart';
 
 
 
-class TradeOrOrder {
+class TradeOrOrder{
   final int? id;
 
   final String? type;
@@ -173,7 +173,7 @@ class TradeOrOrder {
   final String? metal;
   final String? currency;
 
-  final num? qty;
+  // final num? qty;
   final num? totalGrams;
 
   final num? openPrice;
@@ -238,7 +238,7 @@ class TradeOrOrder {
     this.product,
     this.metal,
     this.currency,
-    this.qty,
+    // this.qty,
     this.totalGrams,
     this.openPrice,
     this.price,
@@ -317,7 +317,7 @@ class TradeOrOrder {
       productId: parseInt(json['product_id']),
       quantity: parseNum(json['quantity']),
 
-      unitGramWeight: parseNum(json['unit_gram_weight']),
+      unitGramWeight: parseNum(json['unit_gram_weight']??"0"),
       unitKarat: parseInt(json['unit_karat']),
 
       product: (json['product'] is Map<String, dynamic>)
@@ -327,7 +327,7 @@ class TradeOrOrder {
       metal: json['metal']?.toString(),
       currency: json['currency']?.toString(),
 
-      qty: parseNum(json['qty']),
+      // qty: parseNum(json['qty']),
       totalGrams: parseNum(json['total_grams']),
 
       openPrice: parseNum(json['open_price']),
@@ -401,7 +401,7 @@ class TradeOrOrder {
       'metal': metal,
       'currency': currency,
 
-      'qty': qty,
+      // 'qty': qty,
       'total_grams': totalGrams,
 
       'open_price': openPrice,

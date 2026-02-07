@@ -61,6 +61,14 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
 
       titleSpacing: 16.w, // optional
       title: InkWell(
+
+
+        splashColor: Colors.transparent,
+        highlightColor: Colors.transparent,
+        hoverColor:  Colors.transparent,
+        focusColor:  Colors.transparent,
+
+
         onTap: () => Navigation.push(context, const ProfileScreen()),
         child: Padding(
           // ✅ مساحة عشان الشكل مايبقاش لازق فوق/تحت

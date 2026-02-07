@@ -31,10 +31,14 @@ class OrdersSection extends StatelessWidget {
             return current is GetOrdersLoadingState ||
                 current is GetOrdersSuccessState ||
                 current is GetOrdersErrorState ||
+
+
+           current is CloseOrderLoadingState||
                 current is OrdersRefreshingState; // ✅ NEW
+
           },
           builder: (context, state) {
-            if (state is GetOrdersLoadingState || state is OrdersRefreshingState) {
+            if (state is GetOrdersLoadingState || state is OrdersRefreshingState|| state is CloseOrderLoadingState) {
               return ListView.separated(
                 padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 0.sp),
                 itemBuilder: (context, index) {
@@ -64,8 +68,7 @@ class OrdersSection extends StatelessWidget {
                 final g = cubit.wholeOrders[index];
                 final key = g.metal ?? '';
                 return OrderWidget(
-                  wholeOrderName: g.title ?? '',
-                  groupKey: key,
+                  groupKey: key, tradeGroup: g,
                 );
               },
               separatorBuilder: (_, __) => SizedBox(height: 12.sp),

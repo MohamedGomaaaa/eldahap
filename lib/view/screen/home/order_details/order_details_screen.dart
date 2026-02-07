@@ -1,5 +1,3 @@
-
-
 // order_details_page.dart
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -7,9 +5,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart' as trades;
-
-
+import '../../../../model/trade_model.dart';
 import '../../../../view_model/utils/colors.dart';
+import '../../../../view_model/utils/common_method.dart';
+import '../../../../view_model/utils/toast.dart';
+import '../../../../view_model/utils/validator.dart';
 import 'order_cubit.dart';
 import 'order_model.dart';
 import 'order_state.dart';
@@ -17,36 +17,26 @@ import 'order_state.dart';
 
 
 class OrderDetailsScreen extends StatelessWidget {
-  final int orderId;
-  const OrderDetailsScreen({super.key, required this.orderId});
+
+  final TradeOrOrder  order;
+  final String productTitle;
+
+  const OrderDetailsScreen({super.key,  required this.order, required this.productTitle});
 
   @override
   Widget build(BuildContext context) {
-    // Sample data
-    final sampleOrder = OrderModel(
-      productName: 'Gold',
-      productIcon: '🏅',
-      currentPrice: 3857.36,
-      amountToBuy: 0.5,
-      orderType: 'Limit',
-      createdAt: DateTime(2025, 9, 25, 11, 45),
-      buyAtPrice: 3500.00,
-      tradeSize: 1750.00,
-      leverage: '100:1',
-      margin: 17.50,
-      overnightFunding: -0.27,
-    );
 
     return BlocProvider(
-      create: (context) => OrderCubit()..loadOrder(sampleOrder),
-      child:  OrderDetailsView(orderId:orderId),
+      create: (context) => OrderCubit()..loadOrder(order),
+      child:  OrderDetailsView(order:order,productTitle:productTitle),
     );
   }
 }
-
+final num live= 44554;
 class OrderDetailsView extends StatelessWidget {
-  final int orderId;
-  const OrderDetailsView({super.key, required this.orderId});
+  final TradeOrOrder  order;
+  final String productTitle;
+   OrderDetailsView({super.key, required this.order, required this.productTitle});
 
   @override
   Widget build(BuildContext context) {
@@ -65,22 +55,23 @@ class OrderDetailsView extends StatelessWidget {
             final order = cubit.currentOrder;
             return Row(
               children: [
-                Container(
-                  padding: EdgeInsets.all(8.sp),
-                  decoration: BoxDecoration(
-                    color: AppColors.grey,
-                    borderRadius: BorderRadius.circular(8.r),
-                  ),
-                  child: Text(
-                    order?.productIcon ?? '🏅',
-                    style: TextStyle(fontSize: 20.sp),
-                  ),
-                ),
+                // Container(
+                //   padding: EdgeInsets.all(8.sp),
+                //   decoration: BoxDecoration(
+                //     color: AppColors.grey,
+                //     borderRadius: BorderRadius.circular(8.r),
+                //   ),
+                //   child: Text(
+                //     order?.productIcon ?? '🏅',
+                //     style: TextStyle(fontSize: 20.sp),
+                //   ),
+                // ),
                 SizedBox(width: 12.w),
                 Text(
-                  order?.productName ?? 'Gold',
+
+                   "$productTitle ${order!.unitGramWeight!} gm",
                   style: TextStyle(
-                    color: AppColors.white,
+                    color: AppColors.yellow,
                     fontSize: 18.sp,
                     fontWeight: FontWeight.bold,
                   ),
@@ -111,7 +102,7 @@ class OrderDetailsView extends StatelessWidget {
               SizedBox(height: 24.h),
               _buildInfoSection(),
               SizedBox(height: 24.h),
-              _buildOrderDetailsButton(context),
+              // _buildOrderDetailsButton(context),
               SizedBox(height: 16.h),
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////  delete
 
@@ -127,15 +118,8 @@ class OrderDetailsView extends StatelessWidget {
                     );
                   }
                 },
-                child:    _buildDeleteButton(context,orderId),
+                child:    _buildDeleteButton(context,order.id),
               ),
-
-
-
-
-
-
-
 
               SizedBox(height: 24.h),
               _buildBuyWhenSection(),
@@ -158,9 +142,10 @@ class OrderDetailsView extends StatelessWidget {
         final order = context.read<OrderCubit>().currentOrder;
         return Center(
           child: Text(
-            order?.currentPrice.toStringAsFixed(2) ?? '3,857.36',
+           " live*gm",
+            // order?.currentPrice.toStringAsFixed(2) ?? '3,857.36',
             style: TextStyle(
-              color: AppColors.white,
+              color: AppColors.yellow,
               fontSize: 36.sp,
               fontWeight: FontWeight.bold,
             ),
@@ -178,17 +163,17 @@ class OrderDetailsView extends StatelessWidget {
           children: [
             _buildInfoRow(
               label: 'Amount to buy',
-              value: '+${order?.amountToBuy ?? 0.5}',
+              value: '+${order?.quantity ?? 0.5}',
                 valueColor: AppColors.blueColor,
               isAmount: true
 
             ),
             SizedBox(height: 16.h),
-            _buildInfoRow(label: 'Type',value:  order?.orderType ?? 'Limit'),
+            _buildInfoRow(label: 'Type',value:  order!.openPrice!<live?  ' Buy Limit':"Buy Stop"),
             SizedBox(height: 16.h),
             _buildInfoRow(
              label:  'Created',
-            value:   '${order?.createdAt.day} Sep ${order?.createdAt.year} ${order?.createdAt.hour}:${order?.createdAt.minute.toString().padLeft(2, '0')}',
+            value:   Methods.formatCreatedAt(order.createdAt!.toString()).toString(),
             ),
           ],
         );
@@ -203,7 +188,7 @@ class OrderDetailsView extends StatelessWidget {
         Text(
           label,
           style: TextStyle(
-            color: AppColors.greyText,
+            color: AppColors.yellow,
             fontSize: 16.sp,
           ),
         ),
@@ -248,32 +233,46 @@ class OrderDetailsView extends StatelessWidget {
     );
   }
 
-  Widget _buildOrderDetailsButton(BuildContext context) {
-    return InkWell(
-      onTap: () => _showOrderDetailsSheet(context),
-      child: Row(
-        children: [
-          Text(
-            'Order details',
-            style: TextStyle(
-              color: AppColors.white,
-              fontSize: 16.sp,
-            ),
-          ),
-          SizedBox(width: 8.w),
-          Icon(
-            Icons.info_outline,
-            color: AppColors.yellow,
-            size: 20.sp,
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget _buildOrderDetailsButton(BuildContext context) {
+  //   return InkWell(
+  //     onTap: () => _showOrderDetailsSheet(context),
+  //     child: Row(
+  //       children: [
+  //         Text(
+  //           'Order details',
+  //           style: TextStyle(
+  //             color: AppColors.white,
+  //             fontSize: 16.sp,
+  //           ),
+  //         ),
+  //         SizedBox(width: 8.w),
+  //         Icon(
+  //           Icons.info_outline,
+  //           color: AppColors.yellow,
+  //           size: 20.sp,
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget _buildDeleteButton(BuildContext context,orderId) {
     return InkWell(
-      onTap: () => context.read<trades.TradesCubit>().closeOrder(orderId: orderId),
+      onTap: (){
+
+
+        if (order.status == "pending" && order.type == "order") {
+          context.read<trades.TradesCubit>().closeOrder(orderId: order.id);
+          Navigator.pop(context, true);
+        } else {
+          Toast.showMsg(msg: "this order is not pending");
+        }
+      },
+
+
+
+
+
       child: Container(
         width: double.infinity,
         padding: EdgeInsets.symmetric(vertical: 16.h),
@@ -305,7 +304,7 @@ class OrderDetailsView extends StatelessWidget {
             Text(
               'Buy when price is',
               style: TextStyle(
-                color: AppColors.white,
+                color: AppColors.yellow,
                 fontSize: 18.sp,
                 fontWeight: FontWeight.bold,
               ),
@@ -321,7 +320,7 @@ class OrderDetailsView extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Text(
-                    order?.buyAtPrice.toStringAsFixed(2) ?? '3,500.00',
+                    order?.openPrice?.toStringAsFixed(2) ?? '000',
                     style: TextStyle(
                       color: AppColors.white,
                       fontSize: 24.sp,
@@ -331,7 +330,9 @@ class OrderDetailsView extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                        onPressed: () {},
+                        onPressed: () {
+
+                        },
                         icon: Icon(FontAwesomeIcons.minus, color: AppColors.white),
                       ),
                       IconButton(
@@ -343,27 +344,27 @@ class OrderDetailsView extends StatelessWidget {
                 ],
               ),
             ),
-            SizedBox(height: 16.h),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Good till',
-                  style: TextStyle(
-                    color: AppColors.greyText,
-                    fontSize: 16.sp,
-                  ),
-                ),
-                TextButton.icon(
-                  onPressed: () {},
-                  icon: Icon(Icons.add_circle_outline, color: AppColors.yellow),
-                  label: Text(
-                    'Add date',
-                    style: TextStyle(color: AppColors.yellow),
-                  ),
-                ),
-              ],
-            ),
+            // SizedBox(height: 16.h),
+            // Row(
+            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //   children: [
+            //     Text(
+            //       'Good till',
+            //       style: TextStyle(
+            //         color: AppColors.greyText,
+            //         fontSize: 16.sp,
+            //       ),
+            //     ),
+            //     TextButton.icon(
+            //       onPressed: () {},
+            //       icon: Icon(Icons.add_circle_outline, color: AppColors.yellow),
+            //       label: Text(
+            //         'Add date',
+            //         style: TextStyle(color: AppColors.yellow),
+            //       ),
+            //     ),
+            //   ],
+            // ),
           ],
         );
       },
@@ -396,7 +397,7 @@ class OrderDetailsView extends StatelessWidget {
                     child: Text(
                       'Stop loss',
                       style: TextStyle(
-                        color: AppColors.white,
+                        color: AppColors.yellow,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -407,7 +408,7 @@ class OrderDetailsView extends StatelessWidget {
                     value: cubit.stopLossEnabled,
                     onChanged: (value) => cubit.toggleStopLoss(value),
                     activeColor: AppColors.yellow,
-                    inactiveThumbColor: AppColors.grey,
+                    inactiveThumbColor: AppColors.yellow,
                     inactiveTrackColor: AppColors.grey.withOpacity(0.8),
                   ),
                 ],
@@ -428,15 +429,24 @@ class OrderDetailsView extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Amount',
+                        'Price',
                         style: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.yellow,
                           fontSize: 14.sp,
                         ),
                       ),
                     ),
                     SizedBox(height: 12.h),
                     TextFormField(
+
+                      validator: (value) =>
+                          Validator
+                              .validateStopLoss(
+                            value: value,
+                            livePrice: 1233,
+                          ),
+
+
                       controller: cubit.stopLossController,
                       textInputAction: TextInputAction.done,
                       style: TextStyle(
@@ -452,7 +462,7 @@ class OrderDetailsView extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '0',
                         hintStyle: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.red,
                           fontSize: 18.sp,
                         ),
                         // prefix: Text(
@@ -466,52 +476,52 @@ class OrderDetailsView extends StatelessWidget {
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 12.sp,
-                          vertical: 6.sp,
+                          vertical:12.sp,
                         ),
                         isCollapsed: true,
                         alignLabelWithHint: true,
-                        suffix: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FloatingActionButton(
-                              onPressed: () => cubit.subtractStopLossAmount(),
-                              heroTag: 'stopLossMinus',
-                              shape: const CircleBorder(),
-                              mini: true,
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              backgroundColor: AppColors.transparent,
-                              elevation: 0,
-                              child: const Icon(
-                                FontAwesomeIcons.minus,
-                                color: AppColors.white,
-                              ),
-                            ),
-                            FloatingActionButton(
-                              onPressed: () => cubit.addStopLossAmount(),
-                              heroTag: 'stopLossPlus',
-                              shape: const CircleBorder(),
-                              mini: true,
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              backgroundColor: AppColors.transparent,
-                              elevation: 0,
-                              child: const Icon(
-                                FontAwesomeIcons.plus,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                        // suffix: Row(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   children: [
+                        //     FloatingActionButton(
+                        //       onPressed: () => cubit.subtractStopLossAmount(),
+                        //       heroTag: 'stopLossMinus',
+                        //       shape: const CircleBorder(),
+                        //       mini: true,
+                        //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        //       backgroundColor: AppColors.transparent,
+                        //       elevation: 0,
+                        //       child: const Icon(
+                        //         FontAwesomeIcons.minus,
+                        //         color: AppColors.white,
+                        //       ),
+                        //     ),
+                        //     FloatingActionButton(
+                        //       onPressed: () => cubit.addStopLossAmount(),
+                        //       heroTag: 'stopLossPlus',
+                        //       shape: const CircleBorder(),
+                        //       mini: true,
+                        //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        //       backgroundColor: AppColors.transparent,
+                        //       elevation: 0,
+                        //       child: const Icon(
+                        //         FontAwesomeIcons.plus,
+                        //         color: AppColors.white,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.grey),
+                          borderSide: const BorderSide(color: AppColors.yellow),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.grey),
+                          borderSide: const BorderSide(color: AppColors.yellow),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.yellow),
+                          borderSide: const BorderSide(color: AppColors.yellow),
                         ),
                       ),
                     ),
@@ -551,7 +561,7 @@ class OrderDetailsView extends StatelessWidget {
                     child: Text(
                       'Take profit',
                       style: TextStyle(
-                        color: AppColors.white,
+                        color: AppColors.yellow,
                         fontSize: 16.sp,
                         fontWeight: FontWeight.w600,
                       ),
@@ -562,7 +572,7 @@ class OrderDetailsView extends StatelessWidget {
                     value: cubit.takeProfitEnabled,
                     onChanged: (value) => cubit.toggleTakeProfit(value),
                     activeColor: AppColors.yellow,
-                    inactiveThumbColor: AppColors.grey,
+                    inactiveThumbColor: AppColors.yellow,
                     inactiveTrackColor: AppColors.grey.withOpacity(0.8),
                   ),
                 ],
@@ -583,19 +593,31 @@ class OrderDetailsView extends StatelessWidget {
                         ),
                       ),
                       child: Text(
-                        'Amount',
+                        'Price',
                         style: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.yellow,
                           fontSize: 14.sp,
                         ),
                       ),
                     ),
                     SizedBox(height: 12.h),
                     TextFormField(
+
+                      validator: (value) =>
+                          Validator
+                              .validateTakeProfit(
+                            value: value,
+                            livePrice: 123,
+                            // liveOpenPrice,
+                            // requiredField:
+                            // cubit.takeProfitController,
+                          ),
+
+
                       controller: cubit.takeProfitController,
                       textInputAction: TextInputAction.done,
                       style: TextStyle(
-                        color: AppColors.white,
+                        color: AppColors.green,
                         fontSize: 18.sp,
                         fontWeight: FontWeight.bold,
                       ),
@@ -607,7 +629,7 @@ class OrderDetailsView extends StatelessWidget {
                       decoration: InputDecoration(
                         hintText: '0',
                         hintStyle: TextStyle(
-                          color: AppColors.white,
+                          color: AppColors.green,
                           fontSize: 18.sp,
                         ),
                         // prefix: Text(
@@ -621,52 +643,52 @@ class OrderDetailsView extends StatelessWidget {
                         isDense: true,
                         contentPadding: EdgeInsets.symmetric(
                           horizontal: 12.sp,
-                          vertical: 6.sp,
+                          vertical:12.sp,
                         ),
                         isCollapsed: true,
                         alignLabelWithHint: true,
-                        suffix: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            FloatingActionButton(
-                              onPressed: () => cubit.subtractTakeProfitAmount(),
-                              heroTag: 'takeProfitMinus',
-                              shape: const CircleBorder(),
-                              mini: true,
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              backgroundColor: AppColors.transparent,
-                              elevation: 0,
-                              child: const Icon(
-                                FontAwesomeIcons.minus,
-                                color: AppColors.white,
-                              ),
-                            ),
-                            FloatingActionButton(
-                              onPressed: () => cubit.addTakeProfitAmount(),
-                              heroTag: 'takeProfitPlus',
-                              shape: const CircleBorder(),
-                              mini: true,
-                              materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                              backgroundColor: AppColors.transparent,
-                              elevation: 0,
-                              child: const Icon(
-                                FontAwesomeIcons.plus,
-                                color: AppColors.white,
-                              ),
-                            ),
-                          ],
-                        ),
+                        // suffix: Row(
+                        //   mainAxisSize: MainAxisSize.min,
+                        //   children: [
+                        //     FloatingActionButton(
+                        //       onPressed: () => cubit.subtractTakeProfitAmount(),
+                        //       heroTag: 'takeProfitMinus',
+                        //       shape: const CircleBorder(),
+                        //       mini: true,
+                        //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        //       backgroundColor: AppColors.transparent,
+                        //       elevation: 0,
+                        //       child: const Icon(
+                        //         FontAwesomeIcons.minus,
+                        //         color: AppColors.white,
+                        //       ),
+                        //     ),
+                        //     FloatingActionButton(
+                        //       onPressed: () => cubit.addTakeProfitAmount(),
+                        //       heroTag: 'takeProfitPlus',
+                        //       shape: const CircleBorder(),
+                        //       mini: true,
+                        //       materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                        //       backgroundColor: AppColors.transparent,
+                        //       elevation: 0,
+                        //       child: const Icon(
+                        //         FontAwesomeIcons.plus,
+                        //         color: AppColors.white,
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.grey),
+                          borderSide: const BorderSide(color: AppColors.yellow),
                         ),
                         enabledBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.grey),
+                          borderSide: const BorderSide(color: AppColors.yellow),
                         ),
                         focusedBorder: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(12.r),
-                          borderSide: BorderSide(color: AppColors.yellow),
+                          borderSide: const BorderSide(color: AppColors.yellow),
                         ),
                       ),
                     ),
@@ -679,7 +701,7 @@ class OrderDetailsView extends StatelessWidget {
       },
     );
   }
-
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////// save order
   Widget _buildSaveButton(BuildContext context) {
     return InkWell(
       onTap: () => context.read<OrderCubit>().saveOrder(),
@@ -704,112 +726,112 @@ class OrderDetailsView extends StatelessWidget {
     );
   }
 
-  void _showOrderDetailsSheet(BuildContext context) {
-    final cubit = context.read<OrderCubit>();
-    final order = cubit.currentOrder;
+  // void _showOrderDetailsSheet(BuildContext context) {
+  //   final cubit = context.read<OrderCubit>();
+  //   final order = cubit.currentOrder;
+  //
+  //   showModalBottomSheet(
+  //     context: context,
+  //     backgroundColor: AppColors.grey,
+  //     shape: RoundedRectangleBorder(
+  //       borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
+  //     ),
+  //     builder: (context) => Container(
+  //       padding: EdgeInsets.all(24.sp),
+  //       child: Column(
+  //         mainAxisSize: MainAxisSize.min,
+  //         children: [
+  //           Text(
+  //             'Order details',
+  //             style: TextStyle(
+  //               color: AppColors.white,
+  //               fontSize: 20.sp,
+  //               fontWeight: FontWeight.bold,
+  //             ),
+  //           ),
+  //           SizedBox(height: 24.h),
+  //           _buildSheetRow(
+  //             'Trade size',
+  //             '\$${order?.tradeSize.toStringAsFixed(2) ?? '1,750.00'}',
+  //             hasInfo: true,
+  //           ),
+  //           Divider(color: AppColors.lightGrey, height: 32.h),
+  //           _buildSheetRow(
+  //             'Leverage',
+  //             order?.leverage ?? ' 1:1 ',
+  //           ),
+  //           // Divider(color: AppColors.lightGrey, height: 32.h),
+  //           // _buildSheetRow(
+  //           //   'Margin',
+  //           //   '\$${order?.margin.toStringAsFixed(2) ?? '17.50'}',
+  //           //   hasInfo: true,
+  //           // ),
+  //           Divider(color: AppColors.lightGrey, height: 32.h),
+  //           _buildSheetRow(
+  //             'app commision',
+  //             '-\$${order?.overnightFunding.abs().toStringAsFixed(2) ?? '0.27'}',
+  //             hasInfo: true,
+  //           ),
+  //           SizedBox(height: 24.h),
+  //           InkWell(
+  //             onTap: () => Navigator.pop(context),
+  //             child: Container(
+  //               width: double.infinity,
+  //               padding: EdgeInsets.symmetric(vertical: 16.h),
+  //               decoration: BoxDecoration(
+  //                 color: AppColors.yellow,
+  //                 borderRadius: BorderRadius.circular(12.r),
+  //               ),
+  //               child: Center(
+  //                 child: Text(
+  //                   'Close',
+  //                   style: TextStyle(
+  //                     color: AppColors.black,
+  //                     fontSize: 16.sp,
+  //                     fontWeight: FontWeight.bold,
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //     ),
+  //   );
+  // }
 
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: AppColors.grey,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(20.r)),
-      ),
-      builder: (context) => Container(
-        padding: EdgeInsets.all(24.sp),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              'Order details',
-              style: TextStyle(
-                color: AppColors.white,
-                fontSize: 20.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 24.h),
-            _buildSheetRow(
-              'Trade size',
-              '\$${order?.tradeSize.toStringAsFixed(2) ?? '1,750.00'}',
-              hasInfo: true,
-            ),
-            Divider(color: AppColors.lightGrey, height: 32.h),
-            _buildSheetRow(
-              'Leverage',
-              order?.leverage ?? ' 1:1 ',
-            ),
-            // Divider(color: AppColors.lightGrey, height: 32.h),
-            // _buildSheetRow(
-            //   'Margin',
-            //   '\$${order?.margin.toStringAsFixed(2) ?? '17.50'}',
-            //   hasInfo: true,
-            // ),
-            Divider(color: AppColors.lightGrey, height: 32.h),
-            _buildSheetRow(
-              'app commision',
-              '-\$${order?.overnightFunding.abs().toStringAsFixed(2) ?? '0.27'}',
-              hasInfo: true,
-            ),
-            SizedBox(height: 24.h),
-            InkWell(
-              onTap: () => Navigator.pop(context),
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
-                decoration: BoxDecoration(
-                  color: AppColors.yellow,
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Center(
-                  child: Text(
-                    'Close',
-                    style: TextStyle(
-                      color: AppColors.black,
-                      fontSize: 16.sp,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildSheetRow(String label, String value, {bool hasInfo = false}) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Row(
-          children: [
-            Text(
-              label,
-              style: TextStyle(
-                color: AppColors.greyText,
-                fontSize: 16.sp,
-              ),
-            ),
-            // if (hasInfo) ...[
-            //   SizedBox(width: 8.w),
-            //   Icon(
-            //     Icons.info_outline,
-            //     color: AppColors.greyText,
-            //     size: 18.sp,
-            //   ),
-            // ],
-          ],
-        ),
-        Text(
-          value,
-          style: TextStyle(
-            color: AppColors.white,
-            fontSize: 16.sp,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
-      ],
-    );
-  }
+  // Widget _buildSheetRow(String label, String value, {bool hasInfo = false}) {
+  //   return Row(
+  //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //     children: [
+  //       Row(
+  //         children: [
+  //           Text(
+  //             label,
+  //             style: TextStyle(
+  //               color: AppColors.greyText,
+  //               fontSize: 16.sp,
+  //             ),
+  //           ),
+  //           // if (hasInfo) ...[
+  //           //   SizedBox(width: 8.w),
+  //           //   Icon(
+  //           //     Icons.info_outline,
+  //           //     color: AppColors.greyText,
+  //           //     size: 18.sp,
+  //           //   ),
+  //           // ],
+  //         ],
+  //       ),
+  //       Text(
+  //         value,
+  //         style: TextStyle(
+  //           color: AppColors.white,
+  //           fontSize: 16.sp,
+  //           fontWeight: FontWeight.w600,
+  //         ),
+  //       ),
+  //     ],
+  //   );
+  // }
 }
