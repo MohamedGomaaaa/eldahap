@@ -149,27 +149,86 @@ class ProductCubit extends Cubit<ProductState> {
     });
   }
 
-  Future<void> getProducts(int index) async {
+
+
+
+
+
+
+
+
+
+  Future<void> getProductsByCategoryId({required int categoryId}) async {
     if (state is GetProductsLoadingState) return;
+print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< getProductsByCategoryId ");
+    // ✅ دور على index بتاع الكاتيجوري من الـ id
+    final int idx = categories.indexWhere((c) => (c.id ?? 0) == categoryId);
+
+    if (idx == -1) {
+      emit(GetProductsErrorState(msg: "Category not found: $categoryId"));
+      return;
+    }
 
     emit(GetProductsLoadingState());
+
     await ProductRepository()
-        .products(categoryId: categories[index].id ?? 0)
+        .products(categoryId: categoryId)
         .then((value) {
-      categories[index].products = value;
-      categories[index].products;
+      categories[idx].products = value;
       emit(GetProductsSuccessState(categories));
     }).catchError((error) {
-      print("llllllllllllll $error");
       if (error is DioException) {
-        debugPrint(
-            'Error on Get Products: ${error.response?.data?.toString()}');
+        debugPrint('Error on Get Products: ${error.response?.data?.toString()}');
         Toast.showError(
-            msg: error.response?.data?.toString() ?? 'Error on Get Products');
+          msg: error.response?.data?.toString() ?? 'Error on Get Products',
+        );
       }
       emit(GetProductsErrorState(msg: error.toString()));
     });
   }
+
+
+
+  // Future<void> getProductsByCategoryId(int index) async {
+  //   if (state is GetProductsLoadingState) return;
+  //   emit(GetProductsLoadingState());
+  //   await ProductRepository()
+  //       .products(categoryId: categories[index].id ?? 0)
+  //       .then((value) {
+  //     categories[index].products = value;
+  //     categories[index].products;
+  //     emit(GetProductsSuccessState(categories));
+  //   }).catchError((error) {
+  //
+  //     if (error is DioException) {
+  //       debugPrint(
+  //           'Error on Get Products: ${error.response?.data?.toString()}');
+  //       Toast.showError(
+  //           msg: error.response?.data?.toString() ?? 'Error on Get Products');
+  //     }
+  //     emit(GetProductsErrorState(msg: error.toString()));
+  //   });
+  // }
+  //
+  //
+  //
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   Future<void> makeOrder(
       {required Product product, required double livePrice}) async {
@@ -355,4 +414,14 @@ class ProductCubit extends Cubit<ProductState> {
       throw error;
     });
   }
+  void resetEditToggles() {
+    stopLoss = false;
+    takeProfit = false;
+
+    stopLossController.clear();
+    takeProfitController.clear();
+
+    emit(ResetControllersState());
+  }
+
 }

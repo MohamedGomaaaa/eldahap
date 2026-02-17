@@ -24,7 +24,6 @@ class TradesSection extends StatelessWidget {
                 current is GetTradesSuccessState ||
                 current is GetTradesErrorState ||
                 current is CloseTradeLoadingState ||
-
                 current is TradesRefreshingState || // ✅ NEW
                 current is TradesExpandedChanged; // ✅ مهم
           },
@@ -33,7 +32,8 @@ class TradesSection extends StatelessWidget {
               return ListView.separated(
                 padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 12.sp),
                 itemBuilder: (context, index) {
-                  return ShimmerWidget(
+                  return
+                    ShimmerWidget(
                     child: Container(
                       padding: EdgeInsets.all(12.sp),
                       width: double.infinity,
@@ -62,9 +62,6 @@ class TradesSection extends StatelessWidget {
                 final g = TradesCubit.get(context).groupOfTradesOrOrders[index];
                 final key = g.metal ?? 'unknown_$index';
                 return
-
-
-
                   TradeWidget(
                   tradeGroup:g,
                   groupKey: key, // ✅ نفس المفتاح اللي الكيوبت بيستخدمه

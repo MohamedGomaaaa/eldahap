@@ -52,10 +52,10 @@ class WithDrawReportsScreen extends StatelessWidget {
                               final cubit = WalletCubit.get(context);
 
                               if (cubit.withdrawReports.isEmpty) {
-                                return Center(
+                                return const Center(
                                   child: Text(
                                     "LocaleKeys.noData.tr()",
-                                    style: const TextStyle(color: Colors.white),
+                                    style: TextStyle(color: Colors.white),
                                   ),
                                 );
                               }

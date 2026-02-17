@@ -95,7 +95,7 @@ class OrderWidget extends StatelessWidget {
 
                             // whole order type
                             Text(
-                                "${tradeGroup.title}  ",// سيب المسافه
+                              "${tradeGroup.title}  ", // سيب المسافه
                               style: const TextStyle(color: AppColors.white),
                             ),
                             SizedBox(width: 6.w),
@@ -126,31 +126,17 @@ class OrderWidget extends StatelessWidget {
 
                 // ✅ اعرض الليست على طول زي ما هي
 
-
-
                 Column(
                   children: List.generate(orderList.length, (index) {
-
                     final isLast = index == orderList.length - 1;
                     return CreatOrder(
                       productTitle: "${tradeGroup.title}",
-                      lastIndex:isLast,
+                      lastIndex: isLast,
                       order: orderList[index],
                       tradesCubit: tradesCubit,
-
                     );
                   }),
                 ),
-
-
-
-
-
-
-
-
-
-
               ],
             ),
           ),

@@ -87,7 +87,7 @@ class ProductsScreen extends StatelessWidget {
                             ).toList(),
                             onTap: (index) {
                               print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>> ${productCubit.categories[index].name} >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                              productCubit.getProducts(index);
+                              productCubit.getProductsByCategoryId(categoryId: productCubit.categories[index].id!);
                             },
                           );
                         },
@@ -104,7 +104,7 @@ class ProductsScreen extends StatelessWidget {
                             physics: const BouncingScrollPhysics(),
                             children: List.generate(
                                cubit.categories.length, /// مظبوطه
-                                  (index) => ProductsOfCategoryScreen(index: index),
+                                  (index) => ProductsOfCategoryScreen(index: index, categoryId:  cubit.categories[index].id!,),
                             ),
                           );
                         },

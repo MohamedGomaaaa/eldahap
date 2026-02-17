@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/trades_repository.dart';
 import '../../../model/new_trades.dart';
-import '../../../model/trade_model.dart';
 part 'trades_state.dart';
 
 
@@ -108,7 +107,7 @@ class TradesCubit extends Cubit<TradesState> {
       emit(CloseTradeSuccessState());
 
       // ✅ بعد العملية: اعمل get مع shimmer
-      await getTradess(showShimmer: false);
+      // await getTradess(showShimmer: false);
     }).catchError((error) {
       if (error is DioException) {
         debugPrint('Error: ${error.response?.data}');

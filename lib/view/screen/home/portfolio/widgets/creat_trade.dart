@@ -15,15 +15,15 @@ import '../trade_details_screen.dart';
 class CreatTrade extends StatelessWidget {
   final TradeOrOrder trade;
   final TradesCubit tradesCubit;
-  final String? displayQty;
-  final bool lastIndex;
+
+   final bool lastIndex;
   final String productTitle;
   const CreatTrade({
     super.key,
     required this.trade,
-    required this.displayQty,
+
     required this.tradesCubit,
-    required this.lastIndex,
+     required this.lastIndex,
     required this.productTitle,
   });
 
@@ -84,6 +84,7 @@ class CreatTrade extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+//////////////////////////////////////////////////////////////////////////////////////////////////// quantity
                         Material(
                           color: AppColors.blueColor,
                           borderRadius: BorderRadius.circular(8.sp),
@@ -104,6 +105,7 @@ class CreatTrade extends StatelessWidget {
                           ),
                         ),
                         SizedBox(height: 6.h),
+/////////////////////////////////////////////////////////////////////////////////////////////// _creat Low And High Price
                         _creatLowAndHighPrice(
                           context: context,
                           openPrice: openPrice,
@@ -114,9 +116,7 @@ class CreatTrade extends StatelessWidget {
                   ),
                 ),
               ),
-
               SizedBox(width: 6.w),
-
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////// ✅ RIGHT (Close + P&L)
               Expanded(
                 flex: 4,
@@ -167,6 +167,7 @@ class CreatTrade extends StatelessWidget {
                           ],
                         ),
                         SizedBox(height: 6.h),
+  //////////////////////////////////////////////////////////////////////////////////////////////////////////// close icon
                         CircleAvatar(
                           backgroundColor: AppColors.red,
                           radius: 10.r,
@@ -196,7 +197,8 @@ class CreatTrade extends StatelessWidget {
     required BuildContext context,
     required double openPrice,
     required double livePrice,
-  }) {
+  })
+  {
     return Row(
       children: [
         Text(
@@ -238,7 +240,8 @@ class CreatTrade extends StatelessWidget {
     TradeOrOrder trade,
     TradesCubit tradesCubit,
     double livePrice,
-  ) {
+  )
+  {
     showModalBottomSheet(
       context: context,
       isDismissible: false,
@@ -307,14 +310,21 @@ class CreatTrade extends StatelessWidget {
                 ),
               ),
               const SizedBox(height: 12),
-              GestureDetector(
-                onTap: () => Navigator.pop(context, false),
-                child: const Text(
-                  "Cancel",
-                  style: TextStyle(
-                    color: AppColors.yellow2,
-                    fontSize: 14,
-                    fontWeight: FontWeight.w600,
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed:(){Navigator.pop(context, false);},
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: AppColors.yellow2,
+                    foregroundColor: AppColors.white,
+                    padding: const EdgeInsets.symmetric(vertical: 14),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                  ),
+                  child:  const Text(
+                    "Cancel",
+                    style: TextStyle(fontWeight: FontWeight.bold),
                   ),
                 ),
               ),
@@ -326,6 +336,29 @@ class CreatTrade extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // class CreatTrade extends StatelessWidget {
 //   final TradeOrOrder trade;

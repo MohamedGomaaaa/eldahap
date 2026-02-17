@@ -1,5 +1,6 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:intl_phone_field/phone_number.dart';
+import 'package:official_gold/view_model/utils/common_method.dart';
 import '../../l10n/locale_keys.g.dart';
 
 
@@ -135,7 +136,7 @@ class Validator {
 
     // ✅ stop loss لازم يكون <= livePrice
     if (entered > livePrice) {
-      return "stop_loss_must_be_less_or_equal_live"
+      return "stop_loss_must_be_less_or_equal_live ${Methods.removeTrailingZeros(livePrice)}"
     ;
     }
 
@@ -161,7 +162,7 @@ class Validator {
 
     // ✅ take profit لازم يكون >= livePrice
     if (entered < livePrice) {
-      return "take_profit_must_be_greater_or_equal_live";
+      return "take_profit_must_be_greater_or_equal_live ${Methods.removeTrailingZeros(livePrice)}";
 
     }
 

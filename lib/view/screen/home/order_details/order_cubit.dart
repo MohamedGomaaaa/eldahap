@@ -7,14 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../model/trade_model.dart';
-import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
+
 import '../../../../view_model/data/network/repos/trades_repository.dart';
-import 'order_model.dart';
-import 'order_state.dart' hide CloseOrderLoadingState;
+import 'order_state.dart';
+
+
 
 class OrderCubit extends Cubit<OrderState> {
   OrderCubit() : super(OrderInitial());
 
+  static OrderCubit get(BuildContext context) =>
+      BlocProvider.of<OrderCubit>(context);
   final TextEditingController stopLossController = TextEditingController();
   final TextEditingController takeProfitController = TextEditingController();
 
@@ -125,46 +128,76 @@ class OrderCubit extends Cubit<OrderState> {
   //   }
   // }
 
-  void deleteOrder() {
-    // Call API to delete order
-    emit(OrderDeleted());
+  // void deleteOrder() {
+  //   // Call API to delete order
+  //   emit(OrderDeleted());
+  // }
+
+//////////////////////////////////////////////////////////////////////////////////// delete order
+  Future<void> deleteOrder({required orderId}) async {
+    emit(CloseOrderLoadingState());
+    await TradesRepository().closeOrder(orderId: orderId).then((value) async {
+      emit(CloseOrderSuccessState());
+      // ✅ بعد العملية: اعمل get مع shimmer
+      // await getOrderss(showShimmer: false);
+    }).catchError((error) {
+      if (error is DioException) {
+        debugPrint('Error: ${error.response?.data}');
+      } else {
+        debugPrint('Error: $error');
+      }
+      emit(CloseOrderErrorState());
+    });
   }
 
 
-  // Future<void> closeOrder({required orderId}) async {
-  //   emit(CloseOrderLoadingState());
-  //   await TradesRepository().closeOrder(orderId: orderId).then((value) async {
-  //     emit(CloseOrderSuccessState());
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  // void saveOrder() {
+  //   // Call API to save order with stop loss and take profit
+  //   final data = {
+  //     'stopLoss': stopLossEnabled ? stopLossAmount : null,
+  //     'takeProfit': takeProfitEnabled ? takeProfitAmount : null,
+  //   };
+  //   // Send to backend
+  //   print('Saving order: $data');
+  // }
+
+
+  // Future<void> closeTrade({required orderId, required closePrice}) async {
+  //   emit(CloseTradeLoadingState());
+  //   await TradesRepository()
+  //       .closeTrade(orderId: orderId, closePrice: closePrice)
+  //       .then((value) async {
+  //     emit(CloseTradeSuccessState());
   //
   //     // ✅ بعد العملية: اعمل get مع shimmer
-  //     await getOrderss(showShimmer: false);
+  //     // await getTradess(showShimmer: false);
   //   }).catchError((error) {
   //     if (error is DioException) {
   //       debugPrint('Error: ${error.response?.data}');
   //     } else {
   //       debugPrint('Error: $error');
   //     }
-  //     emit(CloseOrderErrorState());
+  //     emit(CloseTradeErrorState());
   //   });
   // }
-  //
-  //
-
-
-  void saveOrder() {
-    // Call API to save order with stop loss and take profit
-    final data = {
-      'stopLoss': stopLossEnabled ? stopLossAmount : null,
-      'takeProfit': takeProfitEnabled ? takeProfitAmount : null,
-    };
-    // Send to backend
-    print('Saving order: $data');
-  }
-
-
-
-
-
 
 
 

@@ -164,7 +164,8 @@ class ApiService {
     required String payerPhone,
     required String note,
     required String receiptPath, // 🖼️ مسار الصورة
-  }) async {
+  }) async
+  {
     try {
       final formData = FormData.fromMap({
         'amount': amount,
@@ -221,7 +222,8 @@ class ApiService {
     required String note,
     required String address,
     required String binanceId,
-  }) async {
+  }) async
+  {
     try {
       final response = await _dio.post(
         '$baseUrl'
@@ -292,7 +294,7 @@ class ApiService {
       if (takeProfit > 0) {
         data["take_profit"] = takeProfit;
       }
-
+print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $data");
       final response = await _dio.put(
         '$baseUrl'
             'order/update',

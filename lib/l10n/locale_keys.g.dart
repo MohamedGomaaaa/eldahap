@@ -15,6 +15,7 @@ abstract class  LocaleKeys {
   static const phone = 'phone';
   static const phoneError = 'phoneError';
   static const arabicPhoneError = ' "arabic_digits_not_allowed"';
+  static const   loading =   "loading";
 
 
 

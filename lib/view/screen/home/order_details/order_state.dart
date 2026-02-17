@@ -37,12 +37,17 @@ class OrderDeleted extends OrderState {}
 class GetOrdersErrorState extends OrderState {}
 class GetOrdersSuccessState extends OrderState {}
 class GetOrdersLoadingState extends OrderState {}
+// class CloseOrderErrorState extends OrderState {}
+// class CloseOrderSuccessState extends OrderState {}
+// class CloseOrderLoadingState extends OrderState {}
+
+
+
+
+
 class CloseOrderErrorState extends OrderState {}
 class CloseOrderSuccessState extends OrderState {}
 class CloseOrderLoadingState extends OrderState {}
-
-
-
 
 
 

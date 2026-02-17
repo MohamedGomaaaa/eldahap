@@ -26,24 +26,19 @@ class TradeWidget extends StatelessWidget {
     return BlocBuilder<TradesCubit, TradesState>(
       builder: (context, state) {
         final isOpen = tradesCubit.isGroupExpanded(groupKey);
-
         final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
           (g) => (g.metal ?? '') == groupKey,
           orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
         );
         final tradeList = group.tradesOrOrders ?? [];
 
-        final totalQty = tradeList.fold<double>(
-          0.0,
-          (sum, t) => sum + (double.tryParse(t.quantity.toString()) ?? 0.0),
-        );
-
-        final TradeOrOrder summaryTrade =
-            tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
-
+        // final totalQty = tradeList.fold<double>(
+        //   0.0,
+        //   (sum, t) => sum + (double.tryParse(t.quantity.toString()) ?? 0.0),
+        // );
+        final TradeOrOrder summaryTrade =  tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
         // ✅ لو صفقة واحدة: مفيش سهم
         final bool hasMoreThanOne = tradeList.length > 1;
-
         // ✅ لو صفقة واحدة نخليها تظهر كأنها مفتوحة على طول
         final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
 
@@ -70,6 +65,7 @@ class TradeWidget extends StatelessWidget {
                         borderRadius: BorderRadius.circular(50.sp),
                         child: Row(
                           children: [
+ ////////////////////////////////////////////////////////////////////////////////////////////  gold image
                             Padding(
                               padding: const EdgeInsets.all(6.0),
                               child: SvgWidget(
@@ -78,6 +74,7 @@ class TradeWidget extends StatelessWidget {
                               ),
                             ),
                             SizedBox(width: 6.sp),
+///////////////////////////////////////////////////////////////////////////////////////////  product name
                             Text(
                               "${tradeGroup.title}",
                               style: const TextStyle(color: AppColors.white),
@@ -86,12 +83,6 @@ class TradeWidget extends StatelessWidget {
                           ],
                         ),
                       ),
-
-//////////////////////////////////////////////////////  المتغير اليومي لو بعتهولنا اسامه
-                      // const Text(
-                      //   '1234.4',
-                      //   style: TextStyle(color: AppColors.blueColor),
-                      // ),
                     ],
                   ),
                 ),
@@ -128,12 +119,11 @@ class TradeWidget extends StatelessWidget {
                           Column(
                             children: List.generate(tradeList.length, (index) {
                               final trade = tradeList[index];
-                              final isLast = index == tradeList.length - 1||index==0;
+                              final isLast = index == tradeList.length - 1||(hasMoreThanOne==false&&index==0);
                               return CreatTrade(
                                 productTitle:tradeGroup.title! ,
                                 trade: trade,
                                 tradesCubit: tradesCubit,
-                                displayQty: null,
                                 lastIndex:isLast,
                               );
                             }),
@@ -144,7 +134,7 @@ class TradeWidget extends StatelessWidget {
                             lastIndex: true,
                             trade: summaryTrade,
                             tradesCubit: tradesCubit,
-                            displayQty: totalQty.toInt().toString(),
+
                           ),
                         ),
                       ),
