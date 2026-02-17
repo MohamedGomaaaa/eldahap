@@ -14,6 +14,9 @@ class ProductsOfCategoryScreen extends StatefulWidget {
   final int index;
   final int categoryId;
 
+
+
+
   const ProductsOfCategoryScreen({
     required this.index,
     required this.categoryId,
@@ -187,6 +190,7 @@ class _ProductsOfCategoryScreenState extends State<ProductsOfCategoryScreen> {
 //     );
 //   }
 // }
+
 
 
 
