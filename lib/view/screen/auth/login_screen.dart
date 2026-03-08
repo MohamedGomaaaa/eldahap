@@ -127,6 +127,9 @@ class LoginScreen extends StatelessWidget {
                                         onPressed: isLoading
                                             ? null
                                             : () async {
+
+
+                                          FocusScope.of(context).unfocus();
                                           final ok = cubit.formKey.currentState?.validate() ?? false;
                                           if (!ok) return;
 

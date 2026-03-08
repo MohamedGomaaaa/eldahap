@@ -75,10 +75,6 @@ class PayUsdtErrorState extends WalletState {
 // Reports States
 class GetDepositReportsLoadingState extends WalletState {}
 
-class GetDepositReportsSuccessState extends WalletState {
-  final List<Report> reports;
-  GetDepositReportsSuccessState(this.reports);
-}
 
 class GetDepositReportsErrorState extends WalletState {
   final String? msg;
@@ -87,10 +83,17 @@ class GetDepositReportsErrorState extends WalletState {
 
 class GetWithdrawReportsLoadingState extends WalletState {}
 
-class GetWithdrawReportsSuccessState extends WalletState {
-  final List<Report> reports;
-  GetWithdrawReportsSuccessState(this.reports);
-}
+
+// class GetDepositReportsSuccessState extends WalletState {
+//   final List<Report> reports;
+//   GetDepositReportsSuccessState(this.reports);
+// }
+
+// class GetWithdrawReportsSuccessState extends WalletState {
+//   final List<Report> reports;
+//   GetWithdrawReportsSuccessState(this.reports);
+// }
+
 
 class GetWithdrawReportsErrorState extends WalletState {
   final String? msg;
@@ -122,3 +125,84 @@ class DepositErrorState extends WalletState {
   final String? msg;
   DepositErrorState({this.msg});
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+class GetReportsLoadingState extends WalletState {}
+
+class GetReportsSuccessState extends WalletState {
+  final List<ReportResult2> reports;
+
+  GetReportsSuccessState(this.reports);
+}
+
+class GetReportsErrorState extends WalletState {
+  final String msg;
+
+  GetReportsErrorState({required this.msg});
+}
+
+
+
+
+
+
+
+
+
+class GetOrderReportsLoadingState extends WalletState {}
+
+class GetOrderReportsSuccessState extends WalletState {
+  final List<TradeOrOrder> reports;
+
+  GetOrderReportsSuccessState(this.reports);
+}
+
+class GetOrderReportsErrorState extends WalletState {
+  final String msg;
+
+  GetOrderReportsErrorState({required this.msg});
+}
+
+
+
+
+
+
+
+
+
+

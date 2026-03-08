@@ -125,7 +125,7 @@ class Product {
     takeProfit = json['takeProfit'];
     sellWhenPrice = json['sellWhenPrice']?.toString();
     name = json['name'];
-    category = json['category'];
+    category = json['category']??"";
     lowestPrice = json['lowestPrice'];
     highestPrice = json['highestPrice'];
   }

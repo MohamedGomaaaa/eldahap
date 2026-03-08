@@ -2,50 +2,45 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:official_gold/model/report_2.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
+import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../l10n/locale_keys.g.dart';
-import '../../../../../model/trade_model.dart';
-import '../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../view_model/utils/colors.dart';
+import '../../../../../view_model/utils/common_method.dart';
 import '../../../../components/app_bar_widget.dart';
 
-class OrderReportsScreen extends StatelessWidget {
+
+
+class OrderMoneyReports extends StatelessWidget {
   final String type;
 
-  const OrderReportsScreen({
+  const OrderMoneyReports({
     super.key,
     required this.type,
   });
 
   String _mapTypeToApiType() {
-    if (type == LocaleKeys.orderReports) {
-      return 'pending';
-    } else if (type == LocaleKeys.earningsReports) {
-      return 'closed-trades';
+    if (type == LocaleKeys.depositReports) {
+      return 'deposit';
+    } else if (type == LocaleKeys.withdrawReports) {
+      return 'withdraw';
     } else {
-      return 'pending';
+      return 'deposit';
     }
   }
 
   String _screenTitle() {
-    if (type == LocaleKeys.earningsReports) {
-      return LocaleKeys.earningsReports.tr();
+    if (type == LocaleKeys.withdrawReports) {
+      return LocaleKeys.withdrawReports.tr();
     }
-    return LocaleKeys.orderReports.tr();
-  }
-
-  String _emptyText() {
-    if (type == LocaleKeys.earningsReports) {
-      return 'No closed trades found';
-    }
-    return 'No pending orders found';
+    return LocaleKeys.depositReports.tr();
   }
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: WalletCubit.get(context)
-        ..getOrderReports(type: _mapTypeToApiType()),
+      value: WalletCubit.get(context)..getReports(type: _mapTypeToApiType()),
       child: Scaffold(
         body: GradientWidget(
           child: SafeArea(
@@ -59,6 +54,7 @@ class OrderReportsScreen extends StatelessWidget {
                       children: [
                         SizedBox(height: 12.h),
                         Text(
+//////////////////////////////////////////////////////////////////////////////////////////////  title
                           _screenTitle(),
                           textAlign: TextAlign.center,
                           style: Theme.of(context)
@@ -71,50 +67,49 @@ class OrderReportsScreen extends StatelessWidget {
                           color: AppColors.textYellow,
                         ),
                         SizedBox(height: 6.h),
+//////////////////////////////////////////////////////////////////////////////////////////////  list
                         Expanded(
                           child: BlocBuilder<WalletCubit, WalletState>(
                             buildWhen: (previous, current) {
-                              return current is GetOrderReportsLoadingState ||
-                                  current is GetOrderReportsSuccessState ||
-                                  current is GetOrderReportsErrorState;
+                              return current is GetReportsLoadingState ||
+                                  current is GetReportsSuccessState ||
+                                  current is GetReportsErrorState;
                             },
                             builder: (context, state) {
                               final cubit = WalletCubit.get(context);
 
-                              if (state is GetOrderReportsLoadingState) {
+                              if (state is GetReportsLoadingState) {
                                 return const Center(
                                   child: CircularProgressIndicator(),
                                 );
                               }
 
-                              if (state is GetOrderReportsErrorState) {
+                              if (state is GetReportsErrorState) {
                                 return Center(
                                   child: Text(
                                     state.msg.isNotEmpty
                                         ? state.msg
-                                        : 'Error loading reports',
+                                        : "Error loading reports",
                                   ),
                                 );
                               }
 
-                              if (cubit.orderReportsList.isEmpty) {
+                              if (cubit.reportsList.isEmpty) {
                                 return Center(
-                                  child: Text(_emptyText()),
+                                  child: Text(
+                                    type == LocaleKeys.withdrawReports
+                                        ? "No withdraw reports found"
+                                        : "No deposit reports found",
+                                  ),
                                 );
                               }
 
                               return ListView.builder(
                                 padding: EdgeInsets.symmetric(vertical: 8.h),
-                                itemCount: cubit.orderReportsList.length,
+                                itemCount: cubit.reportsList.length,
                                 itemBuilder: (context, index) {
-                                  final report = cubit.orderReportsList[index];
-                                  return Padding(
-                                    padding:
-                                        EdgeInsets.symmetric(vertical: 8.h),
-                                    child: InfoItemWidget(
-                                      tradeOrOrder: report,
-                                    ),
-                                  );
+                                  final report = cubit.reportsList[index];
+                                  return CreatCard(report: report);
                                 },
                               );
                             },
@@ -133,49 +128,63 @@ class OrderReportsScreen extends StatelessWidget {
   }
 }
 
-class InfoItemWidget extends StatelessWidget {
-  final TradeOrOrder tradeOrOrder;
+class CreatCard extends StatelessWidget {
+  final ReportResult2 report;
 
-  const InfoItemWidget({
+  const CreatCard({
     super.key,
-    required this.tradeOrOrder,
+    required this.report,
   });
-
-  String _value(dynamic v) => v?.toString() ?? '';
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(vertical: 8.h),
       padding: EdgeInsets.all(16.w),
       decoration: BoxDecoration(
         color: AppColors.grey,
         borderRadius: BorderRadius.circular(8),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildInfoRow(
-              label: LocaleKeys.productCategory.tr(),
-              value: tradeOrOrder.product!.category!,
-              context: context),
+            label: LocaleKeys.no.tr(),
+            value: report.id?.toString() ?? "",
+            context: context,
+          ),
           _buildInfoRow(
-              label: LocaleKeys.productName.tr(),
-              value: tradeOrOrder.product!.name!,
-              context: context),
+            label: LocaleKeys.details2.tr(),
+            value: report.isApproval ?? "",
+            context: context,
+          ),
           _buildInfoRow(
-              label: LocaleKeys.no.tr(),
-              value: tradeOrOrder.id!.toString(),
-              context: context),
+            label: LocaleKeys.amount.tr(),
+            value: _formatAmount(report.amount),
+            context: context,
+          ),
           _buildInfoRow(
-              label: LocaleKeys.type.tr(),
-              value: tradeOrOrder.type!,
-              context: context),
+            label: LocaleKeys.approve_at.tr(),
+            value:Methods.formatCreatedAt( report.approveAt!),
+            context: context,
+          ),
           _buildInfoRow(
-              label: LocaleKeys.productQuantity.tr(),
-              value: tradeOrOrder.quantity!.toString(),
-              context: context), // ممكن تبقي  qty
+            label: LocaleKeys.request_at.tr(),
+            value: Methods.formatCreatedAt( report.requestAt!),
+            context: context,
+          ),
         ],
       ),
     );
+  }
+
+  String _formatAmount(String? amount) {
+    if (amount == null || amount.isEmpty) return "";
+    try {
+      return Methods.removeTrailingZeros(num.parse(amount));
+    } catch (_) {
+      return amount;
+    }
   }
 
   Widget _buildInfoRow({
@@ -184,7 +193,7 @@ class InfoItemWidget extends StatelessWidget {
     required BuildContext context,
   }) {
     return Padding(
-      padding: EdgeInsets.symmetric(vertical: 6.h),
+      padding: EdgeInsets.symmetric(vertical: 4.h),
       child: Row(
         children: [
           Expanded(
@@ -192,9 +201,9 @@ class InfoItemWidget extends StatelessWidget {
             child: Text(
               label,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 16.sp,
-                  ),
+                fontWeight: FontWeight.bold,
+                fontSize: 14.sp,
+              ),
             ),
           ),
           Expanded(
@@ -202,9 +211,9 @@ class InfoItemWidget extends StatelessWidget {
             child: Text(
               value,
               style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                    fontWeight: FontWeight.normal,
-                    fontSize: 16.sp,
-                  ),
+                fontWeight: FontWeight.normal,
+                fontSize: 14.sp,
+              ),
             ),
           ),
         ],
@@ -212,4 +221,14 @@ class InfoItemWidget extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
 

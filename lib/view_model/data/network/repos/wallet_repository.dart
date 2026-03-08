@@ -1,7 +1,11 @@
-import 'package:official_gold/model/report.dart';
+import 'package:official_gold/model/report_1.dart';
 import 'package:official_gold/view_model/data/network/data_providers/wallet_providers.dart';
 
+import '../../../../model/report_2.dart';
+import '../../../../model/response.dart';
+import '../../../../model/trade_model.dart';
 import '../../../models/wallet_models/transaction_model.dart';
+import '../dio_helper.dart';
 
 class WalletRepository {
 
@@ -52,23 +56,75 @@ class WalletRepository {
     }
   }
 
-  Future<List<Report>> depositReports() async {
+
+  //
+  // Future<List<Report>> depositReports() async {
+  //   try {
+  //     final depositReportsResponse = await walletProvider.depositReports();
+  //     return depositReportsResponse?.data?['result'].map<Report>((e) => Report.fromJson(e)).toList() ?? [];
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+  //
+  // Future<List<Report>> withdrawReports() async {
+  //   try {
+  //     final withdrawReportsResponse = await walletProvider.withdrawReports();
+  //     return withdrawReportsResponse?.data?['result'].map<Report>((e) => Report.fromJson(e)).toList() ?? [];
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+
+
+
+
+
+  Future<List<ReportResult2>> reports({required String type}) async {
     try {
-      final depositReportsResponse = await walletProvider.depositReports();
-      return depositReportsResponse?.data?['result'].map<Report>((e) => Report.fromJson(e)).toList() ?? [];
+      final reportsResponse = await walletProvider.reports(type: type);
+
+      return (reportsResponse?.data?['result'] as List? ?? [])
+          .map<ReportResult2>((e) => ReportResult2.fromJson(e))
+          .toList();
     } catch (e) {
       rethrow;
     }
   }
 
-  Future<List<Report>> withdrawReports() async {
+
+  Future<List<TradeOrOrder>> getOrderReports({required String type}) async {
     try {
-      final withdrawReportsResponse = await walletProvider.withdrawReports();
-      return withdrawReportsResponse?.data?['result'].map<Report>((e) => Report.fromJson(e)).toList() ?? [];
+      final response = await walletProvider.orderReports(type: type);
+
+      final report = Report1.fromJson(response?.data ?? {});
+
+      return report.result?.tradeOrOrder ?? [];
     } catch (e) {
       rethrow;
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   Future<String> withdraw({required num amount,}) async {
     try {
@@ -98,4 +154,23 @@ class WalletRepository {
       rethrow;
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

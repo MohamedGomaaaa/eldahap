@@ -52,4 +52,26 @@ class EndPoints {
   static const String closeOrder = 'order/cancel';
 
   static const String sellTrade = 'sell-trade';
+
+
+
+  static const String closedTrades = 'order/closed-trades';
+  static const String orderPending = 'order/pending';
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

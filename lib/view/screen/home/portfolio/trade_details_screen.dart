@@ -247,11 +247,11 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
                       Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// take size
+                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
                       Row(
                         children: [
                           Text(
-                            "take size",
+                            "trade size",
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium

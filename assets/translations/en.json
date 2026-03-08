@@ -217,5 +217,9 @@
 
 
   "Buy": "Buy",
-  "chart": "Chart"
+  "chart": "Chart",  "Details": "Details",
+  "Price": "Price",
+  "Approve_at": "Approve at",
+  "Request_at": "Request at"
+
 }

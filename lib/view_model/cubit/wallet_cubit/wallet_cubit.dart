@@ -4,7 +4,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/wallet_repository.dart';
 
-import '../../../model/report.dart';
+import '../../../model/report_1.dart';
+import '../../../model/report_2.dart';
+import '../../../model/trade_model.dart';
 import '../../models/wallet_models/transaction_model.dart';
 import '../../utils/toast.dart';
 
@@ -21,10 +23,6 @@ class WalletCubit extends Cubit<WalletState> {
   bool isLoadingMoreTransactions = false;
   bool hasMoreTransactions = true;
   int currentTransactionPage = 1;
-
-
-
-
 
   Future<void> getWallet() async {
     emit(GetWalletLoadingState());
@@ -196,35 +194,136 @@ class WalletCubit extends Cubit<WalletState> {
     });
   }
 
-  List<Report> depositReports = [];
 
-  Future<void> getDepositReports() async {
-    emit(GetDepositReportsLoadingState());
-    await WalletRepository().depositReports().then((value) {
-      depositReports = value;
-      emit(GetDepositReportsSuccessState(depositReports));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////// old
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////  deposit Reports
+//   List<Report> depositReports = [];
+//
+//   Future<void> getDepositReports() async {
+//     emit(GetDepositReportsLoadingState());
+//     await WalletRepository().depositReports().then((value) {
+//       depositReports = value;
+//       emit(GetDepositReportsSuccessState(depositReports));
+//     }).catchError((error) {
+//       if (error is DioException) {
+//         debugPrint(error.response?.data?.toString());
+//       }
+//       emit(GetDepositReportsErrorState(msg: error.response?.data?.toString()));
+//     });
+//   }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////  withdraw Reports
+//   List<Report> withdrawReports = [];
+//
+//   Future<void> getWithdrawReports() async {
+//     emit(GetWithdrawReportsLoadingState());
+//     await WalletRepository().withdrawReports().then((value) {
+//       withdrawReports = value;
+//       emit(GetWithdrawReportsSuccessState(withdrawReports));
+//     }).catchError((error) {
+//       if (error is DioException) {
+//         debugPrint(error.response?.data?.toString());
+//       }
+//       emit(GetWithdrawReportsErrorState(msg: error.response?.data?.toString()));
+//     });
+//   }
+//////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  List<ReportResult2> reportsList = [];
+
+  Future<void> getReports({required String type}) async {
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>> type : $type ");
+    emit(GetReportsLoadingState());
+    await WalletRepository().reports(type: type).then((value) {
+      reportsList = value;
+      emit(GetReportsSuccessState(reportsList));
     }).catchError((error) {
       if (error is DioException) {
         debugPrint(error.response?.data?.toString());
+        emit(
+          GetReportsErrorState(
+            msg: error.response?.data?.toString() ?? 'Something went wrong',
+          ),
+        );
+      } else {
+        emit(GetReportsErrorState(msg: error.toString()));
       }
-      emit(GetDepositReportsErrorState(msg: error.response?.data?.toString()));
     });
+
   }
 
-  List<Report> withdrawReports = [];
 
-  Future<void> getWithdrawReports() async {
-    emit(GetWithdrawReportsLoadingState());
-    await WalletRepository().withdrawReports().then((value) {
-      withdrawReports = value;
-      emit(GetWithdrawReportsSuccessState(withdrawReports));
+
+
+
+  List<TradeOrOrder> orderReportsList = [];
+
+  Future<void> getOrderReports({required String type}) async {
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>> type : $type ");
+    emit(GetOrderReportsLoadingState());
+
+    await WalletRepository().getOrderReports(type: type).then((value) {
+      orderReportsList = value;
+      emit(GetOrderReportsSuccessState(orderReportsList));
     }).catchError((error) {
       if (error is DioException) {
         debugPrint(error.response?.data?.toString());
+        emit(
+          GetOrderReportsErrorState(
+            msg: error.response?.data?.toString() ?? 'Something went wrong',
+          ),
+        );
+      } else {
+        emit(GetOrderReportsErrorState(msg: error.toString()));
       }
-      emit(GetWithdrawReportsErrorState(msg: error.response?.data?.toString()));
     });
   }
+
+
+
+
+
+
+
+
+
+
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////  withdraw in wallets
 
   Future<void> withdraw() async {
     emit(WithdrawLoadingState());
@@ -248,7 +347,7 @@ class WalletCubit extends Cubit<WalletState> {
       throw error;
     });
   }
-
+// /////////////////////////////////////////////////////////////////////////////////////////////////////////////////  deposit in wallets
   Future<void> deposit() async {
     emit(DepositLoadingState());
     await WalletRepository()

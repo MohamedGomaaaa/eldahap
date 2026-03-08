@@ -169,8 +169,9 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
 //////////////////////////////////////////////////////////////////////////////////////////////////////// type,
                                       _buildInfoRow(
                                         label: 'Type',
-                                        value: order.openPrice! < livePrice
-                                            ? ' Buy Limit'
+                                        value:
+                                        order.sellWhenPrice! < livePrice
+                                            ? 'Buy Limit'
                                             : "Buy Stop",
                                       ),
                                       SizedBox(height: 10.h),
@@ -181,14 +182,25 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                                 order.createdAt!.toString())
                                             .toString(),
                                       ),
-///////////////////////////////////////////////////////////////////////////////////////////////////////// take size
+///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
                                       SizedBox(height: 10.h),
                                       _buildInfoRow(
-                                        label: "take size",
+                                        label: "open price",
+                                        value: Methods.removeTrailingZeros(
+                                          (order.openPrice ?? 0) * livePrice,
+                                        ),
+                                      ),
+///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
+                                      SizedBox(height: 10.h),
+                                      _buildInfoRow(
+                                        label: "trade size",
                                         value: Methods.removeTrailingZeros(
                                           (order.quantity ?? 0) * livePrice,
                                         ),
                                       ),
+
+                                      order.takeProfit == null ||
+                                          order.takeProfit == 0? const SizedBox():
                                       SizedBox(height: 10.h),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// take profit
                                       order.takeProfit == null ||
@@ -201,6 +213,9 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                                       order.takeProfit!),
                                             ),
  ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
+                                      order.stopLoss == null ||
+                                          order.stopLoss == 0?const SizedBox():
+
                                       SizedBox(height: 10.h),
                                       order.stopLoss == null ||
                                               order.stopLoss == 0
@@ -212,6 +227,8 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                                       order.stopLoss!),
                                             ),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////  buy when == open price
+                                      order.sellWhenPrice == null ||
+                                          order.sellWhenPrice == 0?const SizedBox():
                                       SizedBox(height: 10.h),
                                       order.sellWhenPrice == null ||
                                               order.sellWhenPrice == 0

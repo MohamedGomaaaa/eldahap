@@ -10,6 +10,7 @@ import '../../../../../view_model/utils/colors.dart';
 import '../../../../components/app_bar_widget.dart';
 import 'deposit_reports_screen.dart';
 import 'earnings_reports_screen.dart';
+import 'order_money_reports.dart';
 import 'order_reports_screen.dart';
 import 'withdraw_reports_screen.dart';
 
@@ -28,11 +29,12 @@ class ReportsScreen extends StatelessWidget {
               SizedBox(
                 height: 12.h,
               ),
+/////////////////////////////////////////////////////////////////////////////////////  title
               Text(
                 LocaleKeys.reports.tr(),
                 textAlign: TextAlign.center,
                 style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    // color: AppColors.textYellow,
+
                     ),
               ),
               SizedBox(
@@ -44,28 +46,54 @@ class ReportsScreen extends StatelessWidget {
               SizedBox(
                 height: 6.h,
               ),
+/////////////////////////////////////////////////////////////////////////////////////  pending orders
               ProfileTileWidget(
                 title: LocaleKeys.orderReports.tr(),
-                onTap: (){
-                  Navigation.push(context,  OrderReportsScreen(),);
+                onTap: () {
+                  Navigation.push(
+                    context,
+                    OrderReportsScreen(
+                      type: LocaleKeys.orderReports,
+                    ),
+                  );
                 },
               ),
+////////////////////////////////////////////////////////////////////////////////////  closed-trades
               ProfileTileWidget(
                 title: LocaleKeys.earningsReports.tr(),
-                onTap: (){
-                  Navigation.push(context, const EarningsReportsScreen(),);
+                onTap: () {
+                  Navigation.push(
+                    context,
+                    OrderReportsScreen(
+                      type: LocaleKeys.earningsReports,
+                    ),
+                  );
                 },
               ),
+///////////////////////////////////////////////////////////////////////////////////  deposit
               ProfileTileWidget(
                 title: LocaleKeys.depositReports.tr(),
-                onTap: (){
-                  Navigation.push(context, const DepositReportsScreen(),);
+                onTap: () {
+                  Navigation.push(
+                    context,
+                    const OrderMoneyReports(type: LocaleKeys.depositReports,),
+                  );
                 },
               ),
+///////////////////////////////////////////////////////////////////////////////////  withdraw Reports
               ProfileTileWidget(
                 title: LocaleKeys.withdrawReports.tr(),
-                onTap: (){
-                  Navigation.push(context, const WithDrawReportsScreen(),);
+                onTap: () {
+                  Navigation.push(
+                    context,
+                    const OrderMoneyReports(type: LocaleKeys.withdrawReports,),
+                  );
+
+
+
+
+
+
                 },
               ),
             ],

@@ -96,7 +96,7 @@ class CodePasswordScreen extends StatelessWidget {
                             width: 200.w,
                             height: 40.h,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () {FocusScope.of(context).unfocus();
                                 if(!AuthCubit.get(context).formKeyCode.currentState!.validate()) return;
                                 AuthCubit.get(context).verifyResetOtp(context).then((value) {
                                   if (value?.data["success"] ?? false) {

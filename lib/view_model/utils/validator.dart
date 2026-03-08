@@ -7,36 +7,9 @@ import '../../l10n/locale_keys.g.dart';
 
 
 class Validator {
-  // static String? validatePassword({required String? value}) {
-  //   if (value == null || value.trim().isEmpty) {
-  //     return "please_enter_password".tr;        // يرجى إدخال كلمة المرور
-  //   }
-  //   if (value.length < 6) {
-  //     return "password_min_length".tr;          // كلمة المرور يجب أن تتكون من 6 أحرف على الأقل
-  //   }
-  //   return null;
-  // }
-////////////////////////////////////////////////////////////////////////////////////////////////////
-//   static String? validatePhoneNumber({required String? value}) {
-//     final arabicDigitsRegex = RegExp(r'[٠-٩]'); // أرقام عربية (Hindi digits)
-//
-//     if (value == null || value.trim().isEmpty) {
-//       return "invalid_phone".tr;
-//     }
-//
-//     // ❌ منع الأرقام العربية
-//     if (arabicDigitsRegex.hasMatch(value)) {
-//       return "arabic_digits_not_allowed".tr; // أضفها في الترجمة
-//     }
-//
-//     // ❌ أقل من 7 أرقام
-//     if (value.length < 6) {
-//       return "invalid_phone".tr;
-//     }
-//
-//     return null;
-//   }
 
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate  phoneNumber As Phone
   static String? validatePhoneNumberAsPhone({required PhoneNumber? value}) {
     if (value == null) return "invalid_phone";
 
@@ -67,10 +40,7 @@ class Validator {
     return null;
   }
 
-
-//
-//
-// //////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Confirm Password
   static String? validateConfirmPassword({
     required String? value,
     required String? originalPassword,
@@ -82,7 +52,7 @@ class Validator {
     }
     return null;
   }
-// //////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Price With Range
 
   static String? validatePriceWithRange({
   required String? value,
@@ -116,13 +86,14 @@ class Validator {
   return null;
   }
 
-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Stop Loss
 
   static String? validateStopLoss({
     required String? value,
     required num livePrice,
     bool requiredField = false,
-  }) {
+  })
+  {
     // null or empty
     if (value == null || value.trim().isEmpty) {
       return requiredField ? "please_fill_field" : null;
@@ -142,7 +113,7 @@ class Validator {
 
     return null;
   }
-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Take Profit
   static String? validateTakeProfit({
     required String? value,
     required num livePrice,
@@ -169,14 +140,15 @@ class Validator {
     return null;
   }
 
-
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Quantity
 
   static String? validateQuantity({
     required String? value,
     required num finalPrice,      // ✅ السعر النهائي (الإجمالي)
     required num walletBalance,   // ✅ رصيد المحفظة
     bool requiredField = false,
-  }) {
+  })
+  {
     ////////////////////////////////// finalPrice=  live *quantity*weight
 
     // null or empty
@@ -205,7 +177,7 @@ class Validator {
 
 
 
-// //////////////////////////////////////////////////////////////////////////////////////////////////////
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Email
   static String? validateEmail({required String? value}) {
     if (value == null || value.trim().isEmpty) {
       return LocaleKeys.validateEmail2.tr();  // يرجى إدخال بريد إلكتروني
@@ -217,20 +189,6 @@ class Validator {
     }
     return null;
 
-//   }
-// //////////////////////////////////////////////////////////////////////////////////////////////////////
-// //   static String? validateLocation({required String? value})
-// //   {
-// //     if (value == null || value.trim().isEmpty)
-// //     {
-// //       return null;
-// //     }
-// //     final googleMapsPattern = RegExp(r'^(https?:\/\/)?(www\.)?(google\.com\/maps|goo\.gl\/maps|maps\.app\.goo\.gl)\/[^\s]+$', caseSensitive: false);
-// //     if (!googleMapsPattern.hasMatch(value.trim())) {
-// //       return "invalid_location".tr;    // يرجى إدخال رابط موقع جوجل ماب صالح أو ترك الحقل فارغًا
-// //     }
-// //     return null;
-// //   }
-// }
+
 
 }}

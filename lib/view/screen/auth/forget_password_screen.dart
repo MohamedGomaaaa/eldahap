@@ -98,7 +98,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                             width: 200.w,
                             height: 40.h,
                             child: ElevatedButton(
-                              onPressed: () {
+                              onPressed: () {FocusScope.of(context).unfocus();
                                 if(!AuthCubit.get(context).formKeyForgetPassword.currentState!.validate()){
                                   return;
                                 }else{

@@ -165,6 +165,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                             height: 40.h,
                             child: ElevatedButton(
                               onPressed: () {
+                                FocusScope.of(context).unfocus();
                                 if (!AuthCubit.get(context).formKeyResetPassword.currentState!.validate()) return;
 
                                 // Call your reset password API method

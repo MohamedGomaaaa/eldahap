@@ -105,4 +105,61 @@ class WalletProvider {
       rethrow;
     }
   }
+
+
+
+
+
+  Future<Response?> reports({required String type}) async {
+    try {
+      String path;
+
+      if (type == 'deposit') {
+        path = EndPoints.reportDeposit;
+      } else if (type == 'withdraw') {
+        path = EndPoints.reportWithdraw;
+      } else {
+        throw Exception('Invalid report type: $type');
+      }
+
+      return await DioHelper.get(
+        path: path,
+        withToken: true,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+  Future<Response?> orderReports({required String type}) async {
+    try {
+      String path;
+
+      if (type == 'pending') {
+        path = EndPoints.orderPending;
+      } else if (type == 'closed-trades') {
+        path = EndPoints.closedTrades;
+      } else {
+        throw Exception('Invalid order report type: $type');
+      }
+
+      return await DioHelper.get(
+        path: path,
+        withToken: true,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
 }

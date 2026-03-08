@@ -23,7 +23,8 @@ void main() {
 
     Bloc.observer = MyBlocObserver();
 
-    // ✅ يمسك Errors اللي خارج try/catch
+    EasyLocalization.logger.enableLevels = [];
+
     PlatformDispatcher.instance.onError = (Object error, StackTrace stack) {
       if (error is SocketException &&
           error.message.contains('Reading from a closed socket')) {

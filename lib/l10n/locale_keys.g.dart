@@ -53,10 +53,7 @@ abstract class  LocaleKeys {
   static const reports = 'reports';
   static const endTicket = 'endTicket';
   static const faq = 'faq';
-  static const orderReports = 'orderReports';
-  static const earningsReports = 'earningsReports';
-  static const depositReports = 'depositReports';
-  static const withdrawReports = 'withdrawReports';
+
   static const addMoney = 'addMoney';
   static const quantity = 'quantity';
   static const verifyTheRequiredInformation = 'verifyTheRequiredInformation';
@@ -256,4 +253,35 @@ abstract class  LocaleKeys {
 
 
   static const ounceFactor = 31.1035;
+
+
+
+  static const orderReports = 'orderReports';
+  static const earningsReports = 'earningsReports';
+  static const depositReports = 'depositReports';
+  static const withdrawReports = 'withdrawReports';
+
+
+  static const request_at = 'Request_at';
+  static const approve_at = 'Approve_at';
+
+
+  static const   details2 = 'Details';
+
+
+
+
+
+  static const productCategory = 'Product Category';
+  static const productName = 'Product name';
+  static const type = 'type';
+  static const productQuantity = 'Quantity';
+
+
+
+
+
+
+
+
 }

@@ -124,6 +124,7 @@ class RegisterScreen extends StatelessWidget {
                                       countryName: cubit.countryName ?? "EG",
                                       phoneController: cubit.mobile,
                                       onCountryChanged: (country) {
+                                        FocusScope.of(context).unfocus();
                                         cubit.countryCode = '+${country.dialCode}';
                                         cubit.countryName = country.code;
                                       },
@@ -268,7 +269,7 @@ class _FullScreenAuthLoading extends StatelessWidget {
                 SizedBox(
                   width: 22.w,
                   height: 22.w,
-                  child: CircularProgressIndicator(
+                  child: const CircularProgressIndicator(
                     strokeWidth: 3,
                     valueColor: AlwaysStoppedAnimation<Color>(AppColors.yellow),
                   ),
