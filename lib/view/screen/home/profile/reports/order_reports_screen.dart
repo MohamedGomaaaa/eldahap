@@ -83,7 +83,7 @@ class OrderReportsScreen extends StatelessWidget {
 
                               if (state is GetOrderReportsLoadingState) {
                                 return const Center(
-                                  child: CircularProgressIndicator(),
+                                  child: CircularProgressIndicator(color: AppColors.yellow,),
                                 );
                               }
 
