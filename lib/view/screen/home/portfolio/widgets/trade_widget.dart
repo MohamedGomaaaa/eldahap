@@ -8,6 +8,8 @@ import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
+import '../../../../../view_model/utils/common_method.dart';
+import '../../../../components/live_text.dart';
 import '../../../../components/svg_widget.dart';
 import 'creat_trade.dart';
 class TradeWidget extends StatelessWidget {
@@ -69,6 +71,7 @@ class TradeWidget extends StatelessWidget {
                             ),
                             child: Row(
                               children: [
+ // ////////////////////////////////////////////////////////////////////////////////////////  gold image
                                 Padding(
                                   padding: const EdgeInsets.all(6.0),
                                   child: SvgWidget(
@@ -77,6 +80,7 @@ class TradeWidget extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 6.sp),
+///////////////////////////////////////////////////////////////////////////////////////////  product name
                                 Expanded(
                                   child: Text(
                                     "${tradeGroup.title}",
@@ -86,6 +90,7 @@ class TradeWidget extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
+// ////////////////////////////////////////////////////////////////////////////////////////  total onl
                                 SizedBox(width: 8.w),
                                 BlocBuilder<LivePriceCubit, LivePriceState>(
                                   builder: (context, liveState) {
@@ -117,15 +122,48 @@ class TradeWidget extends StatelessWidget {
 
                                     final bool isProfit = totalPnl >= 0;
 
-                                    return Text(
-                                      totalPnl.toStringAsFixed(2),
-                                      style: TextStyle(
+                                    return 
+                                    //   Text(
+                                    //   totalPnl.toStringAsFixed(2),
+                                    //   style: TextStyle(
+                                    //     color: isProfit
+                                    //         ? AppColors.blueColor
+                                    //         : AppColors.red,
+                                    //     fontWeight: FontWeight.bold,
+                                    //   ),
+                                    // );
+
+
+
+
+
+                                    LivePriceText(
+                                      price: double.parse(Methods.removeTrailingZeros(num.parse(totalPnl.toString()))),
+                                      decimals: 2,
+                                      fakeMinDelta: 0.01,
+                                      fakeMaxDelta: 0.05,
+                                      fakeTickEvery:
+                                      const Duration(milliseconds: 900),
+                                      neutralColor: Colors.transparent,
+                                      upColor: Colors.transparent,
+                                      downColor: Colors.transparent,
+                                      padding: EdgeInsets.zero,
+                                      width: null, // ✅ ياخد عرض الأب (Flexible)
+                                      alignment: Alignment.centerRight,
+                                      style: Theme.of(context)
+                                          .textTheme
+                                          .bodyLarge
+                                          ?.copyWith(
                                         color: isProfit
                                             ? AppColors.blueColor
                                             : AppColors.red,
-                                        fontWeight: FontWeight.bold,
                                       ),
-                                    );
+                                    );   
+                                    
+                                    
+                                    
+                                    
+                                    
                                   },
                                 ),
                               ],
@@ -156,6 +194,7 @@ class TradeWidget extends StatelessWidget {
                           ),
                         ),
                       ],
+////////////////////////////////////////////////////////////////////////////////////////  list of tade group
                       Expanded(
                         child: AnimatedCrossFade(
                           duration: const Duration(milliseconds: 250),

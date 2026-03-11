@@ -231,7 +231,8 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 
 
   Future<void> makeOrder(
-      {required Product product, required double livePrice}) async {
+      {required Product product, required double livePrice}) async
+  {
     emit(MakeOrderLoadingState());
 
     final payload = <String, dynamic>{
@@ -278,7 +279,8 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     required Map<String, dynamic> data,
     String tag = '🟦 ORDER PAYLOAD',
     String? path, // optional: endpoint path
-  }) {
+  })
+  {
     final buffer = StringBuffer();
 
     buffer.writeln('==================== $tag ====================');
