@@ -3,12 +3,7 @@ import 'package:intl_phone_field/phone_number.dart';
 import 'package:official_gold/view_model/utils/common_method.dart';
 import '../../l10n/locale_keys.g.dart';
 
-
-
-
 class Validator {
-
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate  phoneNumber As Phone
   static String? validatePhoneNumberAsPhone({required PhoneNumber? value}) {
     if (value == null) return "invalid_phone";
@@ -45,110 +40,138 @@ class Validator {
     required String? value,
     required String? originalPassword,
   }) {
-
     if (value != originalPassword) {
       return LocaleKeys.confirmPassword2.tr();
-
     }
     return null;
   }
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Price With Range
 
-  static String? validatePriceWithRange({
-  required String? value,
-  required num originalPrice,
-  double percentage = 50,
-  })
-  {
-  // null or empty
-  if (value == null || value.trim().isEmpty) {
-  return "please_fill_field";
-  }
+  static String? validatePriceWithRange(
+      {required String? enteredValue,
+      required num livePrice,
+      double percentage = 50}) {
+    // null or empty
+    if (enteredValue == null || enteredValue.trim().isEmpty) {
+      return "please_fill_field";
+    }
 
-  // parse number
-  final num? enteredPrice = num.tryParse(value);
-  if (enteredPrice == null) {
-  return "invalid_number";
-  }
+    // parse number
+    final num? enteredPrice = num.tryParse(enteredValue);
+    if (enteredPrice == null) {
+      return "invalid_number";
+    }
 
-  // calculate limits
-  final num minPrice =
-  originalPrice * (1 - percentage / 100); // 75
-  final num maxPrice =
-  originalPrice * (1 + percentage / 100); // 125
+    // calculate limits
+    final num minPrice = livePrice * (1 - percentage / 100); // 75
+    final num maxPrice = livePrice * (1 + percentage / 100); // 125
 
-  // validate range
-  if (enteredPrice < minPrice || enteredPrice > maxPrice) {
-  return "price_must_be_between" +
-  " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
-  }
+    // validate range
+    if (enteredPrice < minPrice || enteredPrice > maxPrice) {
+      return "price_must_be_between" +
+          " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
+    }
 
-  return null;
+    return null;
   }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Stop Loss
 
-  static String? validateStopLoss({
-    required String? value,
-    required num livePrice,
-    bool requiredField = false,
-  })
-  {
+  static String? validateStopLoss(
+      {required String? enteredValue,
+      required num livePrice,
+      bool requiredField = false,
+      double percentage = 50}) {
     // null or empty
-    if (value == null || value.trim().isEmpty) {
+    if (enteredValue == null || enteredValue.trim().isEmpty) {
       return requiredField ? "please_fill_field" : null;
     }
 
     // parse number
-    final num? entered = num.tryParse(value.trim());
-    if (entered == null) {
+    final num? enteredPrice = num.tryParse(enteredValue);
+    if (enteredPrice == null) {
       return "invalid_number";
     }
 
-    // ✅ stop loss لازم يكون <= livePrice
-    if (entered > livePrice) {
-      return "stop_loss_must_be_less_or_equal_live ${Methods.removeTrailingZeros(livePrice)}"
-    ;
+    // calculate limits
+    final num minPrice = livePrice * (1 - percentage / 100); // 75
+    final num maxPrice = livePrice * (1 + percentage / 100); // 125
+
+    // validate range
+    if (enteredPrice < minPrice || enteredPrice > maxPrice) {
+      return "price_must_be_between" +
+          " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
     }
 
     return null;
+
+///////////////////////////////////////////////////////// old
+    // // parse number
+    // final num? entered = num.tryParse(enteredValue.trim());
+    // if (entered == null) {
+    //   return "invalid_number";
+    // }
+    //
+    // // ✅ stop loss لازم يكون <= livePrice
+    // if (entered > livePrice) {
+    //   return "stop_loss_must_be_less_or_equal_live ${Methods.removeTrailingZeros(livePrice)}";
+    // }
+    //
+    // return null;
   }
+
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Take Profit
-  static String? validateTakeProfit({
-    required String? value,
-    required num livePrice,
-    bool requiredField = false,
-  })
-  {
+  static String? validateTakeProfit(
+      {required String? enteredValue,
+      required num livePrice,
+      bool requiredField = false,
+      double percentage = 50}) {
     // null or empty
-    if (value == null || value.trim().isEmpty) {
+    if (enteredValue == null || enteredValue.trim().isEmpty) {
       return requiredField ? "please_fill_field" : null;
     }
 
     // parse number
-    final num? entered = num.tryParse(value.trim());
-    if (entered == null) {
+    final num? enteredPrice = num.tryParse(enteredValue);
+    if (enteredPrice == null) {
       return "invalid_number";
     }
 
-    // ✅ take profit لازم يكون >= livePrice
-    if (entered < livePrice) {
-      return "take_profit_must_be_greater_or_equal_live ${Methods.removeTrailingZeros(livePrice)}";
+    // calculate limits
+    final num minPrice = livePrice * (1 - percentage / 100); // 75
+    final num maxPrice = livePrice * (1 + percentage / 100); // 125
 
+    // validate range
+    if (enteredPrice < minPrice || enteredPrice > maxPrice) {
+      return "price_must_be_between" +
+          " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
     }
 
     return null;
+
+///////////////////////////////////////////////////////// old
+    // // parse number
+    // final num? entered = num.tryParse(enteredValue.trim());
+    // if (entered == null) {
+    //   return "invalid_number";
+    // }
+    //
+    // // ✅ take profit لازم يكون >= livePrice
+    // if (entered < livePrice) {
+    //   return "take_profit_must_be_greater_or_equal_live ${Methods.removeTrailingZeros(livePrice)}";
+    // }
+    //
+    // return null;
   }
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Quantity
 
   static String? validateQuantity({
     required String? value,
-    required num finalPrice,      // ✅ السعر النهائي (الإجمالي)
-    required num walletBalance,   // ✅ رصيد المحفظة
+    required num finalPrice, // ✅ السعر النهائي (الإجمالي)
+    required num walletBalance, // ✅ رصيد المحفظة
     bool requiredField = false,
-  })
-  {
+  }) {
     ////////////////////////////////// finalPrice=  live *quantity*weight
 
     // null or empty
@@ -168,27 +191,23 @@ class Validator {
     }
 
     // ✅ لو السعر النهائي أكبر من المحفظة -> error
-    if (finalPrice > walletBalance) {
-      return "insufficient_wallet_balance";
-    }
+    // if (finalPrice > walletBalance) {
+    //   return "insufficient_wallet_balance";
+    // }
 
     return null;
   }
 
-
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Email
   static String? validateEmail({required String? value}) {
     if (value == null || value.trim().isEmpty) {
-      return LocaleKeys.validateEmail2.tr();  // يرجى إدخال بريد إلكتروني
+      return LocaleKeys.validateEmail2.tr(); // يرجى إدخال بريد إلكتروني
     }
     String trimmed = value.trim();
     final emailRegex = RegExp(r"^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$");
     if (!emailRegex.hasMatch(trimmed)) {
-      return LocaleKeys.validateEmail2.tr();      // يرجى إدخال بريد إلكتروني صحيح
+      return LocaleKeys.validateEmail2.tr(); // يرجى إدخال بريد إلكتروني صحيح
     }
     return null;
-
-
-
-}}
+  }
+}

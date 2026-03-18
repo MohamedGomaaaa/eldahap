@@ -500,7 +500,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 return TextFormField(
                                   validator: (value) =>
                                       Validator.validateStopLoss(
-                                    value: value,
+                                    enteredValue: value,
                                     livePrice: livePrice,
                                   ),
                                   controller: cubit.stopLossController,
@@ -618,7 +618,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 return TextFormField(
                                   validator: (value) =>
                                       Validator.validateTakeProfit(
-                                    value: value,
+                                    enteredValue: value,
                                     livePrice: livePrice,
                                     requiredField: cubit.takeProfit,
                                   ),

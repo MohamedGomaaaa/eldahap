@@ -607,8 +607,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                   (value) =>
                                                                   Validator
                                                                       .validatePriceWithRange(
-                                                                    value: value,
-                                                                    originalPrice:
+                                                                    enteredValue: value,
+                                                                    livePrice:
                                                                     liveOpenPrice,
                                                                   ),
 
@@ -822,7 +822,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                     validator:
                                                                         (value) =>
                                                                         Validator.validateStopLoss(
-                                                                          value:
+                                                                          enteredValue:
                                                                           value,
                                                                           livePrice:
                                                                           liveOpenPrice,
@@ -1062,7 +1062,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                     validator:
                                                                         (value) =>
                                                                         Validator.validateTakeProfit(
-                                                                          value:
+                                                                          enteredValue:
                                                                           value,
                                                                           livePrice:
                                                                           liveOpenPrice,

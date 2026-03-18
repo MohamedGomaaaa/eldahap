@@ -447,7 +447,7 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                     SizedBox(height: 12.h),
                     TextFormField(
                       validator: (value) => Validator.validateStopLoss(
-                        value: value,
+                        enteredValue: value,
                         livePrice: livePrice,
                       ),
                       controller: cubit.stopLossController,
@@ -554,7 +554,7 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                     SizedBox(height: 12.h),
                     TextFormField(
                       validator: (value) => Validator.validateTakeProfit(
-                        value: value,
+                        enteredValue: value,
                         livePrice: livePrice,
                         requiredField: cubit.takeProfitEnabled,
                       ),
