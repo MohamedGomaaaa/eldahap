@@ -7,6 +7,7 @@ import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../model/trade_model.dart';
 import '../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../view_model/utils/colors.dart';
+import '../../../../../view_model/utils/common_method.dart';
 import '../../../../components/app_bar_widget.dart';
 
 class OrderReportsScreen extends StatelessWidget {
@@ -20,7 +21,7 @@ class OrderReportsScreen extends StatelessWidget {
   String _mapTypeToApiType() {
     if (type == LocaleKeys.orderReports) {
       return 'pending';
-    } else if (type == LocaleKeys.earningsReports) {
+    } else if (type == LocaleKeys.tradingReports) {
       return 'closed-trades';
     } else {
       return 'pending';
@@ -28,14 +29,14 @@ class OrderReportsScreen extends StatelessWidget {
   }
 
   String _screenTitle() {
-    if (type == LocaleKeys.earningsReports) {
-      return LocaleKeys.earningsReports.tr();
+    if (type == LocaleKeys.tradingReports) {
+      return LocaleKeys.tradingReports.tr();
     }
     return LocaleKeys.orderReports.tr();
   }
 
   String _emptyText() {
-    if (type == LocaleKeys.earningsReports) {
+    if (type == LocaleKeys.tradingReports) {
       return 'No closed trades found';
     }
     return 'No pending orders found';
@@ -133,6 +134,9 @@ class OrderReportsScreen extends StatelessWidget {
   }
 }
 
+
+
+
 class InfoItemWidget extends StatelessWidget {
   final TradeOrOrder tradeOrOrder;
 
@@ -141,7 +145,7 @@ class InfoItemWidget extends StatelessWidget {
     required this.tradeOrOrder,
   });
 
-  String _value(dynamic v) => v?.toString() ?? '';
+
 
   @override
   Widget build(BuildContext context) {
@@ -153,6 +157,20 @@ class InfoItemWidget extends StatelessWidget {
       ),
       child: Column(
         children: [
+
+          _buildInfoRow(
+              label: LocaleKeys.id.tr(),
+              value: tradeOrOrder.id!.toString(),
+              context: context),
+
+
+
+          _buildInfoRow(
+              label: LocaleKeys.type.tr(),
+              value: tradeOrOrder.type!,
+              context: context),
+
+
           _buildInfoRow(
               label: LocaleKeys.productCategory.tr(),
               value: tradeOrOrder.product!.category!,
@@ -161,28 +179,68 @@ class InfoItemWidget extends StatelessWidget {
               label: LocaleKeys.productName.tr(),
               value: tradeOrOrder.product!.name!,
               context: context),
+
+
+
+
           _buildInfoRow(
-              label: LocaleKeys.no.tr(),
-              value: tradeOrOrder.id!.toString(),
+              label: LocaleKeys.metal.tr(),
+              value: tradeOrOrder.metal!,
               context: context),
+
           _buildInfoRow(
-              label: LocaleKeys.type.tr(),
-              value: tradeOrOrder.type!,
+              label: LocaleKeys.currency,
+              value: tradeOrOrder.currency!,
               context: context),
+
+
+
+          _buildInfoRow(
+              label: LocaleKeys.OpenPrice.tr(),
+              value: _formatAmount( tradeOrOrder.openPrice!.toString()),
+
+              context: context),
+
+
+
+
+
           _buildInfoRow(
               label: LocaleKeys.productQuantity.tr(),
               value: tradeOrOrder.quantity!.toString(),
               context: context), // ممكن تبقي  qty
+
+
+
+
+          _buildInfoRow(
+              label: LocaleKeys.productQuantity.tr(),
+              value: Methods.formatCreatedAt( tradeOrOrder.createdAt!.toString())
+              ,
+              context: context), //
+
+
+
+
+
         ],
       ),
     );
   }
-
+  String _formatAmount(String? amount) {
+    if (amount == null || amount.isEmpty) return "";
+    try {
+      return Methods.removeTrailingZeros(num.parse(amount));
+    } catch (_) {
+      return amount;
+    }
+  }
   Widget _buildInfoRow({
     required String label,
     required String value,
     required BuildContext context,
-  }) {
+  })
+  {
     return Padding(
       padding: EdgeInsets.symmetric(vertical: 6.h),
       child: Row(

@@ -8,11 +8,10 @@ import 'package:official_gold/view_model/utils/navigation.dart';
 
 import '../../../../../view_model/utils/colors.dart';
 import '../../../../components/app_bar_widget.dart';
-import 'deposit_reports_screen.dart';
-import 'earnings_reports_screen.dart';
+
 import 'order_money_reports.dart';
 import 'order_reports_screen.dart';
-import 'withdraw_reports_screen.dart';
+
 
 class ReportsScreen extends StatelessWidget {
   const ReportsScreen({super.key});
@@ -60,12 +59,12 @@ class ReportsScreen extends StatelessWidget {
               ),
 ////////////////////////////////////////////////////////////////////////////////////  closed-trades
               ProfileTileWidget(
-                title: LocaleKeys.earningsReports.tr(),
+                title: LocaleKeys.tradingReports.tr(),
                 onTap: () {
                   Navigation.push(
                     context,
                     OrderReportsScreen(
-                      type: LocaleKeys.earningsReports,
+                      type: LocaleKeys.tradingReports,
                     ),
                   );
                 },

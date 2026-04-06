@@ -24,6 +24,16 @@ class EndPoints {
 
   /// Finance
   static const String wallet = 'wallet';
+
+  static const String convertCurrency = 'finance/convert-currency';
+
+
+
+
+
+
+
+
   static const String transactions = 'finance/transactions';
   static const String currencies = 'currencies';
   static const String reportDeposit = 'report-deposit';

@@ -39,7 +39,7 @@ class TradesCubit extends Cubit<TradesState> {
     emit(TradesExpandedChanged(Set<String>.from(_expandedOrderGroupKeys)));
   }
 
-  /////////////////////////////////////////////////////////////////////////////////
+  //////////////////////////////////////////////////////// ////// ////// //////// ///// ////////
   // trades list
   List<GroupOfTradesOrOrders> groupOfTradesOrOrders = [];
   bool isTradesRefreshing = false;

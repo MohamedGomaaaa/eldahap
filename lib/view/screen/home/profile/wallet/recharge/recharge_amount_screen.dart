@@ -84,11 +84,12 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                       decoration: InputDecoration(
                         border: InputBorder.none,
                         hintText: "0.0",
-                        hintStyle: const TextStyle(color: AppColors.greyText),
+                        hintStyle: const TextStyle(color: AppColors.yellow),
                         suffixIcon: Padding(
-                          padding: const EdgeInsets.only(top:10.0),
+                          padding: const EdgeInsets.all(10.0),
                           child: Text(
-                            LocaleKeys.currency.tr(),
+                            "Dollar",
+                            // LocaleKeys.currency.tr(),
                             style:  TextStyle(color: AppColors.yellow,
 
                             fontSize: 18.sp
@@ -111,13 +112,13 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                 ],
               ),
               SizedBox(height: 8.h),
-              Text(
-                LocaleKeys.paymentInCurrency.tr(),
-                style: const TextStyle(
-                  color: AppColors.greyText,
-                  fontSize: 12,
-                ),
-              ),
+              // Text(
+              //   LocaleKeys.paymentInCurrency.tr(),
+              //   style: const TextStyle(
+              //     color: AppColors.greyText,
+              //     fontSize: 12,
+              //   ),
+              // ),
               const Spacer(),
               SizedBox(
                 width: double.infinity,
@@ -125,7 +126,7 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                   onPressed: _onContinue,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.yellow,
-                    padding: EdgeInsets.symmetric(vertical: 16.h),
+                    padding: EdgeInsets.symmetric(vertical: 10.h),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -133,13 +134,14 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                   child: Text(
                     LocaleKeys.continueKey.tr(),
                     style: const TextStyle(
-                      color: AppColors.black,
+                      color: AppColors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
                   ),
                 ),
               ),
+              SizedBox(height: 30,)
             ],
           ),
         ),

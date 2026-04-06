@@ -6,7 +6,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view_model/utils/colors.dart';
+import 'package:official_gold/view_model/utils/common_method.dart';
 
+import '../../../model/trade_model.dart';
 import '../../../view_model/data/local/shared_helper.dart';
 import '../../../view_model/data/local/shared_keys.dart';
 import '../../../view_model/data/network/end_points.dart';
@@ -222,6 +224,7 @@ class ApiService {
     required String note,
     required String address,
     required String binanceId,
+    required int selectedIndex
   }) async
   {
     try {
@@ -238,6 +241,7 @@ class ApiService {
           'note': note,
           'address': address,
           'binanceId': binanceId,
+          "currency":selectedIndex==0? "USD":"EGP",
         },
 
         ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
@@ -467,6 +471,7 @@ print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $data");
   // request-delivery
 
   Future<ApiResponse> requestDelivery({
+    required TradeOrOrder trade,
     required int orderId,
     required String deliveryAddress,
     required String deliveryCity,
@@ -498,6 +503,7 @@ print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> $data");
         context: ctx,
         // delivery_fee
         builder: (context) => DeliveryFeesDialog(
+          trade: trade,
           deliveryFees:
               "${response.data["result"]["delivery_fee"]} USD", // أو أي قيمة
         ),
@@ -685,10 +691,14 @@ class PageContent extends StatelessWidget {
             Expanded(
               child: Text(
                 page.title,
-                style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-                      color: AppColors.yellow,
-                      fontWeight: FontWeight.bold,
-                    ),
+                style: Theme
+                    .of(context)
+                    .textTheme
+                    .headlineSmall
+                    ?.copyWith(
+                  color: AppColors.yellow,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
           ],
@@ -733,38 +743,40 @@ class PageContent extends StatelessWidget {
                 child: CachedNetworkImage(
                   imageUrl: page.image,
                   fit: BoxFit.cover,
-                  placeholder: (context, url) => Container(
-                    color: AppColors.grey,
-                    child: Center(
-                      child: CircularProgressIndicator(
-                        valueColor:
+                  placeholder: (context, url) =>
+                      Container(
+                        color: AppColors.grey,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            valueColor:
                             AlwaysStoppedAnimation<Color>(AppColors.yellow),
-                      ),
-                    ),
-                  ),
-                  errorWidget: (context, url, error) => Container(
-                    color: AppColors.grey,
-                    child: Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            Icons.broken_image_outlined,
-                            color: AppColors.lightGrey,
-                            size: 40.sp,
                           ),
-                          SizedBox(height: 8.h),
-                          Text(
-                            'Image not available',
-                            style: TextStyle(
-                              color: AppColors.lightGrey,
-                              fontSize: 12.sp,
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
-                    ),
-                  ),
+                  errorWidget: (context, url, error) =>
+                      Container(
+                        color: AppColors.grey,
+                        child: Center(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                Icons.broken_image_outlined,
+                                color: AppColors.lightGrey,
+                                size: 40.sp,
+                              ),
+                              SizedBox(height: 8.h),
+                              Text(
+                                'Image not available',
+                                style: TextStyle(
+                                  color: AppColors.lightGrey,
+                                  fontSize: 12.sp,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
                 ),
               ),
             ),
@@ -786,11 +798,15 @@ class PageContent extends StatelessWidget {
           ),
           child: Text(
             page.content,
-            style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                  color: AppColors.yellow,
-                  height: 1.6,
-                  fontSize: 16.sp,
-                ),
+            style: Theme
+                .of(context)
+                .textTheme
+                .titleLarge
+                ?.copyWith(
+              color: AppColors.yellow,
+              height: 1.6,
+              fontSize: 16.sp,
+            ),
           ),
         ),
 
@@ -832,9 +848,15 @@ class PageContent extends StatelessWidget {
 class DeliveryFeesDialog extends StatelessWidget {
   final String deliveryFees;
 
+  final TradeOrOrder trade;
+
+
+
+
+
   const DeliveryFeesDialog({
     Key? key,
-    required this.deliveryFees,
+    required this.deliveryFees, required this.trade,
   }) : super(key: key);
 
   @override
@@ -866,14 +888,15 @@ class DeliveryFeesDialog extends StatelessWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    'Delivery Fees',
-                    style: TextStyle(
-                      color: AppColors.yellow,
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18.sp,
-                    ),
-                  ),
+                  SizedBox(),
+                  // Text(
+                  //   'Delivery Fees',
+                  //   style: TextStyle(
+                  //     color: AppColors.yellow,
+                  //     fontWeight: FontWeight.bold,
+                  //     fontSize: 18.sp,
+                  //   ),
+                  // ),
                   Container(
                     decoration: BoxDecoration(
                       color: AppColors.grey,
@@ -916,41 +939,25 @@ class DeliveryFeesDialog extends StatelessWidget {
               SizedBox(height: 16.h),
 
               // Fees Amount
-              Container(
-                padding: EdgeInsets.symmetric(
-                  horizontal: 20.w,
-                  vertical: 12.h,
-                ),
-                decoration: BoxDecoration(
-                  color: AppColors.backgroundGrey2,
-                  borderRadius: BorderRadius.circular(12.r),
-                  border: Border.all(
-                    color: AppColors.grey,
-                    width: 1.w,
-                  ),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      'Fees: ',
-                      style: TextStyle(
-                        color: AppColors.white,
-                        fontSize: 16.sp,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    Text(
-                      deliveryFees,
-                      style: TextStyle(
-                        color: AppColors.yellow,
-                        fontSize: 18.sp,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
+              trade.hasDelivery==true?
+              creatMoneyDetails(
+                label:   'shipping coast : ',
+                value:  Methods.removeTrailingZeros(trade.shippingCost??0),
+              ):SizedBox()    ,
+
+              // manufacturing Amount
+              creatMoneyDetails(
+                label:   'manufacturing coast : ',
+                value:  Methods.removeTrailingZeros(trade.manufacturingFee??0),
+              )    ,
+
+
+
+
+
+
+
+
 
               SizedBox(height: 24.h),
 
@@ -985,4 +992,56 @@ class DeliveryFeesDialog extends StatelessWidget {
       ),
     );
   }
+
+  Widget creatMoneyDetails (
+
+  {
+required String label,
+  required String value,
+
+}){
+
+
+    return    Container(
+      margin: const EdgeInsets.only(top: 10),
+      padding: EdgeInsets.symmetric(
+        horizontal: 20.w,
+        vertical: 12.h,
+      ),
+      // decoration: BoxDecoration(
+      //   // color: Colors.red,
+      //   // color: AppColors.backgroundGrey2,
+      //   borderRadius: BorderRadius.circular(12.r),
+      //   border: Border.all(
+      //     color: AppColors.grey,
+      //     width: 1.w,
+      //   ),
+      // ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Text(
+      label,
+            style: TextStyle(
+              color: AppColors.white,
+              fontSize: 16.sp,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+          Text(
+           "$value LE",
+            style: TextStyle(
+              color: AppColors.yellow,
+              fontSize: 18.sp,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+
+
+
 }

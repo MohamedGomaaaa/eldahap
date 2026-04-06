@@ -6,17 +6,20 @@ import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../l10n/locale_keys.g.dart';
+import '../../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../../view_model/utils/colors.dart';
+import '../../../../../../view_model/utils/common_method.dart';
 import '../../../../static_pages/models/payment_methods_model.dart';
 import '../../../../static_pages/static_page_screen.dart';
 class BankDetailsPage extends StatefulWidget {
   final double amount;
   final PaymentMethod paymentMethod;
-
+  final int selectedIndex;
+  final String currency;
   const BankDetailsPage({
     Key? key,
     required this.amount,
-    required this.paymentMethod,
+    required this.paymentMethod, required this.selectedIndex, required this.currency,
   }) : super(key: key);
 
   @override
@@ -137,7 +140,16 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
       'binanceId':_binanceIdController.text,
       'bank_account': _bankAccountController.text.trim(),
       'timestamp': DateTime.now().toIso8601String(),
+      "currency":widget.selectedIndex==0? "USD":"EGP",
     };
+
+
+
+
+
+
+
+
 
     print('Processing withdrawal request: $withdrawalData');
     await _apiService.makeWithdraw(
@@ -149,6 +161,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
       accountPhone:  _phoneController.text.trim(),
       address: _addressController.text ?? '',
       binanceId: _binanceIdController.text ?? '',
+      selectedIndex:widget.selectedIndex,
       note: '',
     );
     // Simulate potential API errors
@@ -192,7 +205,8 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
               mainAxisSize: MainAxisSize.min,
               children: [
                 Text(
-                  '${(LocaleKeys.success_message.tr())}\n${LocaleKeys.amount.tr()} ${widget.amount.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}',
+
+             '${(LocaleKeys.success_message.tr())}\n${LocaleKeys.amount.tr()} ${Methods.removeTrailingZeros(widget.amount)} ${widget.currency}',
                   style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 16,
@@ -231,6 +245,10 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                     count++;
                     return count == 4; // يوقف عند ثاني Route
                   });
+
+                  WalletCubit.get(context).getWallet();
+
+
                   },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: AppColors.yellow,
@@ -430,7 +448,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                   ),
                 ),
                 Text(
-                  '${widget.amount.toStringAsFixed(2)} ${LocaleKeys.currency.tr()}',
+                  '${Methods.removeTrailingZeros(widget.amount)} ${widget.currency}',
                   style: const TextStyle(
                     color: AppColors.yellow,
                     fontSize: 16,

@@ -226,6 +226,18 @@ class TradeOrOrder{
 
   final num? totalCost;
 
+
+
+  final num?  manufacturingFee;//: 160,
+  final bool? hasDelivery;//: true,
+  final num? shippingCost;//: 200,
+
+
+
+
+
+
+
   TradeOrOrder({
     this.id,
     this.type,
@@ -279,6 +291,15 @@ class TradeOrOrder{
     this.createdAt,
     this.updatedAt,
     this.totalCost,
+
+
+
+    this.  manufacturingFee,//: 160,
+    this. hasDelivery,//: true,
+    this. shippingCost,//: 200,
+
+
+
   });
 
   // ===================== HELPERS =====================
@@ -371,7 +392,7 @@ class TradeOrOrder{
       deliveryMethod: json['delivery_method']?.toString(),
       deliveryCity: json['delivery_city']?.toString(),
       deliveryPhone: json['delivery_phone']?.toString(),
-      deliveryFee: parseNum(json['delivery_fee']),
+
       deliveryTrackingNo: json['delivery_tracking_no']?.toString(),
       address: json['address']?.toString(),
 
@@ -379,6 +400,27 @@ class TradeOrOrder{
       updatedAt: parseDate(json['updated_at']),
 
       totalCost: parseNum(json['total_cost']),
+
+
+
+      deliveryFee: parseNum(json['delivery_fee']),
+
+
+      manufacturingFee:  json["manufacturingFee"]??0,//: 160,
+      hasDelivery:   json["hasDelivery"]??true,//: true,
+      shippingCost: json["shippingCost"]??0,//: 200,
+
+
+
+
+
+
+
+
+
+
+
+
     );
   }
 
@@ -453,9 +495,71 @@ class TradeOrOrder{
       'updated_at': updatedAt?.toIso8601String(),
 
       'total_cost': totalCost,
+
+
+      "manufacturingFee":  manufacturingFee,//: 160,
+      "hasDelivery":   hasDelivery,//: true,
+      "shippingCost": shippingCost//: 200,
+
+
+
     };
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

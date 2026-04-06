@@ -22,6 +22,13 @@ abstract class  LocaleKeys {
   static const register = 'register';
   static const balance = 'balance';
   static const currentBalance = 'currentBalance';
+
+
+  static const dollarBalance = 'Dollar Balance';
+  static const egyBalance = 'Egy Balance';
+
+
+
   static const news = 'news';
   static const home = 'home';
   static const products = 'products';
@@ -44,6 +51,7 @@ abstract class  LocaleKeys {
   static const takeProfit = 'takeProfit';
   static const sellWhenPrice = 'sellWhenPrice';
   static const amount = 'Price';
+  static const amount2 = 'amount';
   static const myAccount = 'myAccount';
   static const demoUsd = 'demoUsd';
   static const settings = 'settings';
@@ -59,6 +67,7 @@ abstract class  LocaleKeys {
   static const verifyTheRequiredInformation = 'verifyTheRequiredInformation';
   static const add = 'add';
   static const no = 'no';
+  static const id = 'Id';
   static const name = 'name';
   static const price = 'price';
   static const total = 'total';
@@ -121,6 +130,11 @@ abstract class  LocaleKeys {
   static const marketIsClosedItOpensIn = 'marketIsClosedItOpensIn';
   static const bought = 'bought';
   static const currentPrice = 'currentPrice';
+
+  static const OpenPrice = 'Open Price';
+
+
+
   static const reservedMargin = 'reservedMargin';
 
   static const   appCommision = 'app Commision';
@@ -145,6 +159,10 @@ abstract class  LocaleKeys {
 
   // Payment methods screen
   static const paymentMethodsTitle = 'payment_methods_title';
+
+  static const paymentMethod = 'payment method';
+
+
   static const selectPaymentMethod = 'select_payment_method';
   static const accountNumber = 'account_number';
   static const bankName = 'bank_name';
@@ -257,7 +275,7 @@ abstract class  LocaleKeys {
 
 
   static const orderReports = 'orderReports';
-  static const earningsReports = 'earningsReports';
+  static const tradingReports = 'Trading Reports';
   static const depositReports = 'depositReports';
   static const withdrawReports = 'withdrawReports';
 
@@ -277,7 +295,7 @@ abstract class  LocaleKeys {
   static const type = 'type';
   static const productQuantity = 'Quantity';
 
-
+  static const metal = 'Metal';
 
 
 

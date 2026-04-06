@@ -25,9 +25,17 @@ class ReportResult2 {
   String? requestAt;
   String? isApproval;
   String? approveAt;
-
+  String?paymentMethod;
+String ?currency;
   ReportResult2(
-      {this.id, this.amount, this.requestAt, this.isApproval, this.approveAt});
+      {this.id, this.amount, this.requestAt, this.isApproval, this.approveAt,
+
+        this.paymentMethod,
+        this.currency
+
+
+
+      });
 
   ReportResult2.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -35,6 +43,16 @@ class ReportResult2 {
     requestAt = json['request_at']??"";
     isApproval = json['is_approval']??"";
     approveAt = json['approve_at']??"";
+
+
+
+    currency= json[ "currency"]??"";
+
+    paymentMethod= json[ "payment_method"]??"";
+
+
+
+
   }
 
 

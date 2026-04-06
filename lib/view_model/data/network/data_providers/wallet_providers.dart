@@ -15,6 +15,49 @@ class WalletProvider {
   }
 
 
+
+
+
+
+
+
+  Future<Response?> convertCurrency({
+    required num amount,
+
+  }) async {
+    try {
+      return await DioHelper.post(
+        path: EndPoints.convertCurrency,
+        data: {
+          "amount": amount,
+          "from": "USD",
+          "to": "EGP"
+
+        },
+        withToken: true,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 // In wallet_provider.dart
   Future<Response?> transactions({int page = 1, int perPage = 10}) async {
     try {

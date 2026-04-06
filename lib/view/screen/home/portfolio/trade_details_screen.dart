@@ -802,6 +802,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
             height: 40.h,
             child: ElevatedButton(
               onPressed: () async {
+                final trade = widget.trade;
                 final deliveryData = await showDialog<Map<String, String>>(
                   context: context,
                   barrierDismissible: false,
@@ -811,6 +812,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                 if (deliveryData != null) {
                   AppLoader.showLoader(context, ValueKey("requestDelivery"));
                   _appService.requestDelivery(
+                    trade: trade,
                     orderId: trade.id ?? 0,
                     deliveryAddress: deliveryData["delivery_address"] ?? '',
                     deliveryCity: deliveryData["delivery_city"] ?? '',

@@ -63,7 +63,7 @@ class WithdrawScreen extends StatelessWidget {
                             },
                             builder: (context, state) {
                               return Text(
-                                '\$ ${WalletCubit.get(context).wallet}',
+                                '\$ ${WalletCubit.get(context).walletDollar}',
                                 style: Theme.of(context)
                                     .textTheme
                                     .headlineLarge

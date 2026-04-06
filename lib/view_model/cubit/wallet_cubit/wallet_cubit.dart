@@ -17,32 +17,134 @@ class WalletCubit extends Cubit<WalletState> {
 
   static WalletCubit get(context) => BlocProvider.of<WalletCubit>(context);
 
-  num wallet = 0;
+
   TransactionModel? transactionModel;
   List<TransactionData> allTransactions = []; // Store all transactions
   bool isLoadingMoreTransactions = false;
   bool hasMoreTransactions = true;
   int currentTransactionPage = 1;
 
+
+
+
+
+
+
+  num walletDollar = 0;
+  num walletEgp = 0;
+  bool isWalletLoading = false;
+
   Future<void> getWallet() async {
+ isWalletLoading = true;
     emit(GetWalletLoadingState());
 
-    await WalletRepository().wallet().then((value) {
-      print("Wallet value: $value");
-
-      wallet = double.parse(value.toStringAsFixed(2));
-
-      emit(GetWalletSuccessState(wallet));
-    }).catchError((error) {
+    try {
+      final value = await WalletRepository().wallet();
+      print(">>>>>>>>>>>>>>>> Wallet value: $value");
+      walletDollar = (value.balanceDollar ?? 0);
+      walletEgp = (value.balanceEgp ?? 0);
+  isWalletLoading = false;
+      emit(GetWalletSuccessState(walletDollar, walletEgp));
+    } catch (error) {
       if (error is DioException) {
+  isWalletLoading = false;
         debugPrint(error.response?.data?.toString());
         emit(GetWalletErrorState(msg: error.response?.data?.toString()));
       } else {
+  isWalletLoading = false;
         debugPrint("Unexpected error: $error");
         emit(GetWalletErrorState(msg: error.toString()));
       }
-    });
+    }
   }
+
+
+
+
+
+
+
+  Future<void> convertCurrency({
+    required num amount,
+
+  }) async {
+    emit(ConvertCurrencyLoadingState());
+
+    try {
+      final result = await WalletRepository().convertCurrency(
+        amount: amount,
+
+      );
+
+      // تحديث القيم مباشرة
+      walletDollar = (result.balanceUsd ?? 0).toDouble();
+      walletEgp = (result.balanceEgp ?? 0).toDouble();
+
+      emit(ConvertCurrencySuccessState(
+        result.convertedAmount ?? 0,
+        walletDollar,
+        walletEgp,
+      ));
+
+      // 🔥 مهم: تحديث الصفحة بالكامل
+      await getWallet();
+
+    } catch (error) {
+      if (error is DioException) {
+        emit(ConvertCurrencyErrorState(
+          msg: error.response?.data?['message'] ?? "Error",
+        ));
+      } else {
+        emit(ConvertCurrencyErrorState(msg: error.toString()));
+      }
+    }
+  }
+
+
+
+
+
+
+
+
+/////////////////////////////////////////////////// old wallet gomaa
+//   Future<void> getWallet() async {
+//     emit(GetWalletLoadingState());
+//
+//     await WalletRepository().wallet().then((value) {
+//       print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>  Wallet value: $value");
+//
+//       wallet = double.parse(value.toStringAsFixed(2));
+//
+//       emit(GetWalletSuccessState(wallet));
+//     }).catchError((error) {
+//       if (error is DioException) {
+//         debugPrint(error.response?.data?.toString());
+//         emit(GetWalletErrorState(msg: error.response?.data?.toString()));
+//       } else {
+//         debugPrint("Unexpected error: $error");
+//         emit(GetWalletErrorState(msg: error.toString()));
+//       }
+//     });
+//   }
+//////////////////////////////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -136,6 +238,12 @@ class WalletCubit extends Cubit<WalletState> {
       getTransactions(refresh: true),
     ]);
   }
+
+
+
+
+
+
 
   Map<String, dynamic> currencies = {};
 

@@ -8,10 +8,68 @@ class WalletInitial extends WalletState {}
 // Wallet Balance States
 class GetWalletLoadingState extends WalletState {}
 
-class GetWalletSuccessState extends WalletState {
-  final num wallet;
-  GetWalletSuccessState(this.wallet);
+
+
+/////////////////////////////////////////////////////// old wallet gomaa
+// class GetWalletSuccessState extends WalletState {
+//   final num wallet;
+//   GetWalletSuccessState(this.wallet);
+// }
+///////////////////////////////////////////////////////
+class GetWalletSuccessState extends WalletState  {
+  final num walletDollar;
+  final num walletEgp;
+
+  GetWalletSuccessState(this.walletDollar, this.walletEgp);
 }
+
+
+
+
+class ConvertCurrencyLoadingState extends WalletState{}
+
+class ConvertCurrencySuccessState extends WalletState{
+  final num convertedAmount;
+  final num walletDollar;
+  final num walletEgp;
+
+  ConvertCurrencySuccessState(
+      this.convertedAmount,
+      this.walletDollar,
+      this.walletEgp,
+      );
+}
+
+class ConvertCurrencyErrorState extends WalletState{
+  final String msg;
+
+  ConvertCurrencyErrorState({required this.msg});
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 class GetWalletErrorState extends WalletState {
   final String? msg;

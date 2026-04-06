@@ -149,7 +149,7 @@ class CreatCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _buildInfoRow(
-            label: LocaleKeys.no.tr(),
+            label: LocaleKeys.id.tr(),
             value: report.id?.toString() ?? "",
             context: context,
           ),
@@ -158,11 +158,33 @@ class CreatCard extends StatelessWidget {
             value: report.isApproval ?? "",
             context: context,
           ),
+
+
+
+
           _buildInfoRow(
-            label: LocaleKeys.amount.tr(),
+            label: LocaleKeys.amount2.tr(),
             value: _formatAmount(report.amount),
             context: context,
           ),
+
+          _buildInfoRow(
+            label: LocaleKeys.currency,
+            value: report.currency!,
+            context: context,
+          ),
+
+          _buildInfoRow(
+            label: LocaleKeys.paymentMethod.tr(),
+            value: report.paymentMethod!,
+            context: context,
+          ),
+
+
+
+
+
+
           _buildInfoRow(
             label: LocaleKeys.approve_at.tr(),
             value:Methods.formatCreatedAt( report.approveAt!),

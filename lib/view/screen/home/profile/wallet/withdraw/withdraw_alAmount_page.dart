@@ -1,12 +1,14 @@
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/screen/home/profile/wallet/withdraw/payment_method_page.dart';
 
 import '../../../../../../l10n/locale_keys.g.dart';
 import '../../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../../view_model/utils/colors.dart';
+import '../../../../../../view_model/utils/validator.dart';
 
 class WithdrawalAmountPage extends StatefulWidget {
   const WithdrawalAmountPage({Key? key}) : super(key: key);
@@ -18,36 +20,24 @@ class WithdrawalAmountPage extends StatefulWidget {
 class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
   final TextEditingController _amountController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  double walletBalance = 0.0; // This should come from your state management
+
   String? errorMessage;
+
+  num balanceDollar = 0;
+  num balanceEgp = 0;
 
   @override
   void initState() {
-    walletBalance = WalletCubit.get(context).wallet.toDouble();
+    balanceDollar = WalletCubit.get(context).walletDollar;
+    balanceEgp = WalletCubit.get(context).walletEgp;
 
     super.initState();
   }
+
   @override
   void dispose() {
     _amountController.dispose();
     super.dispose();
-  }
-
-  String? _validateAmount(String? value) {
-    if (value == null || value.isEmpty) {
-      return LocaleKeys.amount_required.tr(); // "يجب كتابة المبلغ"
-    }
-
-    final amount = double.tryParse(value);
-    if (amount == null || amount <= 0) {
-      return LocaleKeys.amount_greater_than_zero.tr(); // "المبلغ يجب أن يكون أكبر من صفر"
-    }
-
-    if (amount > walletBalance) {
-      return LocaleKeys.insufficient_balance.tr(); // "الرصيد غير كافي"
-    }
-
-    return null;
   }
 
   void _onContinuePressed() {
@@ -57,7 +47,11 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) => PaymentMethodPage(amount: amount),
+          builder: (context) => PaymentMethodPage(
+            selectedIndex:selectedIndex,
+            amount: amount,
+            currency: selectedIndex == 0 ? "Dollar" : "LE",
+          ),
         ),
       );
     }
@@ -74,9 +68,8 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
           icon: Container(
             padding: const EdgeInsets.all(8),
             decoration: const BoxDecoration(
-              color: AppColors.yellow,
-              borderRadius: BorderRadius.all(Radius.circular(12))
-            ),
+                color: AppColors.yellow,
+                borderRadius: BorderRadius.all(Radius.circular(12))),
             child: const Icon(
               Icons.arrow_back,
               color: AppColors.black,
@@ -95,44 +88,6 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
           ),
         ),
         centerTitle: false,
-        actions: [
-          Padding(
-            padding: const EdgeInsets.only(right: 8),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                const Icon(
-                  Icons.account_balance_wallet,
-                  color: AppColors.yellow,
-                  size: 30,
-                ),
-                8.horizontalSpace,
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-
-                  children: [
-                    Text(
-                      '${LocaleKeys.wallet_balance.tr()}', // "رصيد المحفظة"
-                      style: const TextStyle(
-                        color: AppColors.greyText,
-                        fontSize: 14,
-                      ),
-                    ),
-                    Text(
-                      '${walletBalance.toStringAsFixed(1)} ${LocaleKeys.currency.tr()}', // "رصيد المحفظة"
-                      style: const TextStyle(
-                        color: AppColors.yellow2,
-                        fontSize: 14,
-                      ),
-                    ),
-                  ],
-                )
-
-              ],
-            ),
-          ),
-        ],
       ),
       body: Form(
         key: _formKey,
@@ -141,11 +96,25 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              const SizedBox(height: 12),
+              Container(
+                margin: const EdgeInsets.only(bottom: 10, top: 15),
+                child: const Text(
+                  "Pick a wallet for withdrawal: USD or EGP?", // "ادخل المبلغ الذي تريد سحبه"
+                  textAlign: TextAlign.start,
+                  style: TextStyle(
+                    color: AppColors.yellow,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ),
 
+              // _buildBalanceCards
+              _buildBalanceCards(),
               // Title
               Text(
-                LocaleKeys.enter_amount_hint.tr(), // "ادخل المبلغ الذي تريد سحبه"
+                LocaleKeys.enter_amount_hint
+                    .tr(), // "ادخل المبلغ الذي تريد سحبه"
                 textAlign: TextAlign.start,
                 style: const TextStyle(
                   color: AppColors.yellow,
@@ -157,44 +126,37 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
               // Amount Input
               TextFormField(
                 controller: _amountController,
-                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                keyboardType:
+                    const TextInputType.numberWithOptions(decimal: true),
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
                 ],
-                style: const TextStyle(
-                  color: AppColors.white,
-                  fontSize: 16,
-                ),
                 decoration: InputDecoration(
                   hintText: "0.0",
-                  hintStyle: const TextStyle(
-                    color: AppColors.greyText,
-                    fontSize: 16,
-                  ),
+                  hintStyle:
+                      const TextStyle(color: AppColors.yellow, fontSize: 16),
                   suffixIcon: Padding(
-                    padding: const EdgeInsets.only(top:10.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Text(
-                      LocaleKeys.currency.tr(),
-                      style:  TextStyle(color: AppColors.yellow,
-
-                          fontSize: 18.sp
-                      ),
+                      selectedIndex == 0 ? "Dollar" : "LE",
+                      style:
+                          TextStyle(color: AppColors.yellow, fontSize: 18.sp),
                     ),
                   ),
                   contentPadding: const EdgeInsets.all(16),
                   border: InputBorder.none,
-
-
                 ),
                 validator: (value) {
-                  if (value == null || value.isEmpty) {
-                    return LocaleKeys.amountRequired.tr();
-                  }
-                  final amount = double.tryParse(value);
-                  if (amount == null || amount <= 0) {
-                    return LocaleKeys.amountInvalid.tr();
-                  }
-                  return null;
+                  final currency = selectedIndex == 0 ? "Dollar" : "LE";
+                  final balance = selectedIndex == 0
+                      ? balanceDollar // رصيد الدولار
+                      : balanceEgp; // رصيد الجنيه
+
+                  return Validator.validateWithdrawalAmount(
+                    value: value,
+                    walletBalance: balance,
+                    currency: currency,
+                  );
                 },
                 onChanged: (value) {
                   setState(() {
@@ -203,22 +165,9 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
                 },
               ),
 
-
               const SizedBox(height: 16),
 
-              // Pay with wallet text
-              Text(
-                LocaleKeys.pay_with_wallet.tr(), // "الدفع بواسطة جنيه"
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  color: AppColors.greyText,
-                  fontSize: 14,
-                ),
-              ),
-
               const Spacer(),
-
-
 
               const Spacer(),
 
@@ -226,7 +175,7 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
               Container(
                 width: double.infinity,
                 height: 50,
-                margin: const EdgeInsets.only(bottom: 20),
+                margin: const EdgeInsets.only(bottom: 40),
                 child: ElevatedButton(
                   onPressed: _onContinuePressed,
                   style: ElevatedButton.styleFrom(
@@ -239,7 +188,7 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
                   child: Text(
                     LocaleKeys.continueKey.tr(), // "استمرار"
                     style: const TextStyle(
-                      color: AppColors.black,
+                      color: AppColors.white,
                       fontSize: 16,
                       fontWeight: FontWeight.w600,
                     ),
@@ -250,6 +199,101 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
           ),
         ),
       ),
+    );
+  }
+
+  int selectedIndex = 0;
+  Widget _balanceCard({
+    required IconData icon,
+    required String title,
+    required String balance,
+    required bool isSelected,
+    required VoidCallback onTap,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 250), // ✨ أنيميشن ناعمة
+        padding: EdgeInsets.all(16.sp),
+        decoration: BoxDecoration(
+          color: isSelected ? AppColors.yellow : AppColors.backgroundGrey,
+          border: Border.all(
+            color: AppColors.yellowBorder,
+            width: isSelected ? 2 : 1,
+          ),
+          borderRadius: BorderRadius.circular(12.r),
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? AppColors.white : AppColors.yellow,
+              size: 28.sp,
+            ),
+            SizedBox(height: 8.h),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? AppColors.white : AppColors.yellow,
+                fontSize: 14,
+              ),
+            ),
+            SizedBox(height: 6.h),
+            Text(
+              balance,
+              style: TextStyle(
+                color: isSelected ? AppColors.white : AppColors.yellow,
+                fontWeight: FontWeight.w600,
+                fontSize: 16,
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBalanceCards() {
+    return BlocBuilder<WalletCubit, WalletState>(
+      builder: (context, state) {
+        final cubit = WalletCubit.get(context);
+
+        return Container(
+          margin: const EdgeInsets.only(top: 20, bottom: 20),
+          child: Row(
+            children: [
+              Expanded(
+                child: _balanceCard(
+                  icon: Icons.account_balance_wallet_outlined,
+                  title: LocaleKeys.dollarBalance.tr(),
+                  balance: '${cubit.walletDollar}',
+                  isSelected: selectedIndex == 0,
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = 0;
+                    });
+                  },
+                ),
+              ),
+              SizedBox(width: 12.w),
+              Expanded(
+                child: _balanceCard(
+                  icon: Icons.account_balance,
+                  title: LocaleKeys.egyBalance.tr(),
+                  balance: '${cubit.walletEgp}',
+                  isSelected: selectedIndex == 1,
+                  onTap: () {
+                    setState(() {
+                      selectedIndex = 1;
+                    });
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
     );
   }
 }

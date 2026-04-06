@@ -1,9 +1,11 @@
 import 'package:official_gold/model/report_1.dart';
 import 'package:official_gold/view_model/data/network/data_providers/wallet_providers.dart';
 
+import '../../../../model/convert_currency.dart';
 import '../../../../model/report_2.dart';
 import '../../../../model/response.dart';
 import '../../../../model/trade_model.dart';
+import '../../../../model/wallet.dart';
 import '../../../models/wallet_models/transaction_model.dart';
 import '../dio_helper.dart';
 
@@ -14,18 +16,76 @@ class WalletRepository {
   WalletRepository() {
     walletProvider = WalletProvider();
   }
-  Future<double> wallet() async {
+
+
+
+
+
+  Future<WalletResult> wallet() async {
     try {
-      final walletResponse = await walletProvider.wallet();
+      final  walletResponse = await walletProvider.wallet();
 
-      final balance = walletResponse?.data?['result']?['balance'];
+      final wallet = Wallet.fromJson(walletResponse?.data);
 
-      return (balance as num?)?.toDouble() ?? 0.0;
+      return wallet.result ?? WalletResult();
     } catch (e) {
       print("Error in wallet repository: $e");
       rethrow;
     }
   }
+
+
+
+  Future<ConvertCurrencyResult> convertCurrency({
+    required num amount,
+
+  }) async {
+    try {
+      final response = await walletProvider.convertCurrency(
+        amount: amount,
+
+      );
+
+      final data = response?.data;
+
+      if (data['success'] == true) {
+        return ConvertCurrencyResult.fromJson(data['result']);
+      } else {
+        throw Exception(data['message']);
+      }
+    } catch (e) {
+      print("Error in convert currency: $e");
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+
+/////////////////////////////////////////  old wallet gomaa
+//   Future<double> wallet() async {
+//     try {
+//       final walletResponse = await walletProvider.wallet();
+//
+//       final balance = walletResponse?.data?['result']?['balance'];
+//
+//       return (balance as num?)?.toDouble() ?? 0.0;
+//     } catch (e) {
+//       print("Error in wallet repository: $e");
+//       rethrow;
+//     }
+//   }
+/////////////////////////////////////////////////////////////
+
+
+
+
+
 
   // Future<num> wallet() async {
   //   try {

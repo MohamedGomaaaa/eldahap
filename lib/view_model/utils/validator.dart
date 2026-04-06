@@ -81,7 +81,8 @@ class Validator {
       {required String? enteredValue,
       required num livePrice,
       bool requiredField = false,
-      double percentage = 50}) {
+      double percentage = 50})
+  {
     // null or empty
     if (enteredValue == null || enteredValue.trim().isEmpty) {
       return requiredField ? "please_fill_field" : null;
@@ -208,6 +209,76 @@ class Validator {
     if (!emailRegex.hasMatch(trimmed)) {
       return LocaleKeys.validateEmail2.tr(); // يرجى إدخال بريد إلكتروني صحيح
     }
+    return null;
+  }
+/////////////////////////////////////////////////////////////////////////////////////////////////////
+  static String? validateAmount({
+    required String? value,
+    required num walletDollar,
+    bool requiredField = true,
+  }) {
+    // فاضي
+    if (value == null || value.trim().isEmpty) {
+      return requiredField ? "please_fill_field" : null;
+    }
+
+    final input = value.trim();
+
+    // ❌ يتحقق إنه رقم
+    final isValidNumber = RegExp(r'^\d+(\.\d+)?$').hasMatch(input);
+    if (!isValidNumber) {
+      return "invalid_number";
+    }
+
+    final double amount = double.parse(input);
+
+    // ❌ أقل من أو يساوي صفر
+    if (amount <= 0) {
+      return "amount_must_be_greater_than_zero";
+    }
+
+    // ❌ أكبر من الرصيد
+    if (amount > walletDollar) {
+      return "insufficient_balance";
+    }
+
+    return null;
+  }
+///////////////////////////////////////////////////////////////////////////////////////////////
+// في class Validator - أضف هذه الدالة الجديدة
+  static String? validateWithdrawalAmount({
+    required String? value,
+    required num walletBalance,  // رصيد المحفظة (دولار أو جنيه)
+    required String currency,    // "Dollar" أو "LE"
+    bool requiredField = true,
+    double minAmount = 1.0,     // الحد الأدنى (قابل للتعديل)
+  }) {
+    // 1. فاضي أو null
+    if (value == null || value.trim().isEmpty) {
+      return requiredField ? "${currency}_amount_required".tr() : null;
+    }
+
+    final input = value.trim();
+
+    // 2. ❌ يتحقق إنه رقم صحيح (RegExp نفس اللي عندك)
+    final isValidNumber = RegExp(r'^\d+\.?\d{0,2}$').hasMatch(input);
+    if (!isValidNumber) {
+      return "${currency}_invalid_number".tr();
+    }
+
+    // 3. parse الرقم
+    final double amount = double.tryParse(input) ?? 0;
+
+    // 4. ❌ أقل من الحد الأدنى
+    if (amount < minAmount) {
+      return "${currency}_min_amount_required".tr();
+    }
+
+    // 5. ❌ أكبر من رصيد المحفظة
+    if (amount > walletBalance) {
+      return "${currency}_insufficient_balance".tr();
+    }
+
     return null;
   }
 }
