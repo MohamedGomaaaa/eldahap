@@ -43,15 +43,15 @@ class Tradess {
 
 
 
-
-
 class GroupOfTradesOrOrders {
   String? metal;
+  String? currency;
   String? title;
   List<TradeOrOrder>? tradesOrOrders;
 
   GroupOfTradesOrOrders({
     this.metal,
+    this.currency,
     this.title,
     this.tradesOrOrders,
   });
@@ -60,6 +60,7 @@ class GroupOfTradesOrOrders {
     final orders = json['orders'];
     return GroupOfTradesOrOrders(
       metal: json['metal']?.toString() ?? "",
+      currency: json['currency']?.toString() ?? "",
       title: json['title']?.toString() ?? "",
       tradesOrOrders: orders is List
           ? orders
@@ -72,11 +73,46 @@ class GroupOfTradesOrOrders {
   Map<String, dynamic> toJson() {
     return {
       'metal': metal,
+      'currency': currency,
       'title': title,
       'orders': tradesOrOrders?.map((e) => e.toJson()).toList() ?? [],
     };
   }
 }
+
+// class GroupOfTradesOrOrders {
+//   String? metal;
+//   String? title;
+//
+//   List<TradeOrOrder>? tradesOrOrders;
+//
+//   GroupOfTradesOrOrders({
+//     this.metal,
+//     this.title,
+//     this.tradesOrOrders,
+//   });
+//
+//   factory GroupOfTradesOrOrders.fromJson(Map<String, dynamic> json) {
+//     final orders = json['orders'];
+//     return GroupOfTradesOrOrders(
+//       metal: json['metal']?.toString() ?? "",
+//       title: json['title']?.toString() ?? "",
+//       tradesOrOrders: orders is List
+//           ? orders
+//           .map((e) => TradeOrOrder.fromJson(e as Map<String, dynamic>))
+//           .toList()
+//           : <TradeOrOrder>[],
+//     );
+//   }
+//
+//   Map<String, dynamic> toJson() {
+//     return {
+//       'metal': metal,
+//       'title': title,
+//       'orders': tradesOrOrders?.map((e) => e.toJson()).toList() ?? [],
+//     };
+//   }
+// }
 
 
 

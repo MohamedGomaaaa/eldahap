@@ -17,14 +17,19 @@ class BankDetailsPage extends StatefulWidget {
   final int selectedIndex;
   final String currency;
   const BankDetailsPage({
-    Key? key,
+    super.key,
     required this.amount,
     required this.paymentMethod, required this.selectedIndex, required this.currency,
-  }) : super(key: key);
+  });
 
   @override
   State<BankDetailsPage> createState() => _BankDetailsPageState();
 }
+
+
+
+
+
 
 class _BankDetailsPageState extends State<BankDetailsPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -48,10 +53,6 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
     _bankAccountController.dispose();
     super.dispose();
   }
-
-  // String _translate(String key) {
-  //   return AppTranslations.translate(key, locale: widget.locale);
-  // }
 
   String? _validateName(String? value) {
     if (value == null || value.isEmpty) {
@@ -225,9 +226,9 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                       _buildInfoRow('${(LocaleKeys.name.tr())}:', _nameController.text),
                       _buildInfoRow('${(LocaleKeys.phone.tr())}:', _phoneController.text),
                       _buildInfoRow('${(LocaleKeys.bank_account.tr())}:', _bankNameController.text),
-                      _buildInfoRow('${(LocaleKeys.account_number.tr())}', _bankAccountController.text),
-                      _addressController.text.isNotEmpty?  _buildInfoRow('${(LocaleKeys.address.tr())}', _addressController.text):const SizedBox.shrink(),
-                      _binanceIdController.text.isNotEmpty?_buildInfoRow('${(LocaleKeys.binanceId.tr())}', _binanceIdController.text):const SizedBox.shrink(),
+                      _buildInfoRow((LocaleKeys.account_number.tr()), _bankAccountController.text),
+                      _addressController.text.isNotEmpty?  _buildInfoRow((LocaleKeys.address.tr()), _addressController.text):const SizedBox.shrink(),
+                      _binanceIdController.text.isNotEmpty?_buildInfoRow((LocaleKeys.binanceId.tr()), _binanceIdController.text):const SizedBox.shrink(),
                     ],
                   ),
                 ),
@@ -398,6 +399,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
       ],
     );
   }
+
 
   Widget _buildHeader() {
     return Container(

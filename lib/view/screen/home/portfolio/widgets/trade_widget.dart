@@ -28,10 +28,26 @@ class TradeWidget extends StatelessWidget {
 
     return BlocBuilder<TradesCubit, TradesState>(
       builder: (context, state) {
+        // final isOpen = tradesCubit.isGroupExpanded(groupKey);
+        //
+        // final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
+        //       (g) => (g.metal ?? '') == groupKey,
+        //   orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
+        // );
+        //
+        // final tradeList = group.tradesOrOrders ?? [];
+        // final TradeOrOrder summaryTrade =
+        // tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
+        //
+        // final bool hasMoreThanOne = tradeList.length > 1;
+        // final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
+
+
+
         final isOpen = tradesCubit.isGroupExpanded(groupKey);
 
         final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
-              (g) => (g.metal ?? '') == groupKey,
+              (g) => '${g.metal ?? ''}_${g.currency ?? ''}' == groupKey,
           orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
         );
 
@@ -41,6 +57,15 @@ class TradeWidget extends StatelessWidget {
 
         final bool hasMoreThanOne = tradeList.length > 1;
         final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
+
+
+
+
+
+
+
+
+
 
         return Material(
           color: AppColors.transparent,
