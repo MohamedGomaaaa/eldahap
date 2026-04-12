@@ -41,13 +41,6 @@ class OrderWidget extends StatelessWidget {
 
     return BlocBuilder<TradesCubit, TradesState>(
       builder: (context, state) {
-        /// ✅ نجيب orderList من الكيوبت كل مرة
-        // final group = tradesCubit.wholeOrders.firstWhere(
-        //   (g) => (g.metal ?? '') == groupKey,
-        //   orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
-        // );
-        //
-        // final orderList = group.tradesOrOrders ?? [];
 
 
         final group = tradesCubit.wholeOrders.firstWhere(
@@ -156,6 +149,57 @@ class OrderWidget extends StatelessWidget {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // void showCloseTradeSheet(
 //   BuildContext context,

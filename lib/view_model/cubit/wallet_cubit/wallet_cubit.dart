@@ -3,6 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/wallet_repository.dart';
+import 'package:official_gold/view_model/utils/app_constant.dart';
 
 import '../../../model/report_1.dart';
 import '../../../model/report_2.dart';
@@ -17,25 +18,18 @@ class WalletCubit extends Cubit<WalletState> {
 
   static WalletCubit get(context) => BlocProvider.of<WalletCubit>(context);
 
-
   TransactionModel? transactionModel;
   List<TransactionData> allTransactions = []; // Store all transactions
   bool isLoadingMoreTransactions = false;
   bool hasMoreTransactions = true;
   int currentTransactionPage = 1;
 
-
-
-
-
-
-
   num walletDollar = 0;
   num walletEgp = 0;
   bool isWalletLoading = false;
 
   Future<void> getWallet() async {
- isWalletLoading = true;
+    isWalletLoading = true;
     emit(GetWalletLoadingState());
 
     try {
@@ -43,37 +37,29 @@ class WalletCubit extends Cubit<WalletState> {
       print(">>>>>>>>>>>>>>>> Wallet value: $value");
       walletDollar = (value.balanceDollar ?? 0);
       walletEgp = (value.balanceEgp ?? 0);
-  isWalletLoading = false;
+      isWalletLoading = false;
       emit(GetWalletSuccessState(walletDollar, walletEgp));
     } catch (error) {
       if (error is DioException) {
-  isWalletLoading = false;
+        isWalletLoading = false;
         debugPrint(error.response?.data?.toString());
         emit(GetWalletErrorState(msg: error.response?.data?.toString()));
       } else {
-  isWalletLoading = false;
+        isWalletLoading = false;
         debugPrint("Unexpected error: $error");
         emit(GetWalletErrorState(msg: error.toString()));
       }
     }
   }
 
-
-
-
-
-
-
   Future<void> convertCurrency({
     required num amount,
-
   }) async {
     emit(ConvertCurrencyLoadingState());
 
     try {
       final result = await WalletRepository().convertCurrency(
         amount: amount,
-
       );
 
       // تحديث القيم مباشرة
@@ -88,7 +74,6 @@ class WalletCubit extends Cubit<WalletState> {
 
       // 🔥 مهم: تحديث الصفحة بالكامل
       await getWallet();
-
     } catch (error) {
       if (error is DioException) {
         emit(ConvertCurrencyErrorState(
@@ -99,6 +84,104 @@ class WalletCubit extends Cubit<WalletState> {
       }
     }
   }
+
+//////////////////////////////////////////////////////////////// setting
+//   num exchangeDollarRate = 0;
+//   Future<void> getExchangeRate() async {
+//     emit(GetExchangeRateLoadingState());
+//
+//     try {
+//       final value = await WalletRepository().getExchangeRate();
+//
+//       var exchangeDollarRate =
+//           value.exchangeDollarRate ?? AppConstant.dollarConstant;
+//
+//       emit(GetExchangeRateSuccessState(exchangeDollarRate));
+//     } catch (error) {
+//       if (error is DioException) {
+//         debugPrint(error.response?.data?.toString());
+//         emit(GetExchangeRateErrorState(
+//           msg: error.response?.data?['message'] ?? "Error",
+//         ));
+//       } else {
+//         debugPrint("Unexpected error: $error");
+//         emit(GetExchangeRateErrorState(
+//           msg: error.toString(),
+//         ));
+//       }
+//     }
+//   }
+
+
+
+  num exchangeDollarRate = 0;
+  num depositUsdAmount = 0;
+  num depositEgpAmount = 0;
+
+  Future<void> getExchangeRate() async {
+    emit(GetExchangeRateLoadingState());
+
+    try {
+      final value = await WalletRepository().getExchangeRate();
+
+      exchangeDollarRate =
+          value.exchangeDollarRate ?? AppConstant.dollarConstant;
+
+      emit(GetExchangeRateSuccessState(exchangeDollarRate));
+    } catch (error) {
+      if (error is DioException) {
+        debugPrint(error.response?.data?.toString());
+        emit(GetExchangeRateErrorState(
+          msg: error.response?.data?['message'] ?? "Error",
+        ));
+      } else {
+        debugPrint("Unexpected error: $error");
+        emit(GetExchangeRateErrorState(
+          msg: error.toString(),
+        ));
+      }
+    }
+  }
+
+  void calculateDepositInEgp(String value) {
+    final amount = num.tryParse(value.trim()) ?? 0;
+
+    depositUsdAmount = amount;
+    depositEgpAmount = amount * exchangeDollarRate;
+
+    emit(CalculateDepositAmountState(
+      depositUsdAmount: depositUsdAmount,
+      depositEgpAmount: depositEgpAmount,
+    ));
+  }
+
+
+
+
+
+
+
+//////////////////////////////////////////////////// calculate DepositIn Egp
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -129,25 +212,6 @@ class WalletCubit extends Cubit<WalletState> {
 //   }
 //////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   // Future<void> getWallet() async {
   //   emit(GetWalletLoadingState());
   //   await WalletRepository().wallet().then((value) {
@@ -174,7 +238,9 @@ class WalletCubit extends Cubit<WalletState> {
     }
 
     emit(GetTransactionLoadingState());
-    await WalletRepository().transactions(page: currentTransactionPage).then((value) {
+    await WalletRepository()
+        .transactions(page: currentTransactionPage)
+        .then((value) {
       print("Transactions value: $value");
       transactionModel = value;
 
@@ -208,7 +274,9 @@ class WalletCubit extends Cubit<WalletState> {
 
     emit(LoadMoreTransactionsState());
 
-    await WalletRepository().transactions(page: currentTransactionPage).then((value) {
+    await WalletRepository()
+        .transactions(page: currentTransactionPage)
+        .then((value) {
       transactionModel = value;
       allTransactions.addAll(value.result.data);
 
@@ -223,7 +291,8 @@ class WalletCubit extends Cubit<WalletState> {
 
       if (error is DioException) {
         debugPrint(error.response?.data?.toString());
-        emit(LoadMoreTransactionsErrorState(msg: error.response?.data?.toString()));
+        emit(LoadMoreTransactionsErrorState(
+            msg: error.response?.data?.toString()));
       } else {
         debugPrint("Unexpected error: $error");
         emit(LoadMoreTransactionsErrorState(msg: error.toString()));
@@ -238,12 +307,6 @@ class WalletCubit extends Cubit<WalletState> {
       getTransactions(refresh: true),
     ]);
   }
-
-
-
-
-
-
 
   Map<String, dynamic> currencies = {};
 
@@ -302,24 +365,6 @@ class WalletCubit extends Cubit<WalletState> {
     });
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////// old
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////  deposit Reports
 //   List<Report> depositReports = [];
@@ -353,25 +398,6 @@ class WalletCubit extends Cubit<WalletState> {
 //   }
 //////////////////////////////////////////////////////////////////////////////////////////
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   List<ReportResult2> reportsList = [];
 
   Future<void> getReports({required String type}) async {
@@ -392,12 +418,7 @@ class WalletCubit extends Cubit<WalletState> {
         emit(GetReportsErrorState(msg: error.toString()));
       }
     });
-
   }
-
-
-
-
 
   List<TradeOrOrder> orderReportsList = [];
 
@@ -421,15 +442,6 @@ class WalletCubit extends Cubit<WalletState> {
       }
     });
   }
-
-
-
-
-
-
-
-
-
 
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////  withdraw in wallets
 
@@ -455,6 +467,7 @@ class WalletCubit extends Cubit<WalletState> {
       throw error;
     });
   }
+
 // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////  deposit in wallets
   Future<void> deposit() async {
     emit(DepositLoadingState());

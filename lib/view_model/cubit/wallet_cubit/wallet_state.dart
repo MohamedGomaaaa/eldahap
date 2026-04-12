@@ -193,6 +193,24 @@ class DepositErrorState extends WalletState {
 
 
 
+class GetExchangeRateLoadingState extends WalletState {}
+
+class GetExchangeRateSuccessState extends WalletState {
+
+  final num exchangeDollarRate;
+
+
+  GetExchangeRateSuccessState(
+      this.exchangeDollarRate,
+
+      );
+}
+
+class GetExchangeRateErrorState extends WalletState {
+  final String msg;
+
+  GetExchangeRateErrorState({required this.msg});
+}
 
 
 
@@ -201,8 +219,15 @@ class DepositErrorState extends WalletState {
 
 
 
+class CalculateDepositAmountState extends WalletState {
+  final num depositUsdAmount;
+  final num depositEgpAmount;
 
-
+  CalculateDepositAmountState({
+    required this.depositUsdAmount,
+    required this.depositEgpAmount,
+  });
+}
 
 
 

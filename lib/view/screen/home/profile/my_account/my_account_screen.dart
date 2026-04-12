@@ -51,7 +51,7 @@ class _MyAccountsPageState extends State<MyAccountsPage> {
           icon: Icon(Icons.arrow_back_ios, color: AppColors.white),
           onPressed: () => Navigator.of(context).pop(),
         ),
-        title: Text(
+        title: const Text(
           'My accounts',
           style: TextStyle(
             color: AppColors.yellow,
@@ -173,7 +173,7 @@ class _MyAccountsPageState extends State<MyAccountsPage> {
                   children: [
                     Text(
                       '$accountType - Account',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: AppColors.yellow,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
@@ -199,7 +199,7 @@ class _MyAccountsPageState extends State<MyAccountsPage> {
                     color: AppColors.blueColor,
                     borderRadius: BorderRadius.circular(12),
                   ),
-                  child: Text(
+                  child: const Text(
                     'Active',
                     style: TextStyle(
                       color: AppColors.white,
@@ -240,7 +240,7 @@ class _MyAccountsPageState extends State<MyAccountsPage> {
       children: [
         Text(
           label,
-          style: TextStyle(
+          style: const TextStyle(
             color: AppColors.greyText,
             fontSize: 16,
           ),

@@ -373,11 +373,6 @@ class _WalletScreenState extends State<WalletScreen> {
               Icons.add_circle_outline,
               LocaleKeys.deposit.tr(),
               onTap: () async {
-                // Navigation.push(
-                //   context,
-                //   const RechargeAmountScreen(),
-                // );
-
                 await Navigator.push(
                   context,
                   MaterialPageRoute(

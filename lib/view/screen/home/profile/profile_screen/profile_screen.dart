@@ -5,20 +5,19 @@ import 'package:official_gold/view/screen/home/profile/tawk_chat/tawk_chat_scree
 import 'package:official_gold/view/screen/home/profile/wallet/wallet_screen.dart';
 import 'package:official_gold/view_model/utils/assets.dart';
 import 'package:official_gold/view_model/utils/navigation.dart';
-
-import '../../../../l10n/locale_keys.g.dart';
-import '../../../../model/user.dart';
-import '../../../../view_model/cubit/home_cubit/home_cubit.dart';
-import '../../../../view_model/data/local/shared_helper.dart';
-import '../../../../view_model/utils/colors.dart';
-import '../../auth/login_screen.dart';
-import '../../static_pages/static_page_screen.dart';
-import 'components/profile_tile_widget.dart';
-import 'faq/faq_screen.dart';
-import 'my_account/my_account_screen.dart';
-import 'reports/reports_screen.dart';
-import 'send_ticket/tickets_screen.dart';
-import 'settings/settings_screen.dart';
+import '../../../../../l10n/locale_keys.g.dart';
+import '../../../../../model/user.dart';
+import '../../../../../view_model/cubit/home_cubit/home_cubit.dart';
+import '../../../../../view_model/data/local/shared_helper.dart';
+import '../../../../../view_model/utils/colors.dart';
+import '../../../auth/login_screen.dart';
+import '../../../static_pages/static_page_screen.dart';
+import '../components/profile_tile_widget.dart';
+import '../faq/faq_screen.dart';
+import '../my_account/my_account_screen.dart';
+import '../reports/reports_screen.dart';
+import '../send_ticket/tickets_screen.dart';
+import '../settings/settings_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -253,77 +252,74 @@ class ProfileScreen extends StatelessWidget {
 
 ///////////////////////////////////////////////////////////////////////////////////////// logout
 
-            Padding(
-              padding: EdgeInsetsDirectional.only(bottom: 8.h),
-              child: Material(
-                color: AppColors.backgroundGrey,
-                borderRadius: BorderRadius.circular(12.r),
-                child: InkWell(
-                  onTap: () {
-                    SharedHelper.clear();
+            logOut(
+              context: context,
+              label: LocaleKeys.logout,
+              icon: Icons.logout,
+            ),
 
-                    Navigation.pushAndRemoveUntil(context, const LoginScreen());
-                  },
-                  borderRadius: BorderRadius.circular(12.r),
-                  child: Container(
-                    padding: EdgeInsets.all(12.sp),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(12.r),
-                      border: Border.all(
-                        color: AppColors.yellow,
-                        width: 0.5.w,
-                      ),
-                    ),
-                    child: Row(
-                      children: [
-                        Icon(
-                          Icons.logout,
-                          color: AppColors.textYellow,
-                          size: 20.sp,
+///////////////////////////////////////////////////////////////////////////////////////// delete account
+            logOut(
+              context: context,
+              label: LocaleKeys.deleteAccount,
+              icon: Icons.delete,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget logOut(
+      {required BuildContext context,
+      required String label,
+      required IconData icon}) {
+    return Padding(
+      padding: EdgeInsetsDirectional.only(bottom: 8.h),
+      child: Material(
+        color: AppColors.backgroundGrey,
+        borderRadius: BorderRadius.circular(12.r),
+        child: InkWell(
+          onTap: () {
+            SharedHelper.clear();
+            Navigation.pushAndRemoveUntil(context, const LoginScreen());
+          },
+          borderRadius: BorderRadius.circular(12.r),
+          child: Container(
+            padding: EdgeInsets.all(12.sp),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.r),
+              border: Border.all(
+                color: AppColors.yellow,
+                width: 0.5.w,
+              ),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  icon,
+                  color: AppColors.textYellow,
+                  size: 20.sp,
+                ),
+                SizedBox(
+                  width: 12.w,
+                ),
+                Expanded(
+                  child: Text(
+                    label,
+                    style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                          color: AppColors.yellow,
                         ),
-                        SizedBox(
-                          width: 12.w,
-                        ),
-                        Expanded(
-                          child: Text(
-                            LocaleKeys.logout,
-                            style:
-                                Theme.of(context).textTheme.bodyLarge?.copyWith(
-                                      color: AppColors.yellow,
-                                    ),
-                          ),
-                        ),
-                        Icon(
-                          Icons.arrow_forward_ios_rounded,
-                          color: AppColors.textYellow,
-                          size: 20.sp,
-                        ),
-                      ],
-                    ),
                   ),
                 ),
-              ),
-            )
-
-            // IconButton(
-            //   onPressed: () {
-            //     SharedHelper.clear();
-            //     // AuthCubit.get(context).logout().then((value) {
-            //     //   Navigation.pushAndRemoveUntil(
-            //     //     context,
-            //     //     const LoginScreen(),
-            //     //   );
-            //     // });
-            //     Navigation.pushAndRemoveUntil(context, const LoginScreen());
-            //   },
-            //   icon: Icon(
-            //     Icons.logout_rounded,
-            //     color: AppColors.yellow2,
-            //     size: 20.sp,
-            //   ),
-            //   tooltip: LocaleKeys.logout.tr(),
-            // ),
-          ],
+                Icon(
+                  Icons.arrow_forward_ios_rounded,
+                  color: AppColors.textYellow,
+                  size: 20.sp,
+                ),
+              ],
+            ),
+          ),
         ),
       ),
     );

@@ -252,7 +252,8 @@ class Validator {
     required String currency,    // "Dollar" أو "LE"
     bool requiredField = true,
     double minAmount = 1.0,     // الحد الأدنى (قابل للتعديل)
-  }) {
+  })
+  {
     // 1. فاضي أو null
     if (value == null || value.trim().isEmpty) {
       return requiredField ? "${currency}_amount_required".tr() : null;
@@ -281,4 +282,41 @@ class Validator {
 
     return null;
   }
+////////////////////////////////////////////////////////////////////////////////////////////////////
+  static String? validateDepositAmount({
+    required String? value,
+    required num walletDollar,
+    bool requiredField = true,
+    double minAmount = 1.0,
+  }) {
+    if (value == null || value.trim().isEmpty) {
+      return requiredField ? "dollar_amount_required".tr() : null;
+    }
+
+    final input = value.trim();
+
+    final isValidNumber = RegExp(r'^\d+\.?\d{0,2}$').hasMatch(input);
+    if (!isValidNumber) {
+      return "dollar_invalid_number".tr();
+    }
+
+    final double amount = double.tryParse(input) ?? 0;
+
+    if (amount < minAmount) {
+      return "dollar_min_amount_required".tr();
+    }
+
+    if (amount > walletDollar) {
+      return "dollar_insufficient_balance".tr();
+    }
+
+    return null;
+  }
+
+
+
+
+
+
+
 }

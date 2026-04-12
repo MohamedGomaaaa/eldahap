@@ -4,6 +4,7 @@ import 'package:official_gold/view_model/data/network/data_providers/wallet_prov
 import '../../../../model/convert_currency.dart';
 import '../../../../model/report_2.dart';
 import '../../../../model/response.dart';
+import '../../../../model/setting.dart';
 import '../../../../model/trade_model.dart';
 import '../../../../model/wallet.dart';
 import '../../../models/wallet_models/transaction_model.dart';
@@ -63,7 +64,18 @@ class WalletRepository {
 
 
 
+  Future<SettingResult> getExchangeRate() async {
+    try {
+      final response = await walletProvider.getExchangeRate();
 
+      final setting = Setting.fromJson(response?.data);
+
+      return setting.result ?? SettingResult();
+    } catch (e) {
+      print("Error in settings repository: $e");
+      rethrow;
+    }
+  }
 
 
 

@@ -17,7 +17,16 @@ class WalletProvider {
 
 
 
-
+  Future<Response?> getExchangeRate() async {
+    try {
+      return await DioHelper.get(
+        path: EndPoints.settings,
+        withToken: true,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
 
 
 

@@ -8,8 +8,9 @@ import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../view_model/utils/assets.dart';
 import '../../view_model/utils/colors.dart';
 import '../../view_model/utils/navigation.dart';
+import '../screen/home/profile/profile_screen/profile_screen.dart';
 import 'svg_widget.dart';
-import '../screen/home/profile/profile_screen.dart';
+
 
 
 
@@ -25,7 +26,7 @@ import '../../view_model/utils/assets.dart';
 import '../../view_model/utils/colors.dart';
 import '../../view_model/utils/navigation.dart';
 import 'svg_widget.dart';
-import '../screen/home/profile/profile_screen.dart';
+
 
 
 

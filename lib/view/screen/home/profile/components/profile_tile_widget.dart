@@ -11,7 +11,7 @@ class ProfileTileWidget extends StatelessWidget {
   final Widget? action;
   final EdgeInsets? padding;
   final Widget? iconWidget;
-final Color ?titleColor;
+  final Color ?titleColor;
   const ProfileTileWidget({
     required this.title,
     this.assetName,

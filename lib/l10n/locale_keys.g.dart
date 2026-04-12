@@ -115,6 +115,7 @@ abstract class  LocaleKeys {
   static const thankYou = 'thankYou';
   static const you = 'you';
   static const logout = 'logout';
+  static const deleteAccount = 'Delete Account';
   static const quantityError = 'quantityError';
   static const messageError = 'messageError';
   static const mobile = 'mobile';

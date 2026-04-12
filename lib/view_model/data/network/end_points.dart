@@ -69,6 +69,9 @@ class EndPoints {
   static const String orderPending = 'order/pending';
 
 
+  static const String settings = 'settings/exchange-rate';
+
+
 
 
 
