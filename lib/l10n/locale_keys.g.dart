@@ -139,14 +139,14 @@ abstract class  LocaleKeys {
   static const reservedMargin = 'reservedMargin';
 
   static const   appCommision = 'app Commision';
-
+  static const   appCommision2 = 'app Commision value';
 
   static const positionDetails = 'positionDetails';
   static const edit = 'edit';
   static const updatePosition = 'updatePosition';
   static const close = 'close';
   static const delivery = 'delivery';
-  static const low = 'Buy';
+  static const low = 'Sell';
   static const high = 'Buy';
   static const noProductsFound = 'noProductsFound';
   static const rechargeWallet = 'recharge_wallet';

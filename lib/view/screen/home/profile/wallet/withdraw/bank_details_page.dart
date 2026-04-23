@@ -28,13 +28,12 @@ class BankDetailsPage extends StatefulWidget {
 
 
 
-
-
-
 class _BankDetailsPageState extends State<BankDetailsPage> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
   final TextEditingController _nameController = TextEditingController();
   final TextEditingController _phoneController = TextEditingController();
+
   final TextEditingController _bankNameController = TextEditingController();
   final TextEditingController _bankAccountController = TextEditingController();
 
@@ -80,20 +79,20 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
   }
 
   String? _validateBankName(String? value) {
-    if (value == null || value.isEmpty) {
-      return (LocaleKeys.bank_name_required.tr());
-    }
+    // if (value == null || value.isEmpty) {
+    //   return (LocaleKeys.bank_name_required.tr());
+    // }
     return null;
   }
 
   String? _validateBankAccount(String? value) {
-    if (value == null || value.isEmpty) {
-      return (LocaleKeys.bank_account_required.tr());
-    }
-    // Additional validation for bank account number length
-    if (value.length < 10) {
-      return 'رقم الحساب يجب أن يكون 10 أرقام على الأقل';
-    }
+    // if (value == null || value.isEmpty) {
+    //   return (LocaleKeys.bank_account_required.tr());
+    // }
+    // // Additional validation for bank account number length
+    // if (value.length < 10) {
+    //   return 'رقم الحساب يجب أن يكون 10 أرقام على الأقل';
+    // }
     return null;
   }
 
@@ -247,6 +246,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                     return count == 4; // يوقف عند ثاني Route
                   });
 
+
                   WalletCubit.get(context).getWallet();
 
 
@@ -260,7 +260,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                 child: Text(
                   (LocaleKeys.ok_button.tr()),
                   style: const TextStyle(
-                    color: AppColors.black,
+                    color: AppColors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -422,9 +422,10 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
               const SizedBox(width: 12),
               Expanded(
                 child: Text(
-                  (LocaleKeys.withdraw_via_bank.tr()),
+                  "Withdraw via ${widget.paymentMethod.name}",
+                  // (LocaleKeys.withdraw_via_bank.tr()),
                   style: const TextStyle(
-                    color: AppColors.white,
+                    color: AppColors.yellow,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -444,8 +445,8 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
               children: [
                  Text(
                   '${LocaleKeys.amount.tr()}:',
-                  style: TextStyle(
-                    color: AppColors.greyText,
+                  style: const TextStyle(
+                    color: AppColors.yellow,
                     fontSize: 14,
                   ),
                 ),
@@ -469,34 +470,28 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+
+
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-              color: AppColors.yellow,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: const Icon(
-              Icons.arrow_back,
-              color: AppColors.black,
-              size: 20,
-            ),
-          ),
-          onPressed: _isLoading ? null : () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.yellow),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          (LocaleKeys.withdraw_via_bank.tr()),
+          LocaleKeys.withdraw_via_bank.tr(),
           style: const TextStyle(
-            color: AppColors.yellow,
-            fontSize: 16,
+            color: AppColors.textYellow,
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: false,
       ),
+
+
+
+
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
@@ -505,10 +500,10 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
             child: Column(
               children: [
                 10.verticalSpace,
-                // Header with withdrawal info
+/////////////////////////////////////////////////////////////////////////////// /// Header with withdrawal info
                 _buildHeader(),
 
-                // Name Field
+////////////////////////////////////////////////////////////////////////////////////////// Name Field
                 _buildTextField(
                   controller: _nameController,
                   label: (LocaleKeys.name_label.tr()),
@@ -524,7 +519,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 
                 const SizedBox(height: 24),
 
-                // Phone Field
+////////////////////////////////////////////////////////////////////////////////////////// Phone Field
                 _buildTextField(
                   controller: _phoneController,
                   label: (LocaleKeys.phone_label.tr()),
@@ -557,12 +552,12 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 
                 const SizedBox(height: 24),
 
-                // Bank Name Field
+/////////////////////////////////////////////////////////////////////////////////////////// Bank Name Field
                 _buildTextField(
                   controller: _bankNameController,
                   label: (LocaleKeys.bank_name_label.tr()),
                   hint: (LocaleKeys.bank_name_hint.tr()),
-                  validator: _validateBankName,
+                  validator: _validateBankName,// انا موقفها جمعه
                   prefixIcon: const Icon(
                     Icons.account_balance_outlined,
                     color: AppColors.yellow,
@@ -573,12 +568,12 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 
                 const SizedBox(height: 24),
 
-                // Bank Account Field
+/////////////////////////////////////////////////////////////////////////////////////// /// Bank Account Field
                 _buildTextField(
                   controller: _bankAccountController,
                   label: (LocaleKeys.bank_account_label.tr()),
                   hint: (LocaleKeys.bank_account_hint.tr()),
-                  validator: _validateBankAccount,
+                   validator: _validateBankAccount, // انا موقفها جمعه
                   keyboardType: TextInputType.number,
                   inputFormatters: [
                     FilteringTextInputFormatter.digitsOnly,
@@ -593,7 +588,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                 ),
 
                 const SizedBox(height: 24),
-
+/////////////////////////////////////////////////////////////////////////////////////////////// // address
                 _buildTextField(
                   controller: _addressController,
                   label: (LocaleKeys.address.tr()),
@@ -611,7 +606,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 
 
                 const SizedBox(height: 24),
-
+/////////////////////////////////////////////////////////////////////////////////////////// // binanceId
                 _buildTextField(
                   controller: _binanceIdController,
                   label: (LocaleKeys.binanceId.tr()),
@@ -627,8 +622,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                   enabled: !_isLoading,
                 ),
                 const SizedBox(height: 40),
-
-                // Send Button
+/////////////////////////////////////////////////////////////////////////////////////////// /// Send Button
                 Container(
                   width: double.infinity,
                   height: 50,
@@ -648,7 +642,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                         ?  Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           width: 20,
                           height: 20,
                           child: CircularProgressIndicator(
@@ -659,7 +653,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                         SizedBox(width: 12),
                         Text(
                           LocaleKeys.sendProcess.tr(),
-                          style: TextStyle(
+                          style: const TextStyle(
                             color: AppColors.white,
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
@@ -670,7 +664,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                         : Text(
                       (LocaleKeys.send_button.tr()),
                       style: const TextStyle(
-                        color: AppColors.black,
+                        color: AppColors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),
@@ -678,8 +672,9 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                   ),
                 ),
 
-                // Additional info
+/////////////////////////////////////////////////////////////////////////////////////////// //// Additional info
                 Container(
+                  margin: EdgeInsets.only(top: 10.h,bottom: 50.h),
                   padding: const EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.backgroundGrey2,

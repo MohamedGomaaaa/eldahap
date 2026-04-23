@@ -69,7 +69,7 @@ class MakeTicketSheet extends StatelessWidget {
                     TicketCubit.get(context).makeTicket().then((value) => Navigator.pop(context));
                   },
                   style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.lightPurple,
+                    backgroundColor: AppColors.yellow,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(12.r),
                     ),
@@ -81,6 +81,11 @@ class MakeTicketSheet extends StatelessWidget {
                         ),
                   ),
                 ),
+              ),
+
+
+              SizedBox(
+                height: 30.h,
               ),
             ],
           ),

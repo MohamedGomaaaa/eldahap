@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/model/ticket.dart';
 import '../../../../../../view_model/utils/colors.dart';
+import '../../../../../../view_model/utils/common_method.dart';
 
 class TicketWidget extends StatelessWidget {
   final Ticket ticket;
@@ -40,8 +41,9 @@ class TicketWidget extends StatelessWidget {
                         color: AppColors.textYellow,
                       ),
                     ),
+                  const  SizedBox(height: 4,),
                     Text(
-                      ticket.sendAt ?? '',
+                   Methods.formatCreatedAt(   ticket.sendAt??DateTime.now().toString()),
                       style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                         color: AppColors.greyText,
                       ),

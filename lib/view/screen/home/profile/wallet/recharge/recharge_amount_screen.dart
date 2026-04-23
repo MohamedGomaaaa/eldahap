@@ -25,21 +25,18 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
   @override
   void initState() {
     super.initState();
-
+    final cubit = WalletCubit.get(context);
+    cubit.depositEgpAmount = 0; // ✅ تصفير
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      final cubit = WalletCubit.get(context);
 
       // لو المحفظة مش متجابه بالفعل
       if (cubit.walletDollar == 0 && cubit.walletEgp == 0) {
         await cubit.getWallet();
       }
-
       await cubit.getExchangeRate();
     });
-
     _amountController.addListener(_onAmountChanged);
   }
-
   void _onAmountChanged() {
     WalletCubit.get(context).calculateDepositInEgp(_amountController.text);
   }
@@ -98,6 +95,7 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                 ),
               ),
               SizedBox(height: 20.h),
+////////////////////////////////////////////////////////////////////////////////////////////////////////// Amount Input
               BlocBuilder<WalletCubit, WalletState>(
                 buildWhen: (previous, current) {
                   return current is GetWalletSuccessState ||
@@ -145,6 +143,7 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                 },
               ),
               SizedBox(height: 8.h),
+////////////////////////////////////////////////////////////////////////////////////////////////////////// egy Amount Input
               BlocBuilder<WalletCubit, WalletState>(
                 buildWhen: (previous, current) {
                   return current is CalculateDepositAmountState ||
@@ -161,6 +160,7 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                   );
                 },
               ),
+ ////////////////////////////////////////////////////////////////////////////////////////////////////////// Button
               const Spacer(),
               SizedBox(
                 width: double.infinity,
@@ -235,6 +235,37 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // class RechargeAmountScreen extends StatefulWidget {
 //   const RechargeAmountScreen({super.key});

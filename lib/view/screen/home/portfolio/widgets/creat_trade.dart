@@ -72,7 +72,8 @@ class CreatTrade extends StatelessWidget {
                   onTap: hasLive
                       ? () => Navigation.push(
                             context,
-                            TradeDetailsScreen(
+
+                            TradeDetailsScreen(tradesCubit:tradesCubit,
                               trade: trade,
                               productTitle: productTitle,
                             ),
@@ -84,7 +85,7 @@ class CreatTrade extends StatelessWidget {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-//////////////////////////////////////////////////////////////////////////////////////////////////// quantity
+//////////////////////////////////////////////////////////////////////////////////////////////////// quantity in blue container
                         Material(
                           color: AppColors.blueColor,
                           borderRadius: BorderRadius.circular(8.sp),

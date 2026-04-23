@@ -15,6 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
+import '../../../../view_model/utils/common_method.dart';
 import '../../../components/shimmer_widget.dart';
 import '../../../components/svg_widget.dart';
 
@@ -94,23 +95,34 @@ class HomeScreen extends StatelessWidget {
                             current is GetWalletLoadingState;
                       },
                       builder: (context, state) {
-                        return Text(
-                          '\$${WalletCubit.get(context).walletDollar}',
-                          style: Theme.of(context)
-                              .textTheme
-                              .headlineSmall
-                              ?.copyWith(
-                                color: AppColors.yellow2,
-                            fontFamily: GoogleFonts.cairo().fontFamily, // Add this line
+                        return
+                          Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              '${WalletCubit.get(context).walletDollar} \$',
+                              style: Theme.of(context)
+                                  .textTheme
+                                  .headlineSmall
+                                  ?.copyWith(
+                                    color: AppColors.yellow2,
+                                fontFamily: GoogleFonts.cairo().fontFamily, // Add this line
+                              ),
+                            ),
 
-                          ),
+                            // WalletCubit.get(context).walletEgp<=0?const SizedBox ():Text(
+                            //   "${ Methods.removeTrailingZeros( WalletCubit.get(context).walletEgp)} LE",
+                            //   style: Theme.of(context).textTheme.headlineSmall,
+                            // ),
+
+                          ],
                         );
                       },
                     ),
                   ],
                 ),
                 SizedBox(
-                  height: 12.h,
+                  height: 18.h,
                 ),
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////// slider
@@ -326,7 +338,7 @@ class HomeScreen extends StatelessWidget {
                       );
                     }
 
-                    // ✅ لو أكتر من عنصر: Carousel طبيعي
+//////////////////////////////////////////////////////////////////// // ✅ لو أكتر من عنصر: Carousel طبيعي
                     return CarouselSlider(
                       options: CarouselOptions(
                         autoPlay: false,
@@ -567,35 +579,7 @@ class HomeScreen extends StatelessWidget {
                 SizedBox(
                   height: 33.h,
                 ),
-               // Text("will add real time gold price chart here soon",style: TextStyle(color: Colors.white),textAlign: TextAlign.center,),
 
-
-               // Expanded(
-               //     child:
-
-                //
-                //     ),
-
-
-                // Container(
-                //   width: 110.w,
-                //   decoration: BoxDecoration(
-                //     borderRadius: BorderRadius.circular(12.r),
-                //     border: Border.all(
-                //       color: AppColors.yellowBorder,
-                //       width: 1.w,
-                //       strokeAlign: BorderSide.strokeAlignInside,
-                //     ),
-                //   ),
-                //   clipBehavior: Clip.antiAliasWithSaveLayer,
-                //   child: ClipRRect(
-                //     borderRadius: BorderRadius.circular(12.r),
-                //     child: Image.asset(
-                //       AppAssets.forexTrading,
-                //       fit: BoxFit.cover,
-                //     ),
-                //   ),
-                // )
               ],
             ),
           ),

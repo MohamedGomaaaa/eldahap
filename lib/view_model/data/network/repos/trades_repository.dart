@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:official_gold/view_model/data/network/data_providers/trades_providers.dart';
 
+import '../../../../model/commission_rate_model.dart';
 import '../../../../model/new_trades.dart';
 import '../../../../model/trade_model.dart';
 
@@ -72,6 +73,51 @@ class TradesRepository {
       rethrow;
     }
   }
+
+
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////// get Commission Rate
+
+  Future<CommissionRateModel> getCommissionRate() async {
+    try {
+      final response = await productProvider.getCommissionRate();
+
+      final data = response.data;
+
+      if (data is Map<String, dynamic>) {
+        return CommissionRateModel.fromJson(data);
+      }
+
+      if (data is Map) {
+        return CommissionRateModel.fromJson(
+          Map<String, dynamic>.from(data),
+        );
+      }
+
+      return CommissionRateModel(
+        success: false,
+        message: "Invalid response",
+        result: null,
+      );
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////// old orders

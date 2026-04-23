@@ -19,7 +19,7 @@ class WalletCubit extends Cubit<WalletState> {
   static WalletCubit get(context) => BlocProvider.of<WalletCubit>(context);
 
   TransactionModel? transactionModel;
-  List<TransactionData> allTransactions = []; // Store all transactions
+   List<TransactionData> allTransactions = []; // Store all transactions
   bool isLoadingMoreTransactions = false;
   bool hasMoreTransactions = true;
   int currentTransactionPage = 1;

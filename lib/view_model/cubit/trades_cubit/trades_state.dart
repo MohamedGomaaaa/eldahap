@@ -65,7 +65,14 @@ class TradesExpandedChanged extends TradesState {
 
 
 
+class GetCommissionRateLoadingState extends TradesState {}
 
+class GetCommissionRateSuccessState extends TradesState {}
+
+class GetCommissionRateErrorState extends TradesState {
+  final String? msg;
+  GetCommissionRateErrorState({this.msg});
+}
 
 
 

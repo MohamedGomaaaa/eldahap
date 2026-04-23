@@ -11,11 +11,13 @@ import 'bank_details_page.dart';
 
 class PaymentMethodPage extends StatefulWidget {
   final double amount;
-final String currency;
-final int selectedIndex;
+  final String currency;
+  final int selectedIndex;
   const PaymentMethodPage({
     Key? key,
-    required this.amount, required this.currency, required this.selectedIndex,
+    required this.amount,
+    required this.currency,
+    required this.selectedIndex,
   }) : super(key: key);
 
   @override
@@ -23,12 +25,10 @@ final int selectedIndex;
 }
 
 class _PaymentMethodPageState extends State<PaymentMethodPage> {
-
-  final ApiService _apiService= ApiService();
+  final ApiService _apiService = ApiService();
 
   bool isLoading = false;
   List<PaymentMethod> paymentMethods = [];
-
 
   PaymentMethod? selectedMethod;
 
@@ -39,8 +39,8 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         context,
         MaterialPageRoute(
           builder: (context) => BankDetailsPage(
-            currency:widget.currency,
-            selectedIndex:widget.selectedIndex,
+            currency: widget.currency,
+            selectedIndex: widget.selectedIndex,
             amount: widget.amount,
             paymentMethod: selectedMethod!,
           ),
@@ -56,7 +56,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
       );
     }
   }
-
 
   @override
   void initState() {
@@ -101,13 +100,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     });
   }
 
-
-
   Widget _buildPaymentMethodTile(PaymentMethod method) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       child: InkWell(
-        onTap:  () {
+        onTap: () {
           setState(() {
             selectedMethod = method;
           });
@@ -143,12 +140,11 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                     Text(
                       method.name,
                       style: const TextStyle(
-                        color:  AppColors.yellow ,
+                        color: AppColors.yellow,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-
                   ],
                 ),
               ),
@@ -189,17 +185,17 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-"you will pay ${Methods.removeTrailingZeros(widget.amount)} ${widget.currency} for successful payment"
-       
-            ,            style: const TextStyle(
-            color: AppColors.textYellow,
-            fontSize: 14,
-          ),
+            "you will pay ${Methods.removeTrailingZeros(widget.amount)} ${widget.currency} for successful payment",
+            style: const TextStyle(
+              color: AppColors.textYellow,
+              fontSize: 14,
+            ),
           ),
         ],
       ),
     );
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -208,25 +204,13 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-              color: AppColors.yellow,
-              borderRadius: BorderRadius.all(Radius.circular(12)),
-            ),
-            child: const Icon(
-              Icons.arrow_back,
-              color: AppColors.black,
-              size: 20,
-            ),
-          ),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.yellow),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          LocaleKeys.payment_methods.tr(), // "طرق الدفع"
+          LocaleKeys.payment_methods.tr(),
           style: const TextStyle(
-            color: AppColors.yellow,
-            fontSize: 18,
+            color: AppColors.textYellow,
             fontWeight: FontWeight.w600,
           ),
         ),
@@ -239,7 +223,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           children: [
             // const SizedBox(height: 40),
             8.verticalSpace,
-            // Title
+////////////////////////////////////////////////////////////////////////////////////// // Title
             Text(
               LocaleKeys.choose_payment_method.tr(), // "اختار طريقة الدفع"
               textAlign: TextAlign.center,
@@ -253,21 +237,21 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
             16.verticalSpace,
             // Payment Method Option
 
-
             isLoading
                 ? const Center(
-              child: CircularProgressIndicator(),
-            )
+                    child: CircularProgressIndicator(),
+                  )
                 : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...paymentMethods.map((method) => _buildPaymentMethodTile(method)),
-                if (selectedMethod != null ) ...[
-                  SizedBox(height: 20.h),
-                  _buildSelectedMethodDetails(),
-                ],
-              ],
-            ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...paymentMethods
+                          .map((method) => _buildPaymentMethodTile(method)),
+                      if (selectedMethod != null) ...[
+                        SizedBox(height: 20.h),
+                        _buildSelectedMethodDetails(),
+                      ],
+                    ],
+                  ),
             // GestureDetector(
             //   onTap: () {
             //     setState(() {
@@ -346,16 +330,13 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
 
             const Spacer(),
 
-
-
             const Spacer(),
 
-            // Continue Button
+//////////////////////////////////////////////////////////////////////////////////////////////////////////// Continue Button
             Container(
               margin: const EdgeInsets.only(top: 20, bottom: 20),
               width: double.infinity,
               height: 50,
-
               child: ElevatedButton(
                 onPressed: _onContinuePressed,
                 style: ElevatedButton.styleFrom(
@@ -381,23 +362,6 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 

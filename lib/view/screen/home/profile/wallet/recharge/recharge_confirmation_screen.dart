@@ -9,6 +9,7 @@ import 'package:official_gold/view/components/app_loader.dart';
 
 import '../../../../../../l10n/locale_keys.g.dart';
 import '../../../../../../view_model/utils/colors.dart';
+import '../../../../../../view_model/utils/common_method.dart';
 import '../../../../static_pages/static_page_screen.dart';
 
 // payment_method.dart - Model class
@@ -217,10 +218,11 @@ class _RechargeConfirmationScreenState
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+//////////////////////////////////////////////////////////////////////////// amount tiitle Info
                 Text(
                   LocaleKeys.recharge_wallet_message.tr(
                     namedArgs: {
-                      'amount': widget.amount.toStringAsFixed(0),
+                      'amount':Methods.removeTrailingZeros(widget.amount)
                     },
                   ),
                   style: const TextStyle(
@@ -228,58 +230,76 @@ class _RechargeConfirmationScreenState
                     fontSize: 14,
                   ),
                 ),
-                SizedBox(height: 20.h),
-
-                /// Account Info
+//////////////////////////////////////////////////////////////////////////// via payment method
                 Container(
-                  padding: EdgeInsets.all(16.sp),
-                  decoration: BoxDecoration(
-                    color: AppColors.backgroundGrey,
-                    border: Border.all(color: AppColors.yellowBorder),
-                    borderRadius: BorderRadius.circular(12.r),
-                  ),
-                  child: Row(
-                    children: [
-                      Icon(Icons.account_balance,
-                          color: AppColors.yellow, size: 24.sp),
-                      SizedBox(width: 12.w),
-                      Expanded(
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              "${LocaleKeys.account_number.tr()}: ${widget.paymentMethod.accountNumber}",
-                              style: const TextStyle(
-                                  color: AppColors.white, fontSize: 14),
-                            ),
-                            Text(
-                              widget.paymentMethod.bankName ?? '',
-                              style: const TextStyle(
-                                  color: AppColors.greyText, fontSize: 12),
-                            ),
-                          ],
-                        ),
-                      ),
-                      IconButton(
-                        onPressed: () {
-                          _copyToClipboard(widget.paymentMethod.accountNumber ?? '');
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            SnackBar(
-                              content:
-                              Text(LocaleKeys.copied_account_number.tr()),
-                              backgroundColor: AppColors.yellow,
-                            ),
-                          );
-                        },
-                        icon:
-                        const Icon(Icons.copy, color: AppColors.yellow),
-                      ),
-                    ],
+                  margin: const EdgeInsets.only(top: 10),
+                  child: Text(
+                    "via ${widget.paymentMethod.name}",
+                    style:  const TextStyle(
+                      color: AppColors.green,
+                      fontSize: 18,
+                    ),
                   ),
                 ),
+
                 SizedBox(height: 20.h),
 
-                /// Name
+/////////////////////////////////////////////////////////////////////////////////////// Account Info
+                Column(
+crossAxisAlignment: CrossAxisAlignment.start,
+
+                  children: [
+    Text(
+    LocaleKeys.account_number.tr(),
+    style: const TextStyle(
+    color: AppColors.yellow, fontSize: 16,),
+    ),
+                    Container(
+                      margin: const EdgeInsets.only(top: 8),
+                      padding: EdgeInsets.all(16.sp),
+                      decoration: BoxDecoration(
+                        color: AppColors.backgroundGrey,
+                        border: Border.all(color: AppColors.yellowBorder),
+                        borderRadius: BorderRadius.circular(12.r),
+                      ),
+                      child: Row(
+                        children: [
+                          Icon(Icons.account_balance,
+                              color: AppColors.yellow, size: 24.sp),
+                          SizedBox(width: 12.w),
+                          Expanded(
+                            child:    Text(
+                              "${widget.paymentMethod.accountNumber}",
+                              style: const TextStyle(
+                                  color: AppColors.greyText, fontSize: 14),
+                            ),
+                            // Text(
+                            //   "${widget.paymentMethod.accountNumber}",
+                            //   style: const TextStyle(
+                            //       color: AppColors.greyText, fontSize: 14),
+                            // ),
+                          ),
+                          IconButton(
+                            onPressed: () {
+                              _copyToClipboard(widget.paymentMethod.accountNumber ?? '');
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  content:
+                                  Text(LocaleKeys.copied_account_number.tr()),
+                                  backgroundColor: AppColors.yellow,
+                                ),
+                              );
+                            },
+                            icon:
+                            const Icon(Icons.copy, color: AppColors.yellow),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 20.h),
+////////////////////////////////////////////////////////////////////////////// user Name
                 Text(LocaleKeys.name_label.tr(),
                     style: const TextStyle(
                         color: AppColors.textYellow, fontSize: 14)),
@@ -297,7 +317,7 @@ class _RechargeConfirmationScreenState
                 ),
                 SizedBox(height: 16.h),
 
-                /// Phone
+//////////////////////////////////////////////////////////////////// /// user Phone
                 Text(LocaleKeys.phone_label.tr(),
                     style: const TextStyle(
                         color: AppColors.textYellow, fontSize: 14)),
@@ -316,7 +336,7 @@ class _RechargeConfirmationScreenState
                 ),
                 SizedBox(height: 16.h),
 
-                /// Upload Image
+/////////////////////////////////////////////////////////////////////////////////////////// Upload Image
                 Text(LocaleKeys.upload_file_label.tr(),
                     style: const TextStyle(
                         color: AppColors.textYellow, fontSize: 14)),
@@ -355,7 +375,7 @@ class _RechargeConfirmationScreenState
                 ),
                 SizedBox(height: 24.h),
 
-                /// Submit Button
+/////////////////////////////////////////////////////////////////////////////////////////////////// Submit Button
                 SizedBox(
                   width: double.infinity,
                   child: ElevatedButton(
@@ -370,7 +390,7 @@ class _RechargeConfirmationScreenState
                     child: Text(
                       LocaleKeys.send_button.tr(),
                       style: const TextStyle(
-                        color: AppColors.black,
+                        color: AppColors.white,
                         fontSize: 16,
                         fontWeight: FontWeight.w600,
                       ),

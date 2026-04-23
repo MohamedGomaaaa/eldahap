@@ -35,6 +35,25 @@ class TradesProvider {
       rethrow;
     }
   }
+
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////// get Commission Rate
+
+
+  Future<Response> getCommissionRate() async {
+    return await DioHelper.get(
+      path: EndPoints.commissionRate,
+      withToken: true,
+    );
+  }
+
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////// old orders
 //   Future<Response?> orders() async {
 //     try{

@@ -7,6 +7,7 @@ import '../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../view_model/utils/assets.dart';
 import '../../view_model/utils/colors.dart';
+import '../../view_model/utils/common_method.dart';
 import '../../view_model/utils/navigation.dart';
 import '../screen/home/profile/profile_screen/profile_screen.dart';
 import 'svg_widget.dart';
@@ -127,11 +128,12 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                       current is GetWalletLoadingState ||
                       current is GetWalletErrorState,
                   builder: (context, state) {
-                    return Text(
+                    return
+                      Text(
 
-                        '${WalletCubit.get(context).walletDollar}',
-                      style: Theme.of(context).textTheme.headlineSmall,
-                    );
+                        "${ Methods.removeTrailingZeros( WalletCubit.get(context).walletDollar)} \$",
+                        style: Theme.of(context).textTheme.headlineSmall,
+                      );
                   },
                 ),
               ],

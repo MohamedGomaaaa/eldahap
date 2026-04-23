@@ -306,9 +306,9 @@ class Validator {
       return "dollar_min_amount_required".tr();
     }
 
-    if (amount > walletDollar) {
-      return "dollar_insufficient_balance".tr();
-    }
+    // if (amount > walletDollar) {
+    //   return "dollar_insufficient_balance".tr();
+    // }
 
     return null;
   }

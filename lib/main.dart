@@ -12,6 +12,20 @@ import 'dart:async';
 import 'dart:io';
 
 /// token 227|0uXa77GZ3DjN2jLWr5UnDseKwSxV8h9ztijLWUJ74d9bfac4
+///
+///
+///
+///
+/// transactions  : https://officialgold.site/api/finance/transactions?type=&is_approval=&date_from=2024-08-01&date_to=2026-04-23&per_page=10&page=1
+
+
+
+
+// deposite and withdraw all pages make colors also wallet with pl  in all pages and in buy and details
+
+
+
+
 void main() {
   runZonedGuarded(() async {
     WidgetsFlutterBinding.ensureInitialized();

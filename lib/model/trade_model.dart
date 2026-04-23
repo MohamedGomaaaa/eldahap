@@ -151,11 +151,7 @@
 // }
 import 'package:official_gold/model/product.dart';
 
-
-
-
-
-class TradeOrOrder{
+class TradeOrOrder {
   final int? id;
 
   final String? type;
@@ -226,17 +222,9 @@ class TradeOrOrder{
 
   final num? totalCost;
 
-
-
-  final num?  manufacturingFee;//: 160,
-  final bool? hasDelivery;//: true,
-  final num? shippingCost;//: 200,
-
-
-
-
-
-
+  final num? manufacturingFee; //: 160,
+  final bool? hasDelivery; //: true,
+  final num? shippingCost; //: 200,
 
   TradeOrOrder({
     this.id,
@@ -291,15 +279,9 @@ class TradeOrOrder{
     this.createdAt,
     this.updatedAt,
     this.totalCost,
-
-
-
-    this.  manufacturingFee,//: 160,
-    this. hasDelivery,//: true,
-    this. shippingCost,//: 200,
-
-
-
+    this.manufacturingFee, //: 160,
+    this.hasDelivery, //: true,
+    this.shippingCost, //: 200,
   });
 
   // ===================== HELPERS =====================
@@ -308,7 +290,7 @@ class TradeOrOrder{
   static num? parseNum(dynamic v) {
     if (v == null) return null;
     if (v is num) return v;
-    return num.tryParse(v.toString());
+    return num.tryParse(v.toString())??0;
   }
 
   /// ✅ أي قيمة (int/double/String/null) -> int?
@@ -316,16 +298,28 @@ class TradeOrOrder{
     if (v == null) return null;
     if (v is int) return v;
     if (v is num) return v.toInt();
-    return int.tryParse(v.toString());
+    return int.tryParse(v.toString())??0;
   }
 
   /// ✅ parsing للـ DateTime
-  static DateTime? parseDate(dynamic v) {
-    if (v == null) return null;
+  // static DateTime? parseDate(dynamic v) {
+  //   if (v == null) return null;
+  //   final s = v.toString().trim();
+  //   if (s.isEmpty) return null;
+  //   return DateTime.tryParse(s);
+  // }
+  static DateTime parseDate(dynamic v) {
+    if (v == null) return DateTime.now();
     final s = v.toString().trim();
-    if (s.isEmpty) return null;
-    return DateTime.tryParse(s);
+    if (s.isEmpty) return DateTime.now();
+    return DateTime.tryParse(s) ?? DateTime.now();
   }
+
+
+
+
+
+
 
   // ===================== FROM JSON =====================
   factory TradeOrOrder.fromJson(Map<String, dynamic> json) {
@@ -338,7 +332,7 @@ class TradeOrOrder{
       productId: parseInt(json['product_id']),
       quantity: parseNum(json['quantity']),
 
-      unitGramWeight: parseNum(json['unit_gram_weight']??"0"),
+      unitGramWeight: parseNum(json['unit_gram_weight'] ?? "0"),
       unitKarat: parseInt(json['unit_karat']),
 
       product: (json['product'] is Map<String, dynamic>)
@@ -401,26 +395,11 @@ class TradeOrOrder{
 
       totalCost: parseNum(json['total_cost']),
 
-
-
       deliveryFee: parseNum(json['delivery_fee']),
 
-
-      manufacturingFee:  json["manufacturingFee"]??0,//: 160,
-      hasDelivery:   json["hasDelivery"]??true,//: true,
-      shippingCost: json["shippingCost"]??0,//: 200,
-
-
-
-
-
-
-
-
-
-
-
-
+      manufacturingFee: json["manufacturingFee"] ?? 0, //: 160,
+      hasDelivery: json["hasDelivery"] ?? true, //: true,
+      shippingCost: json["shippingCost"] ?? 0, //: 200,
     );
   }
 
@@ -496,75 +475,12 @@ class TradeOrOrder{
 
       'total_cost': totalCost,
 
-
-      "manufacturingFee":  manufacturingFee,//: 160,
-      "hasDelivery":   hasDelivery,//: true,
-      "shippingCost": shippingCost//: 200,
-
-
-
+      "manufacturingFee": manufacturingFee, //: 160,
+      "hasDelivery": hasDelivery, //: true,
+      "shippingCost": shippingCost //: 200,
     };
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////// old model
 

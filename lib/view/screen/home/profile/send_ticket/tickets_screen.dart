@@ -33,7 +33,7 @@ class TicketsScreen extends StatelessWidget {
           },
           backgroundColor: AppColors.textYellow,
           child: const Icon(
-            Icons.add,
+            Icons.add,       color: AppColors.white,
           ),
         ),
         body: GradientWidget(

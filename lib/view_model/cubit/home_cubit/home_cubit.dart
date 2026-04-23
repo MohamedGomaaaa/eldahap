@@ -17,16 +17,18 @@ class HomeCubit extends Cubit<HomeState> {
 
   static HomeCubit get(context) => BlocProvider.of<HomeCubit>(context);
 
+
+
+
+
+
+
   List<slider.Slider> sliders = [];
 
   Future<void> getSliders() async {
     emit(GetSlidersLoadingState());
     await HomeRepository().sliders().then((List<slider.Slider> value) {
       sliders = value;
-
-
-
-
       emit(GetSlidersSuccessState(value));
     }).catchError((error) {
       if (error is DioException) {
@@ -37,12 +39,17 @@ class HomeCubit extends Cubit<HomeState> {
     });
   }
 
+
+
+
   List<New> news = [];
 
   Future<void> getNews() async {
     emit(GetNewsLoadingState());
     await HomeRepository().news().then((value) {
-      news = value;
+      // news = value;
+      news = value.reversed.toList();
+
       emit(GetNewsSuccessState(value));
     }).catchError((error) {
       if (error is DioException) {

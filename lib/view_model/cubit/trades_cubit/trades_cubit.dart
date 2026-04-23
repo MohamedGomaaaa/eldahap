@@ -2,9 +2,9 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/trades_repository.dart';
+import '../../../model/commission_rate_model.dart';
 import '../../../model/new_trades.dart';
 part 'trades_state.dart';
-
 
 class TradesCubit extends Cubit<TradesState> {
   TradesCubit() : super(TradesInitial());
@@ -28,7 +28,8 @@ class TradesCubit extends Cubit<TradesState> {
   /////////////////////////////////////////////////////////////////////////////////
   // open order list
   final Set<String> _expandedOrderGroupKeys = {};
-  bool isOrderGroupExpanded(String key) => _expandedOrderGroupKeys.contains(key);
+  bool isOrderGroupExpanded(String key) =>
+      _expandedOrderGroupKeys.contains(key);
 
   void toggleOrderGroup(String key) {
     if (_expandedOrderGroupKeys.contains(key)) {
@@ -39,7 +40,7 @@ class TradesCubit extends Cubit<TradesState> {
     emit(TradesExpandedChanged(Set<String>.from(_expandedOrderGroupKeys)));
   }
 
-  //////////////////////////////////////////////////////// ////// ////// //////// ///// ////////
+  ////////////////////////////////////////////////////////// ///// //////// get Tradess
   // trades list
   List<GroupOfTradesOrOrders> groupOfTradesOrOrders = [];
   bool isTradesRefreshing = false;
@@ -68,7 +69,7 @@ class TradesCubit extends Cubit<TradesState> {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////// get Orderss
   // orders list
   List<GroupOfTradesOrOrders> wholeOrders = [];
   bool isOrdersRefreshing = false;
@@ -97,34 +98,30 @@ class TradesCubit extends Cubit<TradesState> {
     }
   }
 
-  /////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////// close Trade
   // close trade
   Future<void> closeTrade({required orderId, required closePrice}) async {
-    emit(CloseTradeLoadingState());
-    await TradesRepository()
-        .closeTrade(orderId: orderId, closePrice: closePrice)
-        .then((value) async {
-      emit(CloseTradeSuccessState());
 
-      // ✅ بعد العملية: اعمل get مع shimmer
-      // await getTradess(showShimmer: false);
-    }).catchError((error) {
-      if (error is DioException) {
-        debugPrint('Error: ${error.response?.data}');
-      } else {
-        debugPrint('Error: $error');
-      }
-      emit(CloseTradeErrorState());
-    });
+    print("orderId : $orderId, closePrice: $closePrice");
+
+
+
+    // emit(CloseTradeLoadingState());
+    // await TradesRepository()
+    //     .closeTrade(orderId: orderId, closePrice: closePrice)
+    //     .then((value) async {
+    //   emit(CloseTradeSuccessState());
+    // }).catchError((error) {
+    //   if (error is DioException) {
+    //     debugPrint('Error: ${error.response?.data}');
+    //   } else {
+    //     debugPrint('Error: $error');
+    //   }
+    //   emit(CloseTradeErrorState());
+    // });
   }
 
-
-
-
-
-
-
-  /////////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////// closeOrder
   // close order (delete pending)
   Future<void> closeOrder({required orderId}) async {
     emit(CloseOrderLoadingState());
@@ -142,149 +139,49 @@ class TradesCubit extends Cubit<TradesState> {
       emit(CloseOrderErrorState());
     });
   }
+
+  ///////////////////////////////////////////////////////////////////////////////// get Commission Rate
+  CommissionRateResult? commissionRate;
+  num? commissionRateValue; // الرقم نفسه (0.1)
+  Future<void> getCommissionRate() async {
+    emit(GetCommissionRateLoadingState());
+    try {
+      final res = await TradesRepository().getCommissionRate();
+      // خزّن الريسبونس كامل
+      commissionRate = res.result;
+      // خزّن الرقم لوحده
+      commissionRateValue = res.result?.commissionRate;
+
+      emit(GetCommissionRateSuccessState());
+    } on DioException catch (error) {
+      debugPrint('Commission Rate Error: ${error.response?.data}');
+      emit(
+        GetCommissionRateErrorState(
+          msg: error.response?.data?['message']?.toString(),
+        ),
+      );
+    } catch (error) {
+      debugPrint('Commission Rate Error: $error');
+      emit(GetCommissionRateErrorState(msg: error.toString()));
+    }
+  }
+num calculateCommission(num amount) {
+  final rate = commissionRateValue ?? 0;
+  return (amount * rate) / 100;
 }
 
-// class TradesCubit extends Cubit<TradesState> {
-//   TradesCubit() : super(TradesInitial());
-//
-//   static TradesCubit get(context) => BlocProvider.of<TradesCubit>(context);
-//
-// /////////////////////////////////////////////////////////////////////////////////////////////  open trade list
-//   final Set<String> _expandedGroupKeys = {};
-//
-//   bool isGroupExpanded(String key) => _expandedGroupKeys.contains(key);
-//   void toggleGroup(String key) {
-//     if (_expandedGroupKeys.contains(key)) {
-//       _expandedGroupKeys.remove(key);
-//     } else {
-//       _expandedGroupKeys.add(key);
-//     }
-//     emit(TradesExpandedChanged(Set<String>.from(_expandedGroupKeys)));
-//   }
-//
-// /////////////////////////////////////////////////////////////////////////////////////////////  open order list
-//   final Set<String> _expandedOrderGroupKeys = {};
-//
-//   bool isOrderGroupExpanded(String key) => _expandedOrderGroupKeys.contains(key);
-//
-//   void toggleOrderGroup(String key) {
-//     if (_expandedOrderGroupKeys.contains(key)) {
-//       _expandedOrderGroupKeys.remove(key);
-//     } else {
-//       _expandedOrderGroupKeys.add(key);
-//     }
-//     emit(TradesExpandedChanged(Set<String>.from(_expandedOrderGroupKeys)));
-//   }
-//
-//
-// /////////////////////////////////////////////////////////////////////////////////////////// new get trades by eng gomaa
-//
-//    List<Result> wholeTrade = [];
-//
-//   Future<void> getTradess() async {
-//     emit(GetTradesLoadingState());
-//
-//     try {
-//       final res = await TradesRepository().tradess(); // Tradess
-//       wholeTrade = res.result ?? [];
-//       emit(GetTradesSuccessState());
-//     } on DioException catch (error) {
-//       debugPrint('Error: ${error.response?.data}');
-//       emit(GetTradesErrorState());
-//     } catch (error) {
-//       debugPrint('Error: $error');
-//       emit(GetTradesErrorState());
-//     }
-//   }
-//
-//
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////// new orders by eng gomaa
-//
-// // ✅ orders list
-//   List<Result> wholeOrders = [];
-//
-//   Future<void> getOrderss() async {
-//     emit(GetOrdersLoadingState());
-//
-//     try {
-//       final res = await TradesRepository().orderss(); // ✅ Tradess response برضه (success/message/result)
-//       wholeOrders = res.result ?? [];
-//       emit(GetOrdersSuccessState());
-//     } on DioException catch (error) {
-//       debugPrint('Error: ${error.response?.data}');
-//       emit(GetOrdersErrorState());
-//     } catch (error) {
-//       debugPrint('Error: $error');
-//       emit(GetOrdersErrorState());
-//     }
-//   }
-// ///////////////////////////////////////////////////////////////////////////////////////////////////////// updateTrade
-//
-//   //
-//   //
-//   // Future<void> closeTrade({required orderId,required closePrice }) async {
-//   //   emit(CloseTradeLoadingState());
-//   //   await TradesRepository().closeTrade(orderId: orderId,closePrice: closePrice).then((value) {
-//   //     emit(CloseTradeSuccessState());
-//   //     getTradess();
-//   //   }).catchError((error) {
-//   //     if (error is DioException) {
-//   //       debugPrint('Error: ${error.response?.data}');
-//   //     } else {
-//   //       debugPrint('Error: $error');
-//   //     }
-//   //     emit(CloseTradeErrorState());
-//   //   });
-//   // }
-//   //
-//   // Future<void> closeOrder({required orderId, }) async {
-//   //   emit(CloseOrderLoadingState());
-//   //   await TradesRepository().closeOrder(orderId: orderId).then((value) {
-//   //     emit(CloseOrderSuccessState());
-//   //     getOrderss();
-//   //   }).catchError((error) {
-//   //     if (error is DioException) {
-//   //       debugPrint('Error: ${error.response?.data}');
-//   //     } else {
-//   //       debugPrint('Error: $error');
-//   //     }
-//   //     emit(CloseOrderErrorState());
-//   //   });
-//   // }
-//   //
-//   //
-//
-//   Future<void> closeTrade({required orderId, required closePrice}) async {
-//     emit(CloseTradeLoadingState());
-//     await TradesRepository()
-//         .closeTrade(orderId: orderId, closePrice: closePrice)
-//         .then((value) async {
-//       emit(CloseTradeSuccessState());
-//       await getTradess(showShimmer: false); // ✅
-//     }).catchError((error) {
-//       if (error is DioException) {
-//         debugPrint('Error: ${error.response?.data}');
-//       } else {
-//         debugPrint('Error: $error');
-//       }
-//       emit(CloseTradeErrorState());
-//     });
-//   }
-//
-//   Future<void> closeOrder({required orderId}) async {
-//     emit(CloseOrderLoadingState());
-//     await TradesRepository().closeOrder(orderId: orderId).then((value) async {
-//       emit(CloseOrderSuccessState());
-//       await getOrderss(showShimmer: false); // ✅
-//     }).catchError((error) {
-//       if (error is DioException) {
-//         debugPrint('Error: ${error.response?.data}');
-//       } else {
-//         debugPrint('Error: $error');
-//       }
-//       emit(CloseOrderErrorState());
-//     });
-//   }
-//
-//
-//       }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+}

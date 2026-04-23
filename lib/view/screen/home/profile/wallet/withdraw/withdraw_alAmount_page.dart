@@ -61,34 +61,30 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
+
       appBar: AppBar(
         backgroundColor: AppColors.background,
         elevation: 0,
         leading: IconButton(
-          icon: Container(
-            padding: const EdgeInsets.all(8),
-            decoration: const BoxDecoration(
-                color: AppColors.yellow,
-                borderRadius: BorderRadius.all(Radius.circular(12))),
-            child: const Icon(
-              Icons.arrow_back,
-              color: AppColors.black,
-              size: 20,
-            ),
-          ),
-          onPressed: () => Navigator.pop(context),
+          icon: const Icon(Icons.arrow_back_ios, color: AppColors.yellow),
+          onPressed: () => Navigator.of(context).pop(),
         ),
         title: Text(
-          LocaleKeys.withdrawal_title.tr(), // "سحب"
-          textAlign: TextAlign.start,
+          LocaleKeys.withdrawal_title.tr(),
           style: const TextStyle(
-            color: AppColors.yellow,
-            fontSize: 18,
+            color: AppColors.textYellow,
             fontWeight: FontWeight.w600,
           ),
         ),
         centerTitle: false,
       ),
+
+
+
+
+
+
+
       body: Form(
         key: _formKey,
         child: Padding(
@@ -111,7 +107,7 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
 
               // _buildBalanceCards
               _buildBalanceCards(),
-              // Title
+///////////////////////////////////////////////////////////////////////////////////////////////////// Title
               Text(
                 LocaleKeys.enter_amount_hint
                     .tr(), // "ادخل المبلغ الذي تريد سحبه"
@@ -123,7 +119,7 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
                 ),
               ),
               12.verticalSpace,
-              // Amount Input
+////////////////////////////////////////////////////////////////////////////////////////////////////////// Amount Input
               TextFormField(
                 controller: _amountController,
                 keyboardType:
@@ -171,7 +167,7 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
 
               const Spacer(),
 
-              // Continue Button
+////////////////////////////////////////////////////////////////////////////////// Continue Button
               Container(
                 width: double.infinity,
                 height: 50,

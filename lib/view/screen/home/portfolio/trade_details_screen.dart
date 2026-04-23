@@ -12,6 +12,7 @@ import '../../../../model/trade_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
+import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../../view_model/utils/common_method.dart';
 import '../../../../view_model/utils/navigation.dart';
@@ -25,11 +26,11 @@ import '../layout_screen.dart';
 class TradeDetailsScreen extends StatefulWidget {
   final TradeOrOrder trade;
   final String productTitle;
-
+final TradesCubit tradesCubit;
   const TradeDetailsScreen({
     super.key,
     required this.trade,
-    required this.productTitle,
+    required this.productTitle, required this.tradesCubit,
   });
 
   @override
@@ -172,7 +173,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 .headlineSmall
                                 ?.copyWith(color: AppColors.greyText),
                           ),
-                          ///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
                           Text(
                             Methods.removeTrailingZeros(trade.openPrice!),
                             style: Theme.of(context)
@@ -185,7 +186,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
                       SizedBox(height: 12.sp),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// current price
+///////////////////////////////////////////////////////////////////////////////////////////////////////// current price
                       Row(
                         children: [
                           Text(
@@ -299,7 +300,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ? const SizedBox()
                           : Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
                       trade.stopLoss == null
                           ? const SizedBox()
                           : Row(
@@ -326,7 +327,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ? const SizedBox()
                           : Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision
+///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision percaentage
                       Row(
                         children: [
                           Text(
@@ -338,18 +339,40 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ),
                           const Spacer(),
                           Text(
-                            "12223",
-                            style: Theme.of(context)
+                       "${Methods.removeTrailingZeros(widget.tradesCubit.commissionRate!.commissionRate!)} %  "
+                          ,  style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(color: AppColors.white),
                           ),
                         ],
                       ),
+///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision value
+                      Divider(height: 20.h, color: AppColors.greyText),     Row(
+                        children: [
+                          Text(
+                            LocaleKeys.appCommision2.tr().toUpperCase(),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: AppColors.yellow),
+                          ),
+                          const Spacer(),
+                          Text(
+                            trade.currency=="USD"?
 
+                                    "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} \$":
+                            "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} LE"
+                            ,  style: Theme.of(context)
+                              .textTheme
+                              .titleMedium
+                              ?.copyWith(color: AppColors.white),
+                          ),
+                        ],
+                      ),
                       Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
                       DefaultTabController(
                         length: 2,
                         initialIndex: _tabIndex,
@@ -1335,6 +1358,63 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 //
 

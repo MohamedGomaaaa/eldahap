@@ -108,7 +108,7 @@ class ProductWidget extends StatelessWidget {
 
                 Row(
                   children: [
-                    // ✅ SELL
+///////////////////////////////////////////////////////////////////////////////////////////////////// // ✅ SELL
                     Expanded(
                       child: Column(
                         children: [
@@ -130,18 +130,16 @@ class ProductWidget extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              // ✅ لو مفيش live -> disabled (مش هينافيچ)
-                              onPressed: hasLive ? goDetails : null,
+                              onPressed: null,
+                              // onPressed: hasLive ? goDetails : null,  // ✅ لو مفيش live -> disabled (مش هينافيچ)
                               style: ElevatedButton.styleFrom(
-                                backgroundColor: AppColors.transparent,
+                                backgroundColor: AppColors.grey.withOpacity(0.5),
                                 disabledBackgroundColor: AppColors.transparent,
                                 elevation: 0,
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(12.r),
                                   side: BorderSide(
-                                    color: hasLive
-                                        ? AppColors.yellowBorder
-                                        : AppColors.yellowBorder
+                                    color:  AppColors.yellowBorder
                                         .withOpacity(0.35),
                                     width: 1.w,
                                   ),
@@ -164,10 +162,8 @@ class ProductWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     SizedBox(width: 6.w),
-
-                    // ✅ Chart (زي ما هو)
+////////////////////////////////////////////////////////////////////////////////////////////// ✅ Chart (زي ما هو)
                     Expanded(
                       child: Column(
                         children: [
@@ -193,10 +189,8 @@ class ProductWidget extends StatelessWidget {
                         ],
                       ),
                     ),
-
                     SizedBox(width: 6.w),
-
-                    // ✅ BUY
+//////////////////////////////////////////////////////////////////////////////////////////////////// ✅ BUY
                     Expanded(
                       child: Column(
                         children: [

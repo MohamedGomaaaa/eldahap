@@ -14,7 +14,7 @@ class TradesSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => TradesCubit()..getTradess(),
+      create: (_) => TradesCubit()..getTradess()  ..getCommissionRate(),
       child: RefreshIndicator(
         onRefresh: () async => context.read<TradesCubit>().getTradess(),
         backgroundColor: AppColors.yellow2,
@@ -26,7 +26,9 @@ class TradesSection extends StatelessWidget {
                 current is GetTradesErrorState ||
                 current is CloseTradeLoadingState ||
                 current is TradesRefreshingState || // ✅ NEW
-                current is TradesExpandedChanged; // ✅ مهم
+                current is TradesExpandedChanged || current is GetCommissionRateLoadingState ||
+                current is GetCommissionRateSuccessState ||
+                current is GetCommissionRateErrorState; // ✅ مهم
           },
           builder: (context, state) {
             if (state is GetTradesLoadingState|| state is  CloseTradeLoadingState ) {
@@ -88,10 +90,6 @@ class TradesSection extends StatelessWidget {
     );
   }
 }
-
-
-
-
 
 
 

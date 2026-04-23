@@ -5,6 +5,7 @@ import 'package:official_gold/view/screen/home/profile/wallet/recharge/recharge_
 
 import '../../../../../../l10n/locale_keys.g.dart';
 import '../../../../../../view_model/utils/colors.dart';
+import '../../../../../../view_model/utils/common_method.dart';
 import '../../../../../../view_model/utils/navigation.dart';
 import '../../../../static_pages/static_page_screen.dart';
 
@@ -17,13 +18,12 @@ class RechargePaymentMethodsScreen extends StatefulWidget {
   });
 
   @override
-  State<RechargePaymentMethodsScreen> createState() => _RechargePaymentMethodsScreenState();
+  State<RechargePaymentMethodsScreen> createState() =>
+      _RechargePaymentMethodsScreenState();
 }
 
-class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScreen> {
-
-
-
+class _RechargePaymentMethodsScreenState
+    extends State<RechargePaymentMethodsScreen> {
   PaymentMethod? selectedMethod;
   bool isLoading = false;
   List<PaymentMethod> paymentMethods = [];
@@ -56,7 +56,7 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
     );
   }
 
-  final ApiService _apiService= ApiService();
+  final ApiService _apiService = ApiService();
 
   @override
   void initState() {
@@ -101,6 +101,7 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
       });
     });
   }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,27 +138,33 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
             SizedBox(height: 20.h),
             isLoading
                 ? const Center(
-              child: CircularProgressIndicator(),
-            )
+                    child: CircularProgressIndicator(),
+                  )
                 : Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                ...paymentMethods.map((method) => _buildPaymentMethodTile(method)),
-                if (selectedMethod != null && selectedMethod!.isEnabled) ...[
-                  SizedBox(height: 20.h),
-                  _buildSelectedMethodDetails(),
-                ],
-              ],
-            ),
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      ...paymentMethods
+                          .map((method) => _buildPaymentMethodTile(method)),
+                      if (selectedMethod != null &&
+                          selectedMethod!.isEnabled) ...[
+                        SizedBox(height: 20.h),
+                        _buildSelectedMethodDetails(),
+                      ],
+                    ],
+                  ),
             const Spacer(),
+///////////////////////////////////////////////////////////////////////////////////////// continue button
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
-                onPressed: selectedMethod != null && selectedMethod!.isEnabled ? _onContinue : null,
+                onPressed: selectedMethod != null && selectedMethod!.isEnabled
+                    ? _onContinue
+                    : null,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedMethod != null && selectedMethod!.isEnabled
-                      ? AppColors.yellow
-                      : AppColors.greyText,
+                  backgroundColor:
+                      selectedMethod != null && selectedMethod!.isEnabled
+                          ? AppColors.yellow
+                          : AppColors.greyText,
                   padding: EdgeInsets.symmetric(vertical: 16.h),
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(12.r),
@@ -166,7 +173,7 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
                 child: Text(
                   LocaleKeys.continue_text.tr(),
                   style: const TextStyle(
-                    color: AppColors.black,
+                    color: AppColors.white,
                     fontSize: 16,
                     fontWeight: FontWeight.w600,
                   ),
@@ -178,16 +185,18 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
       ),
     );
   }
-
+/////////////////////////////////////////////////////////////////////// payment method widget
   Widget _buildPaymentMethodTile(PaymentMethod method) {
     return Container(
       margin: EdgeInsets.only(bottom: 12.h),
       child: InkWell(
-        onTap: method.isEnabled ? () {
-          setState(() {
-            selectedMethod = method;
-          });
-        } : null,
+        onTap: method.isEnabled
+            ? () {
+                setState(() {
+                  selectedMethod = method;
+                });
+              }
+            : null,
         child: Container(
           padding: EdgeInsets.all(16.sp),
           decoration: BoxDecoration(
@@ -205,11 +214,13 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
               Radio<PaymentMethod>(
                 value: method,
                 groupValue: selectedMethod,
-                onChanged: method.isEnabled ? (value) {
-                  setState(() {
-                    selectedMethod = value;
-                  });
-                } : null,
+                onChanged: method.isEnabled
+                    ? (value) {
+                        setState(() {
+                          selectedMethod = value;
+                        });
+                      }
+                    : null,
                 activeColor: AppColors.yellow,
               ),
               Expanded(
@@ -219,7 +230,9 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
                     Text(
                       method.name,
                       style: TextStyle(
-                        color: method.isEnabled ? AppColors.yellow : AppColors.greyText,
+                        color: method.isEnabled
+                            ? AppColors.yellow
+                            : AppColors.greyText,
                         fontSize: 16,
                         fontWeight: FontWeight.w500,
                       ),
@@ -233,42 +246,19 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
                           fontSize: 12,
                         ),
                       ),
-                      // Text(
-                      //   method.name!,
-                      //   style: const TextStyle(
-                      //     color: AppColors.greyText,
-                      //     fontSize: 12,
-                      //   ),
-                      // ),
                     ],
                   ],
                 ),
               ),
               12.horizontalSpace,
 
-              // if (method.name == 'instapay')
-              //   Container(
-              //     padding: EdgeInsets.symmetric(horizontal: 8.w, vertical: 4.h),
-              //     decoration: BoxDecoration(
-              //       color: Colors.purple,
-              //       borderRadius: BorderRadius.circular(4.r),
-              //     ),
-              //     child: const Text(
-              //       "IP",
-              //       style: TextStyle(
-              //         color: Colors.white,
-              //         fontSize: 12,
-              //         fontWeight: FontWeight.bold,
-              //       ),
-              //     ),
-              //   ),
             ],
           ),
         ),
       ),
     );
   }
-
+/////////////////////////////////////////////////////////////////////// amount title u will pay
   Widget _buildSelectedMethodDetails() {
     return Container(
       padding: EdgeInsets.all(16.sp),
@@ -281,11 +271,10 @@ class _RechargePaymentMethodsScreenState extends State<RechargePaymentMethodsScr
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-      LocaleKeys.payment_summary.tr(
-      namedArgs: {
-      'amount': widget.amount.toStringAsFixed(2),
-      },
-      ),            style: const TextStyle(
+            LocaleKeys.payment_summary.tr(
+              namedArgs: {'amount': Methods.removeTrailingZeros(widget.amount)},
+            ),
+            style: const TextStyle(
               color: AppColors.textYellow,
               fontSize: 14,
             ),
@@ -343,10 +332,10 @@ class PaymentConfirmationSheet extends StatelessWidget {
           Text(
             // LocaleKeys.payment_deduction.tr(args: [amount.toStringAsFixed(2)]),
 
-
             LocaleKeys.payment_deduction.tr(
               namedArgs: {
-                'amount': amount.toStringAsFixed(2),
+                'amount': Methods.removeTrailingZeros(amount)
+
               },
             ),
             style: const TextStyle(
@@ -365,7 +354,7 @@ class PaymentConfirmationSheet extends StatelessWidget {
               },
             ),
             style: const TextStyle(
-              color: AppColors.greyText,
+              color: AppColors.green,
               fontSize: 14,
             ),
           ),
@@ -384,7 +373,7 @@ class PaymentConfirmationSheet extends StatelessWidget {
               child: Text(
                 LocaleKeys.proceed_payment.tr(),
                 style: const TextStyle(
-                  color: AppColors.black,
+                  color: AppColors.white,
                   fontSize: 16,
                   fontWeight: FontWeight.w600,
                 ),
@@ -396,7 +385,7 @@ class PaymentConfirmationSheet extends StatelessWidget {
             onPressed: () => Navigator.pop(context),
             child: Text(
               LocaleKeys.cancel.tr(),
-              style: const TextStyle(color: AppColors.greyText),
+              style: const TextStyle(color: AppColors.yellow),
             ),
           ),
         ],
