@@ -147,15 +147,15 @@ class TradesRepository {
     }
   }
 
-  Future<void> deleteTrade({required orderId}) async {
-    try {
-      final deleteTradeResponse = await productProvider.deleteTrade(orderId: orderId);
-      log(jsonEncode(deleteTradeResponse?.data));
-      // return (tradesResponse?.data?['result'] as List).map((e) => Product.fromJson(e)).toList();
-    } catch (e) {
-      rethrow;
-    }
-  }
+  // Future<void> deleteTrade({required orderId}) async {
+  //   try {
+  //     final deleteTradeResponse = await productProvider.deleteTrade(orderId: orderId);
+  //     log(jsonEncode(deleteTradeResponse?.data));
+  //     // return (tradesResponse?.data?['result'] as List).map((e) => Product.fromJson(e)).toList();
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
 
   Future<void> closeTrade({required orderId,required closePrice}) async {
     try {

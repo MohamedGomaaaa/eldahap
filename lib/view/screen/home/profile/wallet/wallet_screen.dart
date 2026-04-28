@@ -11,6 +11,7 @@ import 'package:official_gold/view/screen/home/profile/wallet/withdraw/withdraw_
 import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../view_model/models/wallet_models/transaction_model.dart';
 import '../../../../../view_model/utils/colors.dart';
+import '../../../../../view_model/utils/common_method.dart';
 import '../../../../../view_model/utils/validator.dart';
 
 class WalletScreen extends StatefulWidget {
@@ -218,7 +219,8 @@ class _WalletScreenState extends State<WalletScreen> {
                       icon: Icons.account_balance_wallet_outlined,
                       title: LocaleKeys.dollarBalance.tr(),
                       value: Text(
-                        '${WalletCubit.get(context).walletDollar}',
+
+                        Methods.removeTrailingZeros(WalletCubit.get(context).walletDollar),
                         style: const TextStyle(
                           color: AppColors.yellow,
                           fontWeight: FontWeight.w600,
@@ -233,7 +235,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       icon: Icons.account_balance,
                       title: LocaleKeys.egyBalance.tr(),
                       value: Text(
-                        '${WalletCubit.get(context).walletEgp}',
+                        Methods.removeTrailingZeros(WalletCubit.get(context).walletEgp),
                         style: const TextStyle(
                           color: AppColors.yellow,
                           fontWeight: FontWeight.w600,
@@ -572,15 +574,15 @@ class _WalletScreenState extends State<WalletScreen> {
       statusColor = AppColors.red;
       status = "Rejected";
     }
-
+// amount.toStringAsFixed(2)
     return _transactionItem(
       title: title,
-      subtitle: transaction.amountType.isNotEmpty
+      mode: transaction.amountType.isNotEmpty
           ? transaction.amountType
           : (transaction.note.isNotEmpty
               ? transaction.note
               : "System Transaction"),
-      amount: "${isCredit ? '+' : '-'} ${amount.toStringAsFixed(2)} EGP",
+      amount: "${isCredit ? '+' : '-'} ${Methods.removeTrailingZeros(amount)} EGP",
       amountColor: isCredit ? AppColors.green : AppColors.red,
       status: status,
       statusColor: statusColor,
@@ -598,26 +600,20 @@ class _WalletScreenState extends State<WalletScreen> {
 
       final date = DateTime.parse(dateStr);
       final now = DateTime.now();
-      final difference = now.difference(date);
 
-      if (difference.inDays == 0) {
-        return DateFormat('h:mm a').format(date);
-      } else if (difference.inDays == 1) {
-        return 'Yesterday';
-      } else if (difference.inDays < 7) {
-        return DateFormat('EEE').format(date);
+      // نقارن بالسنة والشهر واليوم مش بالساعات
+      final isToday =
+          date.year == now.year &&
+              date.month == now.month &&
+              date.day == now.day;
+
+      if (isToday) {
+        return 'Today';
       } else {
-        return DateFormat('d MMM , h:mm a').format(date);
+        return DateFormat('d MMM yyyy').format(date);
       }
     } catch (e) {
-      // Try alternative parsing if the first fails
-      try {
-        return DateFormat('MMM d, h:mm a').format(DateTime.parse(dateStr));
-      } catch (e2) {
-        return dateStr.isNotEmpty
-            ? dateStr.substring(0, dateStr.length > 10 ? 10 : dateStr.length)
-            : 'Unknown';
-      }
+      return 'Unknown';
     }
   }
 
@@ -707,7 +703,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                       color: AppColors.greyText, fontSize: 12),
                                 ),
                                 Text(
-                                  "\$${summary.totalCredit.toStringAsFixed(2)}",
+                                  // "\$${summary.totalCredit.toStringAsFixed(2)}",
+                                  "${Methods.removeTrailingZeros(summary.totalCredit)} \$",
                                   style: const TextStyle(
                                       color: AppColors.green,
                                       fontWeight: FontWeight.w600),
@@ -722,7 +719,8 @@ class _WalletScreenState extends State<WalletScreen> {
                                       color: AppColors.greyText, fontSize: 12),
                                 ),
                                 Text(
-                                  "\$${summary.totalDebit.toStringAsFixed(2)}",
+                                  // "\$${summary.totalDebit.toStringAsFixed(2)}",
+                                  "${Methods.removeTrailingZeros(summary.totalDebit)} \$",
                                   style: const TextStyle(
                                       color: AppColors.red,
                                       fontWeight: FontWeight.w600),
@@ -737,7 +735,9 @@ class _WalletScreenState extends State<WalletScreen> {
                                       color: AppColors.greyText, fontSize: 12),
                                 ),
                                 Text(
-                                  "\$${summary.lastBalance}",
+                                  // Methods.
+                                  // "\$${summary.lastBalance}",
+                   "${Methods.removeTrailingZeros(num.parse(summary.lastBalance))} \$",
                                   style: const TextStyle(
                                       color: AppColors.textYellow,
                                       fontWeight: FontWeight.w600),
@@ -818,6 +818,115 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
 
+
+
+  // Transaction Item Widget
+  Widget _transactionItem({
+    required String title,
+    required String mode,
+    required String amount,
+    required Color amountColor,
+    required String status,
+    required Color statusColor,
+    required IconData icon,
+    required Color iconBgColor,
+    required String dateTime,
+    required bool isPositive,
+  }) {
+    return Container(
+      margin: EdgeInsets.only(bottom: 14.h),
+      child: Row(
+        children: [
+          Container(
+            padding: EdgeInsets.all(12.sp),
+            decoration: BoxDecoration(
+              color: iconBgColor,
+              borderRadius: BorderRadius.circular(12.r),
+            ),
+            child: Icon(icon, color: amountColor, size: 26.sp),
+          ),
+          SizedBox(width: 12.w),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                // First row: title + amount
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Text(
+                        title,
+                        style:  TextStyle(
+                          color: amountColor,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 14,
+                        ),
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                    ),
+                    Text(
+                      amount,
+                      style: TextStyle(
+                        color: amountColor,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 15,
+                      ),
+                    ),
+                  ],
+                ),
+                SizedBox(height: 4.h),
+                // Second row: status + mode + date
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Expanded(
+                      child: Row(
+                        children: [
+                          Container(
+                            padding: EdgeInsets.symmetric(
+                                horizontal: 8.w, vertical: 2.h),
+                            decoration: BoxDecoration(
+                              color: statusColor.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(12.r),
+                            ),
+                            child: Text(
+                              status,
+                              style: TextStyle(
+                                  color: statusColor,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
+                            ),
+                          ),
+                          SizedBox(width: 8.w),
+                          Expanded(
+                            child: Text(
+                              mode,
+                              style: const TextStyle(
+                                  color: AppColors.yellow, fontSize: 12),
+                              overflow: TextOverflow.ellipsis,
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    Text(
+                      dateTime,
+                      style:  TextStyle(
+                        color: amountColor,
+                        fontSize: 12,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   // Action Button Widget
   Widget _actionButton(IconData icon, String text,
       {required VoidCallback onTap}) {
@@ -845,114 +954,62 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
     );
   }
-
-  // Transaction Item Widget
-  Widget _transactionItem({
-    required String title,
-    required String subtitle,
-    required String amount,
-    required Color amountColor,
-    required String status,
-    required Color statusColor,
-    required IconData icon,
-    required Color iconBgColor,
-    required String dateTime,
-    required bool isPositive,
-  }) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 14.h),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12.sp),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(icon, color: AppColors.yellow, size: 26.sp),
-          ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // First row: title + amount
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
-                        title,
-                        style: const TextStyle(
-                          color: AppColors.yellow,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                    Text(
-                      amount,
-                      style: TextStyle(
-                        color: amountColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                // Second row: status + subtitle + date
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 2.h),
-                            decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12.r),
-                            ),
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                  color: statusColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
-                            ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Expanded(
-                            child: Text(
-                              subtitle,
-                              style: const TextStyle(
-                                  color: AppColors.greyText, fontSize: 12),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    Text(
-                      dateTime,
-                      style: const TextStyle(
-                        color: AppColors.greyText,
-                        fontSize: 12,
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // // import 'package:easy_localization/easy_localization.dart';
 // // import 'package:flutter/material.dart';

@@ -127,21 +127,13 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
   }
   final ApiService _apiService= ApiService();
 
+
+
+
+
   Future<void> _processWithdrawalRequest() async {
     // Here you would typically make an API call to process the withdrawal
     // For now, we'll simulate the process
-    final withdrawalData = {
-      'amount': widget.amount,
-      'payment_method': widget.paymentMethod,
-      'name': _nameController.text,
-      'phone': _phoneController.text.trim(),
-      'bank_name': _bankNameController.text,
-      'address':_addressController.text,
-      'binanceId':_binanceIdController.text,
-      'bank_account': _bankAccountController.text.trim(),
-      'timestamp': DateTime.now().toIso8601String(),
-      "currency":widget.selectedIndex==0? "USD":"EGP",
-    };
 
 
 
@@ -151,7 +143,6 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 
 
 
-    print('Processing withdrawal request: $withdrawalData');
     await _apiService.makeWithdraw(
       amount: widget.amount.toString(),
       bankName: _bankNameController.text.trim(),

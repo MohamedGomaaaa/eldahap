@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:official_gold/view_model/data/network/dio_helper.dart';
 import 'package:official_gold/view_model/data/network/end_points.dart';
 
@@ -92,32 +93,52 @@ class TradesProvider {
     }
   }
 
-  Future<Response?> deleteTrade({required orderId}) async {
-    try{
-      return await DioHelper.post(
-        path: EndPoints.deleteTrade,
-        data: {
-          'order_id' : orderId,
-        },
+  // Future<Response?> deleteTrade({required orderId}) async {
+  //   try{
+  //     return await DioHelper.post(
+  //       path: EndPoints.deleteTrade,
+  //       data: {
+  //         'order_id' : orderId,
+  //       },
+  //       withToken: true,
+  //     );
+  //   } catch (e) {
+  //     rethrow;
+  //   }
+  // }
+
+
+  Future<Response?> closeTrade({
+    required dynamic orderId,
+    required dynamic closePrice,
+  }) async {
+    try {
+      final params = {
+        'order_id': orderId,
+        // 'close_price': closePrice,
+      };
+
+      /// 🔥 طباعة البارمز
+      debugPrint("📦 closeTrade params:");
+      params.forEach((key, value) {
+        debugPrint("$key : $value");
+      });
+
+      final response = await DioHelper.post(
+        path: EndPoints.closeTrade2,
+        data: params,
         withToken: true,
       );
-    } catch (e) {
+
+      /// 🔥 طباعة الريسبونس (اختياري)
+      debugPrint("✅ Response: ${response.data}");
+
+      return response;
+    } on DioException catch (e) {
+      debugPrint("❌ Dio Error: ${e.response?.data}");
       rethrow;
-    }
-  }
-
-
-  Future<Response?> closeTrade({required orderId,required closePrice}) async {
-    try{
-      return await DioHelper.post(
-        path: EndPoints.closeTrade,
-        data: {
-          'order_id' : orderId,
-          "close_price": closePrice
-        },
-        withToken: true,
-      );
     } catch (e) {
+      debugPrint("❌ Error: $e");
       rethrow;
     }
   }

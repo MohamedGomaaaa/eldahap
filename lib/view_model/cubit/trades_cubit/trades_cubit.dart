@@ -46,6 +46,7 @@ class TradesCubit extends Cubit<TradesState> {
   bool isTradesRefreshing = false;
 
   Future<void> getTradess({bool showShimmer = true}) async {
+    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< TTTTTTTTTTTTTTTTTTTTTTTTTTT");
     if (showShimmer) {
       emit(GetTradesLoadingState());
     } else {
@@ -75,6 +76,7 @@ class TradesCubit extends Cubit<TradesState> {
   bool isOrdersRefreshing = false;
 
   Future<void> getOrderss({bool showShimmer = true}) async {
+    print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< ooooooooooooooooooooooooooooooo");
     if (showShimmer) {
       emit(GetOrdersLoadingState());
     } else {
@@ -106,19 +108,19 @@ class TradesCubit extends Cubit<TradesState> {
 
 
 
-    // emit(CloseTradeLoadingState());
-    // await TradesRepository()
-    //     .closeTrade(orderId: orderId, closePrice: closePrice)
-    //     .then((value) async {
-    //   emit(CloseTradeSuccessState());
-    // }).catchError((error) {
-    //   if (error is DioException) {
-    //     debugPrint('Error: ${error.response?.data}');
-    //   } else {
-    //     debugPrint('Error: $error');
-    //   }
-    //   emit(CloseTradeErrorState());
-    // });
+    emit(CloseTradeLoadingState());
+    await TradesRepository()
+        .closeTrade(orderId: orderId, closePrice: closePrice)
+        .then((value) async {
+      emit(CloseTradeSuccessState());
+    }).catchError((error) {
+      if (error is DioException) {
+        debugPrint('Error: ${error.response?.data}');
+      } else {
+        debugPrint('Error: $error');
+      }
+      emit(CloseTradeErrorState());
+    });
   }
 
   ///////////////////////////////////////////////////////////////////////////////// closeOrder

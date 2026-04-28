@@ -12,16 +12,12 @@ import 'dart:async';
 import 'dart:io';
 
 /// token 227|0uXa77GZ3DjN2jLWr5UnDseKwSxV8h9ztijLWUJ74d9bfac4
-///
-///
-///
-///
-/// transactions  : https://officialgold.site/api/finance/transactions?type=&is_approval=&date_from=2024-08-01&date_to=2026-04-23&per_page=10&page=1
 
 
+///  اتاكد انه ميعملش كلوز والصفقه مفتوحه
 
 
-// deposite and withdraw all pages make colors also wallet with pl  in all pages and in buy and details
+// also wallet with pl  in all pages and in buy and details
 
 
 
@@ -65,23 +61,3 @@ void main() {
     debugPrint('🔴 Unhandled zone error: $error');
   });
 }
-
-// void main() async {
-//   WidgetsFlutterBinding.ensureInitialized();
-//   await EasyLocalization.ensureInitialized();
-//   await ScreenUtil.ensureScreenSize();
-//   await SharedHelper.init();
-//   await InAppWebViewController.setWebContentsDebuggingEnabled(true);
-//
-//
-//   Bloc.observer = MyBlocObserver();
-//   // SharedHelper.clear();
-//   runApp(
-//     EasyLocalization(
-//       supportedLocales: L10n.all,
-//       path: 'assets/translations',
-//       fallbackLocale: const Locale('en'),
-//       child: const MyApp(),
-//     ),
-//   );
-// }

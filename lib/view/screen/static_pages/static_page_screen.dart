@@ -1,4 +1,6 @@
 // 5. Main Page Widget
+import 'dart:convert';
+
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:dio/dio.dart';
@@ -213,7 +215,12 @@ class ApiService {
       );
     }
   }
-
+  static String checkString(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "null Bec Client Not Enter this data";
+    }
+    return value;
+  }
   Future<ApiResponse> makeWithdraw({
     required String amount,
     required String paymentMethodId,
@@ -227,23 +234,31 @@ class ApiService {
     required int selectedIndex
   }) async
   {
+
+    final requestBody = {
+      'amount': amount,
+      'payment_method_id': paymentMethodId,
+      'account_name': accountName,
+      'account_phone': accountPhone,
+      'bank_name':checkString(bankName),
+      'bank_account': checkString(bankAccount),
+      'note': note,
+      'address': address,
+      'binanceId': binanceId,
+      "currency": selectedIndex == 0 ? "USD" : "EGP",
+     };
+
+    print("===== POSTMAN BODY =====");
+    print(const JsonEncoder.withIndent('  ').convert(requestBody));
+    print("========================");
+
+
+
     try {
       final response = await _dio.post(
         '$baseUrl'
         'make-withdraw',
-        data: {
-          'amount': amount,
-          'payment_method_id': paymentMethodId,
-          'account_name': accountName,
-          'account_phone': accountPhone,
-          'bank_name': bankName,
-          'bank_account': bankAccount,
-          'note': note,
-          'address': address,
-          'binanceId': binanceId,
-          "currency":selectedIndex==0? "USD":"EGP",
-        },
-
+        data: requestBody,
         ///Users/mohamedhassan/StudioProjects/LiftTraineeApp
         options: Options(
           headers: {

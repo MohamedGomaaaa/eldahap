@@ -70,8 +70,10 @@ class WalletProvider {
 // In wallet_provider.dart
   Future<Response?> transactions({int page = 1, int perPage = 10}) async {
     try {
+      print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${EndPoints.transactions}/?type=&is_approval=&per_page=$perPage&page=$page ");
       return await DioHelper.get(
-        path: "${EndPoints.transactions}/?type=&is_approval=&date_from=2026-01-01&date_to=2027-04-20&per_page=$perPage&page=$page",
+        path: "${EndPoints.transactions}/?type=&is_approval=&per_page=$perPage&page=$page",
+        // path: "${EndPoints.transactions}/?type=&is_approval=&date_from=2026-01-01&date_to=2027-04-20&per_page=$perPage&page=$page",
         withToken: true,
 
       );
