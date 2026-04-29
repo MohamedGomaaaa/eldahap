@@ -3,12 +3,11 @@ import 'package:official_gold/view_model/data/network/data_providers/wallet_prov
 
 import '../../../../model/convert_currency.dart';
 import '../../../../model/report_2.dart';
-import '../../../../model/response.dart';
 import '../../../../model/setting.dart';
-import '../../../../model/trade_model.dart';
+import '../../../../model/trade_order_model.dart';
 import '../../../../model/wallet.dart';
 import '../../../models/wallet_models/transaction_model.dart';
-import '../dio_helper.dart';
+
 
 class WalletRepository {
 

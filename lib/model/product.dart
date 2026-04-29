@@ -47,11 +47,11 @@ class Product {
 
 
 
-  num ?gramWeight;
+   num ?gramWeight;
 
 
   Product({
-    this.gramWeight,
+     this.gramWeight,
 
 
 
@@ -93,7 +93,7 @@ class Product {
   Product.fromJson(Map<String, dynamic> json) {
 
 
-    gramWeight = json['gramWeight'];
+     gramWeight = json['gramWeight'];
 
     timestamp = json['timestamp'];
     metal = json['metal'];

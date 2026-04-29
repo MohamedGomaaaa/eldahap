@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../model/metal_price_model.dart';
-import '../../../../../model/trade_model.dart';
+import '../../../../../model/trade_order_model.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
@@ -294,7 +294,9 @@ class CreatTrade extends StatelessWidget {
                       orderId: trade.id,
                       closePrice: pnl.abs().toStringAsFixed(2),
                     );
+
                     Navigator.pop(context, true);
+
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.yellow2,

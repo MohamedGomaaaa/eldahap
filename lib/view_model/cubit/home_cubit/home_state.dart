@@ -22,7 +22,7 @@ final class GetSlidersErrorState extends HomeState {
 final class GetNewsLoadingState extends HomeState {}
 
 final class GetNewsSuccessState extends HomeState {
-  final List<New> news;
+  final List<News> news;
 
   GetNewsSuccessState(this.news);
 }

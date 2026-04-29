@@ -4,8 +4,8 @@ import 'dart:developer';
 import 'package:official_gold/view_model/data/network/data_providers/trades_providers.dart';
 
 import '../../../../model/commission_rate_model.dart';
-import '../../../../model/new_trades.dart';
-import '../../../../model/trade_model.dart';
+import '../../../../model/trade_order_group.dart';
+import '../../../../model/trade_order_model.dart';
 
 
 class TradesRepository {

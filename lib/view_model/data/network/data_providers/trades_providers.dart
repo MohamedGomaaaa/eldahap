@@ -111,7 +111,9 @@ class TradesProvider {
   Future<Response?> closeTrade({
     required dynamic orderId,
     required dynamic closePrice,
-  }) async {
+  }) async
+
+  {
     try {
       final params = {
         'order_id': orderId,
@@ -119,10 +121,10 @@ class TradesProvider {
       };
 
       /// 🔥 طباعة البارمز
-      debugPrint("📦 closeTrade params:");
-      params.forEach((key, value) {
-        debugPrint("$key : $value");
-      });
+      // debugPrint("📦 closeTrade params:");
+      // params.forEach((key, value) {
+      //   debugPrint("$key : $value");
+      // });
 
       final response = await DioHelper.post(
         path: EndPoints.closeTrade2,

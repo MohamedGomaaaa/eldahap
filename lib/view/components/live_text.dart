@@ -41,7 +41,7 @@ class LivePriceText extends StatefulWidget {
 
   /// ✅ عرض اختياري (لو null هياخد constraint بتاع الأب)
   final double? width;
-
+ final double? fontSize;
   const LivePriceText({
     super.key,
     required this.price,
@@ -58,7 +58,7 @@ class LivePriceText extends StatefulWidget {
     this.padding = const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
     this.borderRadius = const BorderRadius.all(Radius.circular(10)),
     this.alignment = Alignment.center,
-    this.width,
+    this.width, this.fontSize,
   });
 
   @override
@@ -194,7 +194,7 @@ class _LivePriceTextState extends State<LivePriceText>
             '${widget.prefix ?? ''}$txt${widget.suffix ?? ''}',
             style: widget.style ??
                 WhiteTitle.display5(context).copyWith(
-                  fontSize: 16,
+                  fontSize: widget.fontSize??16,
                 ),
           ),
         ),

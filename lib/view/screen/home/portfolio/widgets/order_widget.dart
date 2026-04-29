@@ -4,8 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../l10n/locale_keys.g.dart';
-import '../../../../../model/new_trades.dart';
-import '../../../../../model/trade_model.dart';
+import '../../../../../model/trade_order_group.dart';
+import '../../../../../model/trade_order_model.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
@@ -18,7 +18,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../../model/new_trades.dart';
+import '../../../../../model/trade_order_group.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';

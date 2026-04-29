@@ -8,7 +8,7 @@ import 'package:official_gold/model/slider.dart' as slider;
 import 'package:official_gold/model/user.dart';
 import 'package:official_gold/view_model/data/network/repos/home_repository.dart';
 
-import '../../../model/new.dart';
+import '../../../model/news_model.dart';
 
 part 'home_state.dart';
 
@@ -42,7 +42,7 @@ class HomeCubit extends Cubit<HomeState> {
 
 
 
-  List<New> news = [];
+  List<News> news = [];
 
   Future<void> getNews() async {
     emit(GetNewsLoadingState());

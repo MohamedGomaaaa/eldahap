@@ -1,13 +1,13 @@
-class New {
+class News {
   int? id;
   String? name;
   String? content;
   String? publish;
   String? image;
 
-  New({this.id, this.name, this.content, this.publish, this.image});
+  News({this.id, this.name, this.content, this.publish, this.image});
 
-  New.fromJson(Map<String, dynamic> json) {
+  News.fromJson(Map<String, dynamic> json) {
     id = json['id'];
     name = json['name'];
     content = json['content'];

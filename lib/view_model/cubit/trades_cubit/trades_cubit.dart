@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/trades_repository.dart';
 import '../../../model/commission_rate_model.dart';
-import '../../../model/new_trades.dart';
+import '../../../model/trade_order_group.dart';
 part 'trades_state.dart';
 
 class TradesCubit extends Cubit<TradesState> {
@@ -113,6 +113,8 @@ class TradesCubit extends Cubit<TradesState> {
         .closeTrade(orderId: orderId, closePrice: closePrice)
         .then((value) async {
       emit(CloseTradeSuccessState());
+      // ✅ بعد العملية: اعمل get مع shimmer
+      await getTradess(showShimmer: false);
     }).catchError((error) {
       if (error is DioException) {
         debugPrint('Error: ${error.response?.data}');

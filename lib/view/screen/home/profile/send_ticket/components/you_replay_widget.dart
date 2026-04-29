@@ -2,7 +2,8 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../l10n/locale_keys.g.dart';
-import '../../../../../../model/response.dart';
+
+import '../../../../../../model/ticket.dart';
 import '../../../../../../view_model/utils/colors.dart';
 
 class YouReplayWidget extends StatelessWidget {

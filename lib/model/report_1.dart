@@ -1,4 +1,4 @@
-import 'package:official_gold/model/trade_model.dart';
+import 'package:official_gold/model/trade_order_model.dart';
 
 
 

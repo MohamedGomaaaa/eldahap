@@ -10,7 +10,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view_model/utils/colors.dart';
 import 'package:official_gold/view_model/utils/common_method.dart';
 
-import '../../../model/trade_model.dart';
+import '../../../model/trade_order_model.dart';
 import '../../../view_model/data/local/shared_helper.dart';
 import '../../../view_model/data/local/shared_keys.dart';
 import '../../../view_model/data/network/end_points.dart';

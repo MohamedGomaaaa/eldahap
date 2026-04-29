@@ -1,4 +1,4 @@
-import '../../../../model/trade_model.dart';
+import '../../../../model/trade_order_model.dart';
 import 'order_model.dart';
 
 abstract class OrderState {}

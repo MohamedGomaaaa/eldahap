@@ -5,7 +5,7 @@ import 'package:official_gold/view/components/shimmer_widget.dart';
 import 'package:official_gold/view/screen/home/portfolio/widgets/trade_widget.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 import 'package:official_gold/view_model/utils/text_style.dart';
-import '../../../../model/new_trades.dart';
+import '../../../../model/trade_order_group.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../components/live_status_text.dart';
 
@@ -25,8 +25,8 @@ class TradesSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => TradesCubit()
-        ..getTradess(),
-        // ..getCommissionRate(),
+          ..getTradess()
+         ..getCommissionRate(),
       child: RefreshIndicator(
         onRefresh: () async => context.read<TradesCubit>().getTradess(),
         backgroundColor: AppColors.yellow2,

@@ -1,4 +1,4 @@
-import 'package:official_gold/model/response.dart';
+
 import 'package:official_gold/model/ticket.dart';
 import 'package:official_gold/view_model/data/network/data_providers/ticket_providers.dart';
 

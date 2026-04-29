@@ -1,8 +1,9 @@
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import '../../../model/response.dart' as ticket;
+
 import '../../../model/ticket.dart';
+import '../../../model/ticket.dart' as ticket;
 import '../../data/network/repos/ticket_repository.dart';
 part 'ticket_state.dart';
 

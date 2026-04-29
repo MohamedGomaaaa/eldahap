@@ -13,7 +13,7 @@ import 'package:official_gold/view/screen/home/portfolio/portfolio_screen.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 
 import '../../../../../model/metal_price_model.dart';
-import '../../../../../model/trade_model.dart';
+import '../../../../../model/trade_order_model.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../../view_model/cubit/product_cubit/product_cubit.dart';

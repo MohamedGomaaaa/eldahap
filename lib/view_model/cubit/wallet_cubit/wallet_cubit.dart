@@ -7,7 +7,7 @@ import 'package:official_gold/view_model/utils/app_constant.dart';
 
 import '../../../model/report_1.dart';
 import '../../../model/report_2.dart';
-import '../../../model/trade_model.dart';
+import '../../../model/trade_order_model.dart';
 import '../../models/wallet_models/transaction_model.dart';
 import '../../utils/toast.dart';
 
@@ -54,7 +54,8 @@ class WalletCubit extends Cubit<WalletState> {
 
   Future<void> convertCurrency({
     required num amount,
-  }) async {
+  }) async
+  {
     emit(ConvertCurrencyLoadingState());
 
     try {

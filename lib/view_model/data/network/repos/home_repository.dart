@@ -1,6 +1,6 @@
 import 'dart:io';
 
-import 'package:official_gold/model/new.dart';
+import 'package:official_gold/model/news_model.dart';
 import 'package:official_gold/model/slider.dart';
 import 'package:official_gold/view_model/utils/toast.dart';
 
@@ -26,11 +26,11 @@ class HomeRepository {
     }
   }
 
-  Future<List<New>> news() async {
+  Future<List<News>> news() async {
     try {
       final newsResponse = await homeProvider.news();
       return (newsResponse?.data?['result'] as List)
-          .map((e) => New.fromJson(e))
+          .map((e) => News.fromJson(e))
           .toList();
     } catch (e) {
       rethrow;

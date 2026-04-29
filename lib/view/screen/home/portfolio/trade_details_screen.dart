@@ -8,7 +8,7 @@ import 'package:official_gold/view/components/app_loader.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
 import 'package:official_gold/view/components/app_bar_widget.dart';
 import '../../../../model/metal_price_model.dart';
-import '../../../../model/trade_model.dart';
+import '../../../../model/trade_order_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
@@ -26,11 +26,12 @@ import '../layout_screen.dart';
 class TradeDetailsScreen extends StatefulWidget {
   final TradeOrOrder trade;
   final String productTitle;
-final TradesCubit tradesCubit;
+  final TradesCubit tradesCubit;
   const TradeDetailsScreen({
     super.key,
     required this.trade,
-    required this.productTitle, required this.tradesCubit,
+    required this.productTitle,
+    required this.tradesCubit,
   });
 
   @override
@@ -61,8 +62,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
     return Scaffold(
       backgroundColor: AppColors.transparent,
-      body:
-      BlocBuilder<LivePriceCubit, LivePriceState>(
+      body: BlocBuilder<LivePriceCubit, LivePriceState>(
         builder: (context, liveState) {
           // ✅ العملة حسب category index (0 => USD, 1 => EGP)
           final String currencyKey = trade.currency ?? "USD";
@@ -173,7 +173,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 .headlineSmall
                                 ?.copyWith(color: AppColors.greyText),
                           ),
- ///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
+                          ///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
                           Text(
                             Methods.removeTrailingZeros(trade.openPrice!),
                             style: Theme.of(context)
@@ -300,7 +300,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ? const SizedBox()
                           : Divider(height: 20.h, color: AppColors.greyText),
 
- ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
+                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
                       trade.stopLoss == null
                           ? const SizedBox()
                           : Row(
@@ -339,8 +339,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ),
                           const Spacer(),
                           Text(
-                       "${Methods.removeTrailingZeros(widget.tradesCubit.commissionRate!.commissionRate!)} %  "
-                          ,  style: Theme.of(context)
+                            "${Methods.removeTrailingZeros(widget.tradesCubit.commissionRate!.commissionRate!)} %  ",
+                            style: Theme.of(context)
                                 .textTheme
                                 .titleMedium
                                 ?.copyWith(color: AppColors.white),
@@ -348,7 +348,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                         ],
                       ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision value
-                      Divider(height: 20.h, color: AppColors.greyText),     Row(
+                      Divider(height: 20.h, color: AppColors.greyText),
+                      Row(
                         children: [
                           Text(
                             LocaleKeys.appCommision2.tr().toUpperCase(),
@@ -359,20 +360,19 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ),
                           const Spacer(),
                           Text(
-                            trade.currency=="USD"?
-
-                                    "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} \$":
-                            "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} LE"
-                            ,  style: Theme.of(context)
-                              .textTheme
-                              .titleMedium
-                              ?.copyWith(color: AppColors.white),
+                            trade.currency == "USD"
+                                ? "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} \$"
+                                : "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} LE",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: AppColors.white),
                           ),
                         ],
                       ),
                       Divider(height: 20.h, color: AppColors.greyText),
 
- ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
+                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
                       DefaultTabController(
                         length: 2,
                         initialIndex: _tabIndex,
@@ -797,8 +797,10 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                     onPressed: () async {
                       AppLoader.showLoader(
                           context, const ValueKey("sell_price"));
+
                       await _appService.sellOrder(
                           orderId: trade.id ?? 0, ctx: context);
+
                       Navigation.push(context, LayoutScreen());
                     });
               },
@@ -829,7 +831,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                 final deliveryData = await showDialog<Map<String, String>>(
                   context: context,
                   barrierDismissible: false,
-                  builder: (dialogContext) => DeliveryDataDialog(dialogContext: dialogContext),
+                  builder: (dialogContext) =>
+                      DeliveryDataDialog(dialogContext: dialogContext),
                 );
 
                 if (deliveryData != null) {
@@ -873,8 +876,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 void confirmBottomSheet(
     {required BuildContext context,
     required String title,
-    required void Function()? onPressed})
-{
+    required void Function()? onPressed}) {
   showModalBottomSheet(
     context: context,
     isDismissible: false,
@@ -937,7 +939,8 @@ void confirmBottomSheet(
 
 class DeliveryDataDialog extends StatefulWidget {
   final BuildContext dialogContext;
-  const DeliveryDataDialog({Key? key, required this.dialogContext}) : super(key: key);
+  const DeliveryDataDialog({Key? key, required this.dialogContext})
+      : super(key: key);
 
   @override
   State<DeliveryDataDialog> createState() => _DeliveryDataDialogState();
@@ -1072,10 +1075,10 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
                           color: AppColors.grey,
                           borderRadius: BorderRadius.circular(8.r),
                         ),
-                        child:
-                        IconButton(
+                        child: IconButton(
                           onPressed: () {
-                            Navigator.pop(widget.dialogContext); // ✅ يقفل الديالوج فقط
+                            Navigator.pop(
+                                widget.dialogContext); // ✅ يقفل الديالوج فقط
                           },
                           icon: Icon(
                             Icons.close,
@@ -1083,7 +1086,6 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
                             size: 20.sp,
                           ),
                         ),
-
                       ),
                     ],
                   ),
@@ -1358,63 +1360,6 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 //
 

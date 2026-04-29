@@ -1211,8 +1211,8 @@ class ProductDetailsScreen extends StatelessWidget {
                                                         context)
                                                         .makeOrder(
                                                       product: product,
-                                                      livePrice:
-                                                      liveOpenPrice, // ✅ هنا بقى live
+                                                      livePrice: liveOpenPrice/weight, // ✅ هنا بقى live
+
                                                     );
                                                   }
                                                 } else {

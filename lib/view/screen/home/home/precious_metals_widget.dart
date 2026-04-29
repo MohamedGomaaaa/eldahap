@@ -225,7 +225,8 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                           flex: 2,
                           child: Center(
                             child: LivePriceText(
-                              price: m.buy,
+                              padding :const  EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+                              price: m.buy,  fontSize: 14,
                               decimals: 2,
                               fakeMinDelta: 0.01,
                               fakeMaxDelta: 0.05,
@@ -239,6 +240,8 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                           flex: 2,
                           child: Center(
                             child: LivePriceText(
+                              padding :const  EdgeInsets.symmetric(horizontal: 4, vertical: 10),
+                              fontSize: 14,
                               price: m.sell,
                               decimals: 2,
                               fakeMinDelta: 0.01,
