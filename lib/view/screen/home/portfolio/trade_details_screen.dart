@@ -208,14 +208,6 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                       ),
 
                       Divider(height: 20.h, color: AppColors.greyText),
-
-
-
-
-
-
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade id
                       Row(
                         children: [
@@ -306,7 +298,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           : Row(
                         children: [
                           Text(
-                            "sell price",
+                            "Buy price",
                             style: Theme.of(context)
                                 .textTheme
                                 .titleMedium

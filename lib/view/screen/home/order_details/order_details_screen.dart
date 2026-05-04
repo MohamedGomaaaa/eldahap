@@ -165,8 +165,6 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                         valueColor: AppColors.blueColor,
                                         isAmount: true,
                                       ),
-
-
                                       SizedBox(height: 16.h),
 //////////////////////////////////////////////////////////////////////////////////////////////////////// type,
                                       _buildInfoRow(
@@ -174,12 +172,6 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                         value:
                                         order.id.toString(),
                                       ),
-
-
-
-
-
-
                                       SizedBox(height: 16.h),
 //////////////////////////////////////////////////////////////////////////////////////////////////////// type,
                                       _buildInfoRow(
