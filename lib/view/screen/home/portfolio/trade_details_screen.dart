@@ -133,7 +133,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
                       SizedBox(height: 12.sp),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// Bought
+  ///////////////////////////////////////////////////////////////////////////////////////////////////////// Bought
                       Row(
                         children: [
                           Text(
@@ -152,7 +152,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 horizontal: 12.sp,
                                 vertical: 3.h,
                               ),
-                              ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade.qty
+    ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade.qty
                               child: Text(
                                 '+${trade.quantity}',
                                 style: Theme.of(context)
@@ -173,7 +173,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 .headlineSmall
                                 ?.copyWith(color: AppColors.greyText),
                           ),
-                          ///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
+///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
                           Text(
                             Methods.removeTrailingZeros(trade.openPrice!),
                             style: Theme.of(context)
@@ -186,7 +186,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
                       SizedBox(height: 12.sp),
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////// current price
+///////////////////////////////////////////////////////////////////////////////////////////////////////// current price live price
                       Row(
                         children: [
                           Text(
@@ -209,7 +209,36 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
                       Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// pl & profit Or Lose
+
+
+
+
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////// trade id
+                      Row(
+                        children: [
+                          Text(
+                            'trade id',
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: AppColors.yellow),
+                          ),
+                          const Spacer(),
+          Text(
+         trade.id.toString(),
+          style: Theme.of(context)
+              .textTheme
+              .titleMedium
+              ?.copyWith(color: AppColors.white),
+          ),
+                        ],
+                      ),
+                      Divider(height: 20.h, color: AppColors.greyText),
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////// pl & profit Or Lose
                       Row(
                         children: [
                           Text(
@@ -248,7 +277,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
                       Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
+///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
                       Row(
                         children: [
                           Text(
@@ -270,9 +299,35 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                           ),
                         ],
                       ),
-
                       Divider(height: 20.h, color: AppColors.greyText),
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// take profit
+////////////////////////////////////////////////////////////////////////////////////////////////////////////// sell price
+                      trade.sellWhenPrice == null || trade.sellWhenPrice == 0
+                          ? const SizedBox()
+                          : Row(
+                        children: [
+                          Text(
+                            "sell price",
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: AppColors.yellow),
+                          ),
+                          const Spacer(),
+                          Text(
+                            Methods.removeTrailingZeros(
+                                trade.sellWhenPrice!),
+                            style: Theme.of(context)
+                                .textTheme
+                                .titleMedium
+                                ?.copyWith(color: AppColors.white),
+                          ),
+                        ],
+                      ),
+
+                      trade.sellWhenPrice == null || trade.sellWhenPrice == 0
+                          ? const SizedBox()
+                          : Divider(height: 20.h, color: AppColors.greyText),
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////// take profit
                       trade.takeProfit == null || trade.takeProfit == 0
                           ? const SizedBox()
                           : Row(
@@ -299,8 +354,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                       trade.takeProfit == null || trade.takeProfit == 0
                           ? const SizedBox()
                           : Divider(height: 20.h, color: AppColors.greyText),
-
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
+///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
                       trade.stopLoss == null
                           ? const SizedBox()
                           : Row(
@@ -372,7 +426,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                       ),
                       Divider(height: 20.h, color: AppColors.greyText),
 
-                      ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
                       DefaultTabController(
                         length: 2,
                         initialIndex: _tabIndex,

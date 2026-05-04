@@ -165,6 +165,21 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                         valueColor: AppColors.blueColor,
                                         isAmount: true,
                                       ),
+
+
+                                      SizedBox(height: 16.h),
+//////////////////////////////////////////////////////////////////////////////////////////////////////// type,
+                                      _buildInfoRow(
+                                        label: 'order id',
+                                        value:
+                                        order.id.toString(),
+                                      ),
+
+
+
+
+
+
                                       SizedBox(height: 16.h),
 //////////////////////////////////////////////////////////////////////////////////////////////////////// type,
                                       _buildInfoRow(
@@ -175,7 +190,7 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                             : "Buy Stop",
                                       ),
                                       SizedBox(height: 10.h),
-  //////////////////////////////////////////////////////////////////////////////////////////////////////// date,
+  //////////////////////////////////////////////////////////////////////////////////////////////////////// Created At,
                                       _buildInfoRow(
                                         label: 'Created',
                                         value: Methods.formatCreatedAt(
