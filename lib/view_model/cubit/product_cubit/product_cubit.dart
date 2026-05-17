@@ -370,8 +370,25 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     debugPrint(buffer.toString());
   }
 
+
+
+
+
+  void resetEditToggles() {
+    stopLoss = false;
+    takeProfit = false;
+
+    stopLossController.clear();
+    takeProfitController.clear();
+
+    emit(ResetControllersState());
+  }
+
+
+
   Future<void> makeOrderOld(
-      {required Product product, required double livePrice}) async {
+      {required Product product, required double livePrice}) async
+  {
     emit(MakeOrderLoadingState());
     await DioHelper.post(
       path: EndPoints.orderStore,
@@ -430,14 +447,6 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       throw error;
     });
   }
-  void resetEditToggles() {
-    stopLoss = false;
-    takeProfit = false;
 
-    stopLossController.clear();
-    takeProfitController.clear();
-
-    emit(ResetControllersState());
-  }
 
 }

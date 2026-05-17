@@ -125,9 +125,9 @@ class TransactionData {
   final String approveAt;
   final String createdAt;
   final String updatedAt;
-
+final String  currency;
   TransactionData({
-    required this.id,
+    required this.id,required this.currency,
     required this.credit,
     required this.debit,
     required this.balance,
@@ -150,6 +150,9 @@ class TransactionData {
     }
 
     return TransactionData(
+
+      currency: json['currency'] ?? "",
+
       id: json['id'] ?? 0,
       credit: parseNum(json['credit']),
       debit: parseNum(json['debit']),
@@ -167,6 +170,7 @@ class TransactionData {
   }
 
   Map<String, dynamic> toJson() => {
+    "currency": currency,
     'id': id,
     'credit': credit,
     'debit': debit,

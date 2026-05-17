@@ -582,7 +582,7 @@ class _WalletScreenState extends State<WalletScreen> {
           : (transaction.note.isNotEmpty
               ? transaction.note
               : "System Transaction"),
-      amount: "${isCredit ? '+' : '-'} ${Methods.removeTrailingZeros(amount)} EGP",
+      amount: "${isCredit ? '+' : '-'} ${Methods.removeTrailingZeros(amount)} ${transaction.currency.toString()}",
       amountColor: isCredit ? AppColors.green : AppColors.red,
       status: status,
       statusColor: statusColor,
@@ -824,7 +824,7 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget _transactionItem({
     required String title,
     required String mode,
-    required String amount,
+     required String amount,
     required Color amountColor,
     required String status,
     required Color statusColor,

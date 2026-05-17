@@ -841,6 +841,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                     context: context,
                     title: "close trade",
                     onPressed: () async {
+
+
                       AppLoader.showLoader(
                           context, const ValueKey("sell_price"));
 
