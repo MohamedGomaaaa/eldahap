@@ -16,7 +16,6 @@ import '../../../view_model/data/local/shared_keys.dart';
 import '../../../view_model/data/network/end_points.dart';
 import '../../../view_model/utils/toast.dart';
 import '../../components/app_loader.dart';
-import '../home/portfolio/trade_details_screen.dart';
 import 'models/payment_methods_model.dart';
 
 // 1. Model for API Response

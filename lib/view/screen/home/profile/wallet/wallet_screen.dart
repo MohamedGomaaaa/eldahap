@@ -7,6 +7,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/l10n/locale_keys.g.dart';
 import 'package:official_gold/view/screen/home/profile/wallet/recharge/recharge_amount_screen.dart';
+import 'package:official_gold/view/screen/home/profile/wallet/widgets/transaction_details_bottom_sheet.dart';
 import 'package:official_gold/view/screen/home/profile/wallet/withdraw/withdraw_alAmount_page.dart';
 import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../view_model/models/wallet_models/transaction_model.dart';
@@ -100,7 +101,9 @@ class _WalletScreenState extends State<WalletScreen> {
               SizedBox(height: 20.h),
 
 //////////////////////////////////////////////////////////////////////////////////// Action Buttons
-              widget.userMode == "demo" ? const SizedBox() : _buildActionButtons(),
+              widget.userMode == "demo"
+                  ? const SizedBox()
+                  : _buildActionButtons(),
 
               SizedBox(height: 25.h),
 
@@ -156,7 +159,6 @@ class _WalletScreenState extends State<WalletScreen> {
               );
             },
           ),
-
         ],
       ),
     );
@@ -164,95 +166,95 @@ class _WalletScreenState extends State<WalletScreen> {
 
   // Balance Cards Section
   Widget _buildBalanceCards() {
-    return
+    return BlocBuilder<WalletCubit, WalletState>(
+      builder: (context, state) {
+        final isLoading = WalletCubit.get(context).isWalletLoading ||
+            state is ConvertCurrencyLoadingState;
 
-      BlocBuilder<WalletCubit, WalletState>(
-        builder: (context, state) {
-          final isLoading = WalletCubit.get(context).isWalletLoading ||
-              state is ConvertCurrencyLoadingState;
+        return Column(
+          children: [
+            Container(
+              margin: const EdgeInsets.only(bottom: 20),
+              child: isLoading
+                  ? const CircularProgressIndicator(color: AppColors.yellow)
+                  : ElevatedButton.icon(
+                      onPressed: () async {
+                        final amount = await showModalBottomSheet<num>(
+                          backgroundColor: AppColors.background,
+                          context: context,
+                          isScrollControlled: true,
+                          builder: (context) => convertAmountSheet(
+                            context,
+                            WalletCubit.get(context).walletDollar,
+                          ),
+                        );
 
-          return Column(
-            children: [
-              Container(
-                margin: const EdgeInsets.only(bottom: 20),
-                child: isLoading
-                    ? const CircularProgressIndicator(color: AppColors.yellow)
-                    : ElevatedButton.icon(
-                  onPressed: () async {
-                    final amount = await showModalBottomSheet<num>(
-                      backgroundColor: AppColors.background,
-                      context: context,
-                      isScrollControlled: true,
-                      builder: (context) => convertAmountSheet(
-                        context,
-                        WalletCubit.get(context).walletDollar,
+                        if (amount != null) {
+                          WalletCubit.get(context).convertCurrency(
+                            amount: amount,
+                          );
+                        }
+                      },
+                      icon: const Icon(Icons.currency_exchange,
+                          color: AppColors.white),
+                      label: const Text(
+                        "Convert to pounds",
+                        style: TextStyle(
+                          color: AppColors.white,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
-                    );
-
-                    if (amount != null) {
-
-                      WalletCubit.get(context).convertCurrency(
-                        amount: amount,
-                      );
-                    }
-                  },
-                  icon: const Icon(Icons.currency_exchange, color: AppColors.white),
-                  label: const Text(
-                    "Convert to pounds",
-                    style: TextStyle(
-                      color: AppColors.white,
-                      fontWeight: FontWeight.w600,
+                      style: ElevatedButton.styleFrom(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                      ),
                     ),
-                  ),
-                  style: ElevatedButton.styleFrom(
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12),
+            ),
+            // الباقي زي ما هو
+            Row(
+              children: [
+                Expanded(
+                  child: _balanceCard(
+                    icon: Icons.account_balance_wallet_outlined,
+                    title: LocaleKeys.dollarBalance.tr(),
+                    value: Text(
+                      Methods.removeTrailingZeros(
+                          WalletCubit.get(context).walletDollar),
+                      style: const TextStyle(
+                        color: AppColors.yellow,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // الباقي زي ما هو
-              Row(
-                children: [
-                  Expanded(
-                    child: _balanceCard(
-                      icon: Icons.account_balance_wallet_outlined,
-                      title: LocaleKeys.dollarBalance.tr(),
-                      value: Text(
-
-                        Methods.removeTrailingZeros(WalletCubit.get(context).walletDollar),
-                        style: const TextStyle(
-                          color: AppColors.yellow,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
+                SizedBox(width: 12.w),
+                Expanded(
+                  child: _balanceCard(
+                    icon: Icons.account_balance,
+                    title: LocaleKeys.egyBalance.tr(),
+                    value: Text(
+                      Methods.removeTrailingZeros(
+                          WalletCubit.get(context).walletEgp),
+                      style: const TextStyle(
+                        color: AppColors.yellow,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
                     ),
                   ),
-                  SizedBox(width: 12.w),
-                  Expanded(
-                    child: _balanceCard(
-                      icon: Icons.account_balance,
-                      title: LocaleKeys.egyBalance.tr(),
-                      value: Text(
-                        Methods.removeTrailingZeros(WalletCubit.get(context).walletEgp),
-                        style: const TextStyle(
-                          color: AppColors.yellow,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          );
-        },
-      );
+                ),
+              ],
+            ),
+          ],
+        );
+      },
+    );
   }
+
   // convert Amount Sheet
-  Widget convertAmountSheet(BuildContext context,num walletDollar) {
+  Widget convertAmountSheet(BuildContext context, num walletDollar) {
     final TextEditingController controller = TextEditingController();
 
     return Padding(
@@ -272,10 +274,7 @@ class _WalletScreenState extends State<WalletScreen> {
               keyboardType: TextInputType.number,
               validator: (value) {
                 return Validator.validateAmount(
-                  value: value,
-                  walletDollar:walletDollar
-
-                );
+                    value: value, walletDollar: walletDollar);
               },
               decoration: InputDecoration(
                 hintText: "enter amount",
@@ -288,29 +287,29 @@ class _WalletScreenState extends State<WalletScreen> {
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9.]')),
               ],
             ),
-
             const SizedBox(height: 20),
-
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
                   if (_formKey.currentState!.validate()) {
-                    final amount =
-                    num.parse(controller.text.trim());
+                    final amount = num.parse(controller.text.trim());
 
                     // context.read<WalletCubit>().convertCurrency(
                     //   amount: amount,
                     // );
 
-                    Navigator.pop(context,amount); // 🔥 يقفل الشيت
+                    Navigator.pop(context, amount); // 🔥 يقفل الشيت
                   }
                 },
-                child: const Text("convert"        ,     style:  TextStyle(
-                  color: AppColors.white,
-                  fontWeight: FontWeight.w600,
-                  fontSize: 16,
-                ),),
+                child: const Text(
+                  "convert",
+                  style: TextStyle(
+                    color: AppColors.white,
+                    fontWeight: FontWeight.w600,
+                    fontSize: 16,
+                  ),
+                ),
               ),
             ),
             const SizedBox(height: 20),
@@ -320,11 +319,9 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-
   // Balance Card Widget
   Widget _balanceCard(
-      {required IconData icon, required String title, required Widget value})
-  {
+      {required IconData icon, required String title, required Widget value}) {
     return Container(
       padding: EdgeInsets.all(16.sp),
       decoration: BoxDecoration(
@@ -347,14 +344,6 @@ class _WalletScreenState extends State<WalletScreen> {
       ),
     );
   }
-
-
-
-
-
-
-
-
 
   // Action Buttons Section
   Widget _buildActionButtons() {
@@ -576,13 +565,16 @@ class _WalletScreenState extends State<WalletScreen> {
     }
 // amount.toStringAsFixed(2)
     return _transactionItem(
+      transaction: transaction,
+      type: transaction.type,
       title: title,
       mode: transaction.amountType.isNotEmpty
           ? transaction.amountType
           : (transaction.note.isNotEmpty
               ? transaction.note
               : "System Transaction"),
-      amount: "${isCredit ? '+' : '-'} ${Methods.removeTrailingZeros(amount)} ${transaction.currency.toString()}",
+      amount:
+          "${isCredit ? '+' : '-'} ${Methods.removeTrailingZeros(amount)} ${transaction.currency.toString()}",
       amountColor: isCredit ? AppColors.green : AppColors.red,
       status: status,
       statusColor: statusColor,
@@ -602,10 +594,9 @@ class _WalletScreenState extends State<WalletScreen> {
       final now = DateTime.now();
 
       // نقارن بالسنة والشهر واليوم مش بالساعات
-      final isToday =
-          date.year == now.year &&
-              date.month == now.month &&
-              date.day == now.day;
+      final isToday = date.year == now.year &&
+          date.month == now.month &&
+          date.day == now.day;
 
       if (isToday) {
         return 'Today';
@@ -737,7 +728,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                 Text(
                                   // Methods.
                                   // "\$${summary.lastBalance}",
-                   "${Methods.removeTrailingZeros(num.parse(summary.lastBalance))} \$",
+                                  "${Methods.removeTrailingZeros(num.parse(summary.lastBalance))} \$",
                                   style: const TextStyle(
                                       color: AppColors.textYellow,
                                       fontWeight: FontWeight.w600),
@@ -817,14 +808,13 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-
-
-
   // Transaction Item Widget
   Widget _transactionItem({
+    required TransactionData transaction,
     required String title,
+    required String type,
     required String mode,
-     required String amount,
+    required String amount,
     required Color amountColor,
     required String status,
     required Color statusColor,
@@ -833,96 +823,133 @@ class _WalletScreenState extends State<WalletScreen> {
     required String dateTime,
     required bool isPositive,
   }) {
-    return Container(
-      margin: EdgeInsets.only(bottom: 14.h),
-      child: Row(
-        children: [
-          Container(
-            padding: EdgeInsets.all(12.sp),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(12.r),
-            ),
-            child: Icon(icon, color: amountColor, size: 26.sp),
+    return InkWell(
+      highlightColor: Colors.transparent,
+      hoverColor: Colors.transparent,
+      focusColor: Colors.transparent,
+      onTap: () {
+        showModalBottomSheet(
+          context: context,
+          backgroundColor: Colors.transparent,
+          isScrollControlled: true,
+          builder: (_) => TransactionDetailsBottomSheet(
+            transaction: transaction,
+            dateTime: dateTime,
+            title: title,
+            amount: amount,
           ),
-          SizedBox(width: 12.w),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                // First row: title + amount
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Text(
+        );
+      },
+      child: Container(
+        margin: EdgeInsets.only(bottom: 14.h),
+        child: Row(
+          children: [
+            Container(
+              padding: EdgeInsets.all(12.sp),
+              decoration: BoxDecoration(
+                color: iconBgColor,
+                borderRadius: BorderRadius.circular(12.r),
+              ),
+              child: Icon(icon, color: amountColor, size: 26.sp),
+            ),
+            SizedBox(width: 12.w),
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // First row: title + amount
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
                         title,
-                        style:  TextStyle(
+                        style: TextStyle(
                           color: amountColor,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
                         overflow: TextOverflow.ellipsis,
                       ),
-                    ),
-                    Text(
-                      amount,
-                      style: TextStyle(
-                        color: amountColor,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 15,
+                      Flexible(
+                        child: Text(
+                          amount,
+                          style: TextStyle(
+                              color: amountColor,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                              overflow: TextOverflow.ellipsis),
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                SizedBox(height: 4.h),
-                // Second row: status + mode + date
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Row(
-                        children: [
-                          Container(
-                            padding: EdgeInsets.symmetric(
-                                horizontal: 8.w, vertical: 2.h),
-                            decoration: BoxDecoration(
-                              color: statusColor.withOpacity(0.2),
-                              borderRadius: BorderRadius.circular(12.r),
+                    ],
+                  ),
+                  SizedBox(height: 2.h),
+                  SizedBox(height: 3.h),
+                  /////////////////////////////////////////  Second row: status + mode + date
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Expanded(
+                        child: Row(
+                          children: [
+                            ///////////////////////////////////////// _transaction Type
+                            Flexible(
+                              child: Container(
+
+                                child: Text(
+
+                                   "( $type )",
+                                  style: TextStyle(
+                                      color: amountColor,
+                                      fontWeight: FontWeight.w600,
+                                      fontSize: 13,
+                                      overflow: TextOverflow.ellipsis),
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                              ),
                             ),
-                            child: Text(
-                              status,
-                              style: TextStyle(
-                                  color: statusColor,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.w500),
+                            SizedBox(width: 8.w),
+                            ///////////////////////////////////////// status is Approved
+                            Container(
+
+                              child: Text(
+                                status,
+                                style: TextStyle(
+                                    color: statusColor,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500),
+                              ),
                             ),
-                          ),
-                          SizedBox(width: 8.w),
-                          Expanded(
-                            child: Text(
-                              mode,
-                              style: const TextStyle(
-                                  color: AppColors.yellow, fontSize: 12),
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                          ),
-                        ],
+
+                            ///////////////////////////////////////// mode
+
+                            // SizedBox(width: 8.w),
+                            // Container(
+                            //   color: Colors.green,
+                            //   child: Text(
+                            //     mode,
+                            //     style: const TextStyle(
+                            //         color: AppColors.yellow, fontSize: 12),
+                            //     overflow: TextOverflow.ellipsis,
+                            //   ),
+                            // ),
+                          ],
+                        ),
                       ),
-                    ),
-                    Text(
-                      dateTime,
-                      style:  TextStyle(
-                        color: amountColor,
-                        fontSize: 12,
+                      ///////////////////////////////////////// date
+                      Text(
+                        dateTime,
+                        style: TextStyle(
+                          color: amountColor,
+                          fontSize: 12,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-              ],
+                    ],
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
@@ -955,60 +982,6 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // // import 'package:easy_localization/easy_localization.dart';
