@@ -1,18 +1,19 @@
-
-
-
 import '../../../../../../view_model/models/wallet_models/transaction_model.dart';
 import '../../../../../../view_model/utils/colors.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter/material.dart';
+
 class TransactionDetailsBottomSheet extends StatelessWidget {
   final TransactionData transaction;
-  final   String dateTime,title,amount;
+  final String dateTime, title, amount;
 
   const TransactionDetailsBottomSheet({
     super.key,
-    required this.transaction, required this.amount, required this.dateTime, required this.title,
+    required this.transaction,
+    required this.amount,
+    required this.dateTime,
+    required this.title,
   });
 
   @override
@@ -29,9 +30,16 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-
-          ///////////////////////////////////////// Title
-
+//////////////////////////////////////// close icon
+          IconButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              icon: const Icon(
+                Icons.close,
+                color: Colors.red,
+              )),
+          //////////////////////////////////////// title
           Center(
             child: Text(
               "Transaction Details",
@@ -52,31 +60,15 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
             value: transaction.id.toString(),
           ),
 
-
           _detailItem(
             title: "Transaction type",
             value: title,
           ),
 
-
-
-
-
-
-
-
           _detailItem(
-            title: "Type",
+            title: "Action",
             value: transaction.type ?? "",
           ),
-
-
-
-
-
-
-
-
 
           _detailItem(
             title: "Status",
@@ -97,20 +89,23 @@ class TransactionDetailsBottomSheet extends StatelessWidget {
             title: "Date",
             value: dateTime,
           ),
-    Text(      transaction.note,       style: TextStyle(
+          Text(
+            transaction.note,
+            style: TextStyle(
               color: AppColors.yellow,
-      fontSize: 14.sp,
-    ),),
+              fontSize: 12.sp,
+            ),
+          ),
           SizedBox(height: 20.h),
         ],
       ),
     );
   }
+
   Widget _detailItem({
     required String title,
     required String value,
-  })
-  {
+  }) {
     return Padding(
       padding: EdgeInsets.only(bottom: 14.h),
       child: Row(

@@ -112,7 +112,7 @@ class OrderReportsScreen extends StatelessWidget {
                                   return Padding(
                                     padding:
                                         EdgeInsets.symmetric(vertical: 8.h),
-                                    child: InfoItemWidget(
+                                    child: InfoItemWidget(type:type,
                                       tradeOrOrder: report,
                                     ),
                                   );
@@ -139,10 +139,10 @@ class OrderReportsScreen extends StatelessWidget {
 
 class InfoItemWidget extends StatelessWidget {
   final TradeOrOrder tradeOrOrder;
-
+final String type;
   const InfoItemWidget({
     super.key,
-    required this.tradeOrOrder,
+    required this.tradeOrOrder, required this.type,
   });
 
 
@@ -197,7 +197,17 @@ class InfoItemWidget extends StatelessWidget {
 
           _buildInfoRow(
               label: LocaleKeys.OpenPrice.tr(),
-              value: _formatAmount( tradeOrOrder.openPrice!.toString()),
+              value: _formatAmount(
+
+                  // type== LocaleKeys.orderReports.tr()?
+
+                 // tradeOrOrder.openPriceOrder!.toString()
+
+                 // :
+                tradeOrOrder.openPrice!.toString()
+
+
+              ),
 
               context: context),
 

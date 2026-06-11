@@ -190,13 +190,13 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                             .toString(),
                                       ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
-                                      SizedBox(height: 10.h),
-                                      _buildInfoRow(
-                                        label: "open price",
-                                        value: Methods.removeTrailingZeros(
-                                          (order.openPrice ?? 0) * livePrice,
-                                        ),
-                                      ),
+//                                       SizedBox(height: 10.h),
+//                                       _buildInfoRow(
+//                                         label: "open price",
+//                                         value: Methods.removeTrailingZeros(
+//                                           (order.openPriceOrder ?? 0) * livePrice,
+//                                         ),
+//                                       ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
                                       SizedBox(height: 10.h),
                                       _buildInfoRow(

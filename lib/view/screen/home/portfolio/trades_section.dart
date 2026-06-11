@@ -10,14 +10,6 @@ import '../../../../view_model/utils/colors.dart';
 import '../../../components/live_status_text.dart';
 
 
-
-
-
-
-
-
-
-
 class TradesSection extends StatelessWidget {
   const TradesSection({super.key});
 

@@ -172,15 +172,12 @@ class TradeOrOrder {
   // final num? qty;
   final num? totalGrams;
 
-  final num? openPrice;
+
   final num? price;
   final num? entryPrice;
   final num? executedPrice;
   final num? closePrice;
 
-  final num? stopLoss;
-  final num? takeProfit;
-  final num? sellWhenPrice;
 
   final num? realizedPnl;
   final num? unrealizedPnl;
@@ -226,7 +223,40 @@ class TradeOrOrder {
   final bool? hasDelivery; //: true,
   final num? shippingCost; //: 200,
 
+
+  final num? openPrice;
+  final num ? openPriceOrder;
+  final num? stopLoss;
+  final num? takeProfit;
+  final num? sellWhenPrice;
+
+
+
+
+
+
+
+
+
+
   TradeOrOrder({
+    this.openPrice,
+    this.openPriceOrder,
+    this.stopLoss,
+    this.takeProfit,
+    this.sellWhenPrice,
+
+
+
+
+
+
+
+
+
+
+
+
     this.id,
     this.type,
     this.status,
@@ -238,16 +268,14 @@ class TradeOrOrder {
     this.product,
     this.metal,
     this.currency,
-    // this.qty,
+
     this.totalGrams,
-    this.openPrice,
+
     this.price,
     this.entryPrice,
     this.executedPrice,
     this.closePrice,
-    this.stopLoss,
-    this.takeProfit,
-    this.sellWhenPrice,
+
     this.realizedPnl,
     this.unrealizedPnl,
     this.closeKind,
@@ -288,14 +316,14 @@ class TradeOrOrder {
 
   /// ✅ أي قيمة (int/double/String/null) -> num?
   static num? parseNum(dynamic v) {
-    if (v == null) return null;
+    if (v == null) return 0;
     if (v is num) return v;
     return num.tryParse(v.toString())??0;
   }
 
   /// ✅ أي قيمة (int/double/String/null) -> int?
   static int? parseInt(dynamic v) {
-    if (v == null) return null;
+    if (v == null) return 0;
     if (v is int) return v;
     if (v is num) return v.toInt();
     return int.tryParse(v.toString())??0;
@@ -342,18 +370,43 @@ class TradeOrOrder {
       metal: json['metal']?.toString(),
       currency: json['currency']?.toString(),
 
-      // qty: parseNum(json['qty']),
+
       totalGrams: parseNum(json['total_grams']),
 
-      openPrice: parseNum(json['open_price']),
+
+
+
+
+
+
+              // openPrice: parseNum(json['open_price']),
+              // stopLoss: parseNum(json['stop_loss']),
+              // takeProfit: parseNum(json['take_profit']),
+              // sellWhenPrice: parseNum(json['sell_when_price']),
+
+
+           openPriceOrder: parseNum(json['open_price_per_bar']),
+           openPrice: parseNum(json['entry_price_per_bar']),
+           stopLoss: parseNum(json['stop_loss_per_bar']),
+           takeProfit: parseNum(json['take_profit_per_bar']),
+           sellWhenPrice: parseNum(json['sell_when_price_per_bar']),
+
+
+
+
+
+
+
+
+
+
       price: parseNum(json['price']),
       entryPrice: parseNum(json['entry_price']),
       executedPrice: parseNum(json['executed_price']),
       closePrice: parseNum(json['close_price']),
 
-      stopLoss: parseNum(json['stop_loss']),
-      takeProfit: parseNum(json['take_profit']),
-      sellWhenPrice: parseNum(json['sell_when_price']),
+
+
 
       realizedPnl: parseNum(json['realized_pnl']),
       unrealizedPnl: parseNum(json['unrealized_pnl']),
@@ -406,6 +459,37 @@ class TradeOrOrder {
   // ===================== TO JSON =====================
   Map<String, dynamic> toJson() {
     return {
+
+
+
+
+
+      // 'open_price': openPrice,
+      // 'take_profit': takeProfit,
+      // 'sell_when_price': sellWhenPrice,
+      // 'stop_loss': stopLoss,
+
+      'entry_price_per_bar': openPrice,
+      'open_price_per_bar': openPriceOrder,
+      'take_profit_per_bar': takeProfit,
+      'sell_when_price_per_bar': sellWhenPrice,
+      'stop_loss_per_bar': stopLoss,
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
       'id': id,
       'type': type,
       'status': status,
@@ -422,18 +506,21 @@ class TradeOrOrder {
       'metal': metal,
       'currency': currency,
 
-      // 'qty': qty,
+
       'total_grams': totalGrams,
 
-      'open_price': openPrice,
+
+
+
+
+
       'price': price,
       'entry_price': entryPrice,
       'executed_price': executedPrice,
       'close_price': closePrice,
 
-      'stop_loss': stopLoss,
-      'take_profit': takeProfit,
-      'sell_when_price': sellWhenPrice,
+
+
 
       'realized_pnl': realizedPnl,
       'unrealized_pnl': unrealizedPnl,
@@ -597,171 +684,4 @@ class TradeOrOrder {
 
 
 
-////////////////////////////////////////////////////////////////////////////////////// old model
 
-// class Trades {
-//   final int? id;
-//   final String? metal;
-//   final String? user;
-//   final String? currency;
-//
-//   final String? prevClosePrice;
-//   final String? openPrice;
-//   final String? lowPrice;
-//   final String? highPrice;
-//   final String? price;
-//   final String? ch;
-//   final String? chp;
-//   final String? ask;
-//   final String? bid;
-//
-//   final String? priceGram24k;
-//   final String? priceGram22k;
-//   final String? priceGram21k;
-//   final String? priceGram20k;
-//   final String? priceGram18k;
-//   final String? priceGram16k;
-//   final String? priceGram14k;
-//   final String? priceGram10k;
-//
-//   final String? qty;
-//   final String? stopLoss;
-//   final String? takeProfit;
-//   final String? sellWhenPrice;
-//   final String? entryPrice;
-//   Trades({
-//     this.entryPrice,
-//     this.id,
-//     this.metal,
-//     this.user,
-//     this.currency,
-//     this.prevClosePrice,
-//     this.openPrice,
-//     this.lowPrice,
-//     this.highPrice,
-//     this.price,
-//     this.ch,
-//     this.chp,
-//     this.ask,
-//     this.bid,
-//     this.priceGram24k,
-//     this.priceGram22k,
-//     this.priceGram21k,
-//     this.priceGram20k,
-//     this.priceGram18k,
-//     this.priceGram16k,
-//     this.priceGram14k,
-//     this.priceGram10k,
-//     this.qty,
-//     this.stopLoss,
-//     this.takeProfit,
-//     this.sellWhenPrice,
-//   });
-//
-//   /// fromJson
-//   factory Trades.fromJson(Map<String, dynamic> json) {
-//     return Trades(
-//       id: json['id'],
-//       metal: json['metal'] ?? "",
-//       user: json['user'] ?? "",
-//       currency: json['currency'] ?? "",
-//
-//       openPrice: json['open_price'] ?? "",
-//       lowPrice: json['low_price'] ?? "",
-//       highPrice: json['high_price'] ?? "",
-//       price: json['price'] ?? "",
-//       ch: json['ch'] ?? "",
-//       chp: json['chp'] ?? "",
-//       ask: json['ask'] ?? "",
-//       bid: json['bid'] ?? "",
-//       priceGram24k: json['price_gram_24k'] ?? "",
-//       priceGram22k: json['price_gram_22k'] ?? "",
-//       priceGram21k: json['price_gram_21k'] ?? "",
-//       priceGram20k: json['price_gram_20k'] ?? "",
-//       priceGram18k: json['price_gram_18k'] ?? "",
-//       priceGram16k: json['price_gram_16k'] ?? "",
-//       priceGram14k: json['price_gram_14k'] ?? "",
-//       priceGram10k: json['price_gram_10k'] ?? "",
-//       prevClosePrice: json['prev_close_price'] ?? "",
-//
-//
-//       // qty: json['qty'] ?? "",
-//       // stopLoss: json['stop_loss'] ?? "",
-//       // takeProfit: json['take_profit'] ?? "",
-//       // sellWhenPrice: json['sell_when_price'] ?? "",
-//       // entryPrice: json['entry_price'] ?? "",
-//
-//       qty: s(json['qty']),
-//       stopLoss: s(json['stop_loss']),
-//       takeProfit: s(json['take_profit']),
-//       sellWhenPrice: s(json['sell_when_price']),
-//       entryPrice: s(json['entry_price']),
-//
-//
-// /////////////////////////////////////////////////////    coming in api but used
-//
-//         // "close_price": null,
-//         // "realized_pnl": null,
-//         // "unrealized_pnl": null,
-//         // "closed_at": null,
-//         // "close_kind": null
-//
-//
-//
-//
-//
-//
-//     );
-//   }
-// // parseStringNumber
-//   String s(dynamic v, {String def = "0"}) {
-//     if (v == null) return def;
-//
-//     if (v is String) {
-//       final t = v.trim();
-//       return t.isEmpty ? def : t;
-//     }
-//
-//     return v.toString();
-//   }
-//
-//
-//
-//
-// //////////////////////////////////////////////////////////////////////////////////////////////////////// toJson
-//   Map<String, dynamic> toJson() {
-//     return {
-//       'id': id,
-//       'metal': metal,
-//       'user': user,
-//       'currency': currency,
-//       'prev_close_price': prevClosePrice,
-//       'open_price': openPrice,
-//       'low_price': lowPrice,
-//       'high_price': highPrice,
-//       'price': price,
-//       'ch': ch,
-//       'chp': chp,
-//       'ask': ask,
-//       'bid': bid,
-//       'price_gram_24k': priceGram24k,
-//       'price_gram_22k': priceGram22k,
-//       'price_gram_21k': priceGram21k,
-//       'price_gram_20k': priceGram20k,
-//       'price_gram_18k': priceGram18k,
-//       'price_gram_16k': priceGram16k,
-//       'price_gram_14k': priceGram14k,
-//       'price_gram_10k': priceGram10k,
-//
-//
-//
-//       'qty': qty,
-//       'stop_loss': stopLoss,
-//       'take_profit': takeProfit,
-//       'sell_when_price': sellWhenPrice,
-//       "entry_price" : entryPrice
-//
-//
-//     };
-//   }
-// }

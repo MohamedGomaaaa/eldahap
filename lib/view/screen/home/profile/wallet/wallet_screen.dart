@@ -891,12 +891,10 @@ class _WalletScreenState extends State<WalletScreen> {
                       Expanded(
                         child: Row(
                           children: [
-                            ///////////////////////////////////////// _transaction Type
+///////////////////////////////////////// _transaction Type
                             Flexible(
                               child: Container(
-
                                 child: Text(
-
                                    "( $type )",
                                   style: TextStyle(
                                       color: amountColor,
@@ -908,7 +906,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               ),
                             ),
                             SizedBox(width: 8.w),
-                            ///////////////////////////////////////// status is Approved
+///////////////////////////////////////// status is Approved
                             Container(
 
                               child: Text(

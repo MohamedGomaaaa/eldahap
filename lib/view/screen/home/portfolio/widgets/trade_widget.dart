@@ -113,21 +113,21 @@ class TradeWidget extends StatelessWidget {
                                         (trade.currency ?? 'USD')
                                             .toUpperCase();
 
-                                        final mp =
-                                        liveState.metals[currencyKey];
+                                        final mp =   liveState.metals[currencyKey];
+
 
                                         final double livePrice =
                                             ((mp?.buy ?? 0).toDouble()) *
                                                 (trade.unitGramWeight ?? 0);
 
-                                        final double openPrice =
-                                        (trade.openPrice ?? 0).toDouble();
+                                        final double openPrice = (trade.openPrice ?? 0).toDouble();
 
-                                        final double qty =
-                                        (trade.quantity ?? 0).toDouble();
 
-                                        totalPnl +=
-                                            (livePrice - openPrice) * qty;
+                                        final double qty =  (trade.quantity ?? 0).toDouble();
+
+
+                                        totalPnl += (livePrice - openPrice) * qty;
+
                                       }
                                     }
 
