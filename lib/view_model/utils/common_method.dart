@@ -63,6 +63,9 @@ class Methods {
 
 
 
+
+
+
  // static String removeTrailingZeros(num value) {
  //    final s = value.toString();
  //    if (!s.contains('.')) return s;
