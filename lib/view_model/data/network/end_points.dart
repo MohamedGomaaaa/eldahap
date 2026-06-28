@@ -69,7 +69,7 @@ class EndPoints {
 
 
   static const String closedTrades = 'order/closed-trades';
-  static const String orderPending = 'order/pending';
+  static const String orderPending = "order/cancelled";//order/pending';
 
  //// setting
   static const String settings = 'settings/exchange-rate';

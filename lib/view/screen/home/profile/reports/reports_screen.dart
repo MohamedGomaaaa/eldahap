@@ -87,12 +87,6 @@ class ReportsScreen extends StatelessWidget {
                     context,
                     const OrderMoneyReports(type: LocaleKeys.withdrawReports,),
                   );
-
-
-
-
-
-
                 },
               ),
             ],
@@ -102,3 +96,4 @@ class ReportsScreen extends StatelessWidget {
     );
   }
 }
+////////////////////////////////////////////////////////////////////////////////

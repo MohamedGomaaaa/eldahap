@@ -2,6 +2,8 @@ import 'package:dio/dio.dart';
 import 'package:official_gold/view_model/data/network/dio_helper.dart';
 import 'package:official_gold/view_model/data/network/end_points.dart';
 
+import '../../../../model/trade_order_model.dart';
+
 class WalletProvider {
   Future<Response?> wallet() async {
     try {
@@ -208,6 +210,12 @@ class WalletProvider {
   }
 
 
+  Future<Response> tradess() async {
+    return await DioHelper.get(
+      path: EndPoints.tradess, // endpoint الجديد
+      withToken: true,
+    );
+  }
 
 
 

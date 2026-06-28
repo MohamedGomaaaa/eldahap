@@ -17,14 +17,14 @@ class CreatTrade extends StatelessWidget {
   final TradesCubit tradesCubit;
 
    final bool lastIndex;
-  final String productTitle;
+   final String productTitle;
   const CreatTrade({
     super.key,
     required this.trade,
 
     required this.tradesCubit,
      required this.lastIndex,
-    required this.productTitle,
+     required this.productTitle,
   });
 
   @override
@@ -73,7 +73,7 @@ class CreatTrade extends StatelessWidget {
                       ? () => Navigation.push(
                             context,
 
-                            TradeDetailsScreen(tradesCubit:tradesCubit,
+                            TradeDetailsScreen(
                               trade: trade,
                               productTitle: productTitle,
                             ),

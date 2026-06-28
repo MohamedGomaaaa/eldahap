@@ -118,25 +118,50 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ],
+              ),SizedBox(width: 4,),
+
+
+
+
+              BlocBuilder<HomeCubit, HomeState>(
+                buildWhen: (previous, current) => current is GetProfileSuccessState,
+                builder: (context, state) {
+                  // جلب بيانات المستخدم مباشرة من الـ Cubit بشكل آمن
+                  final user = HomeCubit.get(context).user.value;
+
+                  return Text(
+                    "Welcome ${user.name ?? ''}",
+                    style: Theme.of(context).textTheme.headlineSmall,
+                  );
+                },
               ),
 
-              if (showBalance) ...[
-                SizedBox(width: 12.w),
-                BlocBuilder<WalletCubit, WalletState>(
-                  buildWhen: (previous, current) =>
-                  current is GetWalletSuccessState ||
-                      current is GetWalletLoadingState ||
-                      current is GetWalletErrorState,
-                  builder: (context, state) {
-                    return
-                      Text(
 
-                        "${ Methods.removeTrailingZeros( WalletCubit.get(context).walletDollar)} \$",
-                        style: Theme.of(context).textTheme.headlineSmall,
-                      );
-                  },
-                ),
-              ],
+
+
+
+
+
+
+
+
+              // if (showBalance) ...[
+              //   SizedBox(width: 12.w),
+              //   BlocBuilder<WalletCubit, WalletState>(
+              //     buildWhen: (previous, current) =>
+              //     current is GetWalletSuccessState ||
+              //         current is GetWalletLoadingState ||
+              //         current is GetWalletErrorState,
+              //     builder: (context, state) {
+              //       return
+              //         Text(
+              //
+              //           "${ Methods.removeTrailingZeros( WalletCubit.get(context).walletDollar)} \$",
+              //           style: Theme.of(context).textTheme.headlineSmall,
+              //         );
+              //     },
+              //   ),
+              // ],
             ],
           ),
         ),

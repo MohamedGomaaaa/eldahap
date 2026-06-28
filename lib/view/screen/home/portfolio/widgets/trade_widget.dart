@@ -19,7 +19,7 @@ class TradeWidget extends StatelessWidget {
   const TradeWidget({
     super.key,
     required this.groupKey,
-    required this.tradeGroup,
+     required this.tradeGroup,
   });
 
   @override

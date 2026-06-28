@@ -17,7 +17,7 @@ import 'dart:io';
 ///  اتاكد انه ميعملش كلوز والصفقه مفتوحه
 
 
-// also wallet with pl  in all pages and in buy and details
+// also wallet with pl  in all pages and in buy and details also close calling it in main
 
 
 

@@ -12,26 +12,27 @@ import '../../../../model/trade_order_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
-import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
-import '../../../../view_model/utils/common_method.dart';
 import '../../../../view_model/utils/navigation.dart';
 import '../../../../view_model/utils/toast.dart';
 import '../../../../view_model/utils/validator.dart';
-import '../../../components/live_status_text.dart';
-import '../../../components/live_text.dart';
+import '../../../components/creat_order_trade_details.dart';
 import '../../static_pages/static_page_screen.dart';
 import '../layout_screen.dart';
 
+
+
+
+
 class TradeDetailsScreen extends StatefulWidget {
   final TradeOrOrder trade;
-  final String productTitle;
-  final TradesCubit tradesCubit;
+   final String productTitle;
+
   const TradeDetailsScreen({
     super.key,
     required this.trade,
-    required this.productTitle,
-    required this.tradesCubit,
+     required this.productTitle,
+
   });
 
   @override
@@ -97,328 +98,52 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                       const AppBarCustom(
                         showBalance: true,
                       ),
+////////////////////////////////////////////////////////////////////////////////////////////////////////////  live price
+//                       Row(
+//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                         children: [
+//                           Center(
+//                             child: Container(
+//                               margin: const EdgeInsets.symmetric(vertical: 10),
+//                               child: const LiveStatusText(),
+//                             ),
+//                           ),
+//                           LivePriceText(
+//                             price: livePrice,
+//                             decimals: 2,
+//                             fakeMinDelta: 0.01,
+//                             fakeMaxDelta: 0.05,
+//                             fakeTickEvery: const Duration(milliseconds: 900),
+//                           ),
+//                         ],
+//                       ),
 
-                      ////////////////////////////////////////////////////////////////////////////////////////////////////////////  live price
-                      Center(
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(vertical: 10),
-                          child: const LiveStatusText(),
-                        ),
+//                       Center(
+//                         child: Container(
+//                           margin: const EdgeInsets.symmetric(vertical: 10),
+//                           child: const LiveStatusText(),
+//                         ),
+//                       ),
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////  title
+//                       Align(
+//                         alignment: Alignment.center,
+//                         child: Text(
+//                           "${widget.productTitle} ${trade.unitGramWeight} gm",
+//                           style: Theme.of(context)
+//                               .textTheme
+//                               .displayMedium
+//                               ?.copyWith(
+//                                 color: AppColors.white,
+//                               ),
+//                         ),
+//                       ),
+//                       SizedBox(height: 12.sp),
+///////////////////////////////////////////////////////////////////////////////////////////// Creat Trade Order Details
+                      CreatTradeOrderDetails(
+                       tradeOrOrder:trade,
+                       isOrder:false, productTitle:widget. productTitle,
                       ),
-
-                      ////////////////////////////////////////////////////////////////////////////////////////////////////////////  title
-                      Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          "${widget.productTitle} ${trade.unitGramWeight} gm",
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(
-                                color: AppColors.white,
-                              ),
-                        ),
-                      ),
-
-                      SizedBox(height: 12.sp),
-
-                      /////////////////////////////////////////////////////////////////////////////////////////////////////////  trade creat at
-                      Text(
-                        Methods.formatCreatedAt(trade.createdAt!.toString()),
-                        style:
-                            Theme.of(context).textTheme.labelMedium?.copyWith(
-                                  color: AppColors.greyText,
-                                ),
-                      ),
-
-                      SizedBox(height: 12.sp),
-
-  ///////////////////////////////////////////////////////////////////////////////////////////////////////// Bought
-                      Row(
-                        children: [
-                          Text(
-                            LocaleKeys.bought.tr(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayLarge
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          SizedBox(width: 6.sp),
-                          Material(
-                            color: AppColors.blueColor,
-                            borderRadius: BorderRadius.circular(8.sp),
-                            child: Container(
-                              padding: EdgeInsets.symmetric(
-                                horizontal: 12.sp,
-                                vertical: 3.h,
-                              ),
-    ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade.qty
-                              child: Text(
-                                '+${trade.quantity}',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .headlineSmall
-                                    ?.copyWith(
-                                      color: AppColors.white,
-                                      fontSize: 13,
-                                    ),
-                              ),
-                            ),
-                          ),
-                          const Spacer(),
-                          Text(
-                            '@ ',
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(color: AppColors.greyText),
-                          ),
-///////////////////////////////////////////////////////////////////////////////////////////////////////// open price
-                          Text(
-                            Methods.removeTrailingZeros(trade.openPrice!),
-                            style: Theme.of(context)
-                                .textTheme
-                                .headlineSmall
-                                ?.copyWith(color: AppColors.white),
-                          ),
-                        ],
-                      ),
-
-                      SizedBox(height: 12.sp),
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////// current price live price
-                      Row(
-                        children: [
-                          Text(
-                            LocaleKeys.currentPrice.tr().toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-                          LivePriceText(
-                            price: livePrice,
-                            decimals: 2,
-                            fakeMinDelta: 0.01,
-                            fakeMaxDelta: 0.05,
-                            fakeTickEvery: const Duration(milliseconds: 900),
-                          ),
-                        ],
-                      ),
-
-                      Divider(height: 20.h, color: AppColors.greyText),
-///////////////////////////////////////////////////////////////////////////////////////////////////////// trade id
-                      Row(
-                        children: [
-                          Text(
-                            'trade id',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-          Text(
-         trade.id.toString(),
-          style: Theme.of(context)
-              .textTheme
-              .titleMedium
-              ?.copyWith(color: AppColors.white),
-          ),
-                        ],
-                      ),
-                      Divider(height: 20.h, color: AppColors.greyText),
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////// pl & profit Or Lose
-                      Row(
-                        children: [
-                          Text(
-                            'P&L',
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-                          Flexible(
-                            child: LivePriceText(
-                              price: pnl,
-                              decimals: 2,
-                              fakeMinDelta: 0.01,
-                              fakeMaxDelta: 0.05,
-                              fakeTickEvery: const Duration(milliseconds: 900),
-                              neutralColor: Colors.transparent,
-                              upColor: Colors.transparent,
-                              downColor: Colors.transparent,
-                              padding: EdgeInsets.zero,
-                              width: null, // ✅ ياخد عرض الأب (Flexible)
-                              alignment: Alignment.centerRight,
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyLarge
-                                  ?.copyWith(
-                                    color: isProfit
-                                        ? AppColors.blueColor
-                                        : AppColors.red,
-                                  ),
-                            ),
-                          ),
-                        ],
-                      ),
-
-                      Divider(height: 20.h, color: AppColors.greyText),
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
-                      Row(
-                        children: [
-                          Text(
-                            "trade size",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-                          Text(
-                            Methods.removeTrailingZeros(
-                              (trade.quantity ?? 0) * livePrice,
-                            ),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.white),
-                          ),
-                        ],
-                      ),
-                      Divider(height: 20.h, color: AppColors.greyText),
-////////////////////////////////////////////////////////////////////////////////////////////////////////////// sell price
-                      trade.sellWhenPrice == null || trade.sellWhenPrice == 0
-                          ? const SizedBox()
-                          : Row(
-                        children: [
-                          Text(
-                            "Buy price",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-                          Text(
-                            Methods.removeTrailingZeros(
-                                trade.sellWhenPrice!),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.white),
-                          ),
-                        ],
-                      ),
-
-                      trade.sellWhenPrice == null || trade.sellWhenPrice == 0
-                          ? const SizedBox()
-                          : Divider(height: 20.h, color: AppColors.greyText),
- ///////////////////////////////////////////////////////////////////////////////////////////////////////// take profit
-                      trade.takeProfit == null || trade.takeProfit == 0
-                          ? const SizedBox()
-                          : Row(
-                              children: [
-                                Text(
-                                  "take profit",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(color: AppColors.yellow),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  Methods.removeTrailingZeros(
-                                      trade.takeProfit!),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(color: AppColors.white),
-                                ),
-                              ],
-                            ),
-
-                      trade.takeProfit == null || trade.takeProfit == 0
-                          ? const SizedBox()
-                          : Divider(height: 20.h, color: AppColors.greyText),
-///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
-                      trade.stopLoss == null
-                          ? const SizedBox()
-                          : Row(
-                              children: [
-                                Text(
-                                  "stop lose",
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(color: AppColors.yellow),
-                                ),
-                                const Spacer(),
-                                Text(
-                                  Methods.removeTrailingZeros(trade.stopLoss!),
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .titleMedium
-                                      ?.copyWith(color: AppColors.white),
-                                ),
-                              ],
-                            ),
-
-                      trade.stopLoss == null || trade.stopLoss == 0
-                          ? const SizedBox()
-                          : Divider(height: 20.h, color: AppColors.greyText),
-
-///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision percaentage
-                      Row(
-                        children: [
-                          Text(
-                            LocaleKeys.appCommision.tr().toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-                          Text(
-                            "${Methods.removeTrailingZeros(widget.tradesCubit.commissionRate!.commissionRate!)} %  ",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.white),
-                          ),
-                        ],
-                      ),
-///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision value
-                      Divider(height: 20.h, color: AppColors.greyText),
-                      Row(
-                        children: [
-                          Text(
-                            LocaleKeys.appCommision2.tr().toUpperCase(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.yellow),
-                          ),
-                          const Spacer(),
-                          Text(
-                            trade.currency == "USD"
-                                ? "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} \$"
-                                : "${Methods.removeTrailingZeros(widget.tradesCubit.calculateCommission((trade.quantity ?? 0) * livePrice))} LE",
-                            style: Theme.of(context)
-                                .textTheme
-                                .titleMedium
-                                ?.copyWith(color: AppColors.white),
-                          ),
-                        ],
-                      ),
-                      Divider(height: 20.h, color: AppColors.greyText),
-
- ///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
+///////////////////////////////////////////////////////////////////////////////////////////////////////// Tab Bar
                       DefaultTabController(
                         length: 2,
                         initialIndex: _tabIndex,
@@ -607,10 +332,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                     ],
                   ),
                 ),
-
                 SizedBox(height: 12.sp),
-
-                ////////////////////////////////////////////////////////////////////////////////////////////////////////////// Take Profit
+////////////////////////////////////////////////////////////////////////////////////////////////////////////// Take Profit
                 Container(
                   padding: EdgeInsets.all(12.sp),
                   decoration: BoxDecoration(
@@ -823,6 +546,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
     );
   }
 
+
+
   Widget _buildSellTab(BuildContext context, bool hasLive) {
     final trade = widget.trade;
 
@@ -841,8 +566,6 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                     context: context,
                     title: "close trade",
                     onPressed: () async {
-
-
                       AppLoader.showLoader(
                           context, const ValueKey("sell_price"));
 
@@ -924,7 +647,8 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 void confirmBottomSheet(
     {required BuildContext context,
     required String title,
-    required void Function()? onPressed}) {
+    required void Function()? onPressed})
+{
   showModalBottomSheet(
     context: context,
     isDismissible: false,
@@ -1409,7 +1133,10 @@ class _DeliveryDataDialogState extends State<DeliveryDataDialog> {
   }
 }
 
-//
+
+
+
+
 
 // // Complete widget with the delivery button using the new colors
 // class DeliveryButton extends StatelessWidget {

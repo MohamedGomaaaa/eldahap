@@ -295,7 +295,7 @@ abstract class  LocaleKeys {
   static const productName = 'Product name';
   static const type = 'type';
   static const productQuantity = 'Quantity';
-
+    static const creatAt = 'Creat At';
   static const metal = 'Metal';
 
 

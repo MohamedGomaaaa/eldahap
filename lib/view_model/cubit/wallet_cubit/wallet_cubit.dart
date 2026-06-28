@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:official_gold/view_model/utils/app_constant.dart';
 
 import '../../../model/report_1.dart';
 import '../../../model/report_2.dart';
+import '../../../model/trade_order_group.dart';
 import '../../../model/trade_order_model.dart';
 import '../../models/wallet_models/transaction_model.dart';
 import '../../utils/toast.dart';
@@ -19,7 +22,7 @@ class WalletCubit extends Cubit<WalletState> {
   static WalletCubit get(context) => BlocProvider.of<WalletCubit>(context);
 
   TransactionModel? transactionModel;
-   List<TransactionData> allTransactions = []; // Store all transactions
+  List<TransactionData> allTransactions = []; // Store all transactions
   bool isLoadingMoreTransactions = false;
   bool hasMoreTransactions = true;
   int currentTransactionPage = 1;
@@ -54,8 +57,7 @@ class WalletCubit extends Cubit<WalletState> {
 
   Future<void> convertCurrency({
     required num amount,
-  }) async
-  {
+  }) async {
     emit(ConvertCurrencyLoadingState());
 
     try {
@@ -113,8 +115,6 @@ class WalletCubit extends Cubit<WalletState> {
 //     }
 //   }
 
-
-
   num exchangeDollarRate = 0;
   num depositUsdAmount = 0;
   num depositEgpAmount = 0;
@@ -156,40 +156,7 @@ class WalletCubit extends Cubit<WalletState> {
     ));
   }
 
-
-
-
-
-
-
 //////////////////////////////////////////////////// calculate DepositIn Egp
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 /////////////////////////////////////////////////// old wallet gomaa
 //   Future<void> getWallet() async {
@@ -492,4 +459,87 @@ class WalletCubit extends Cubit<WalletState> {
       throw error;
     });
   }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// get trades
+  List<num> usdTradesPrices = [];
+  List<num> egpTradesPrices = [];
+
+  Future<void> getTradess() async {
+    emit(GetTradesLoadingState());
+
+    try {
+      final result = await WalletRepository().tradess();
+
+      usdTradesPrices = result['usd'] ?? [];
+      egpTradesPrices = result['egp'] ?? [];
+
+      debugPrint('USD => $usdTradesPrices');
+      debugPrint('EGP => $egpTradesPrices');
+
+      emit(GetTradesSuccessState());
+    } catch (e) {
+      debugPrint(e.toString());
+      emit(GetTradesErrorState());
+    }
+  }
+//////////////////////////////////////////////////////
+  Map<String, num> calculateTotals({
+    required num currentUsdPrice,
+    required num currentEgpPrice,
+  })
+  {
+    final usdTotal = usdTradesPrices.fold<num>(
+      0,
+      (sum, price) => sum + (currentUsdPrice - price),
+    );
+
+    final egpTotal = egpTradesPrices.fold<num>(
+      0,
+      (sum, price) => sum + (currentEgpPrice - price),
+    );
+
+    return {
+      'usdTotal': usdTotal,
+      'egpTotal': egpTotal,
+    };
+  }
+////////////////////////////////////////////////////////////////
+  Timer? totalsTimer;
+
+// أضف هذه المتغيرات في الـ Cubit لتخزين الإجمالي التراكمي
+  double totalPortfolioUsd = 0.0;
+  double totalPortfolioEgp = 0.0;
+
+  void startTotalsTimer({
+    required num currentUsdPrice,
+    required num currentEgpPrice,
+  }) {
+    totalsTimer?.cancel();
+
+    totalsTimer = Timer.periodic(
+      const Duration(seconds: 5),
+          (_) {
+        final result = calculateTotals(
+          currentUsdPrice: currentUsdPrice,
+          currentEgpPrice: currentEgpPrice,
+        );
+
+        // ✅ 1. تحديث المتغيرات بالقيم الإجمالية الجديدة (تجميعة الأراي + المحفظة)
+        totalPortfolioUsd = (result['usdTotal'] ?? 0.0).toDouble();
+        totalPortfolioEgp = (result['egpTotal'] ?? 0.0).toDouble();
+
+        debugPrint('USD Total: $totalPortfolioUsd');
+        debugPrint('EGP Total: $totalPortfolioEgp');
+
+        // ✅ 2. عمل emit لحالة تحديث الإجمالي لكي يستمع إليها الـ BlocBuilder
+        emit(WalletTotalsUpdatedState());
+      },
+    );
+  }
+
+
+
+
+
+
 }

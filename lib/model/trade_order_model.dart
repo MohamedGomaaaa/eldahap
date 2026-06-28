@@ -174,22 +174,18 @@ class TradeOrOrder {
 
 
   final num? price;
-  final num? entryPrice;
+
   final num? executedPrice;
-  final num? closePrice;
 
 
   final num? realizedPnl;
   final num? unrealizedPnl;
 
-  final String? closeKind;
-  final DateTime? closedAt;
 
-  final num? prevClosePrice;
   final num? lowPrice;
   final num? highPrice;
 
-  final DateTime? openTime;
+
 
   final num? ch;
   final num? chp;
@@ -224,11 +220,38 @@ class TradeOrOrder {
   final num? shippingCost; //: 200,
 
 
+
+
+
+
+
   final num? openPrice;
   final num ? openPriceOrder;
   final num? stopLoss;
   final num? takeProfit;
   final num? sellWhenPrice;
+
+
+
+  final num? pnlUsd;
+  final num?  pnlEgp;
+
+
+  final num? entryPrice;
+  final num? closePrice;
+  final String? closeKind;
+  final String? closedAt;
+  final String? openTime;
+  final num? prevClosePrice;
+
+
+
+
+
+
+
+
+
 
 
 
@@ -249,7 +272,8 @@ class TradeOrOrder {
 
 
 
-
+  this. pnlUsd,
+  this.  pnlEgp,
 
 
 
@@ -377,8 +401,6 @@ class TradeOrOrder {
 
 
 
-
-
               // openPrice: parseNum(json['open_price']),
               // stopLoss: parseNum(json['stop_loss']),
               // takeProfit: parseNum(json['take_profit']),
@@ -390,6 +412,22 @@ class TradeOrOrder {
            stopLoss: parseNum(json['stop_loss_per_bar']),
            takeProfit: parseNum(json['take_profit_per_bar']),
            sellWhenPrice: parseNum(json['sell_when_price_per_bar']),
+           entryPrice: parseNum(json['entry_price']),
+
+
+
+
+      prevClosePrice: parseNum(json['prev_close_price']),
+      closeKind: json['close_kind']??"",
+      closedAt: json['closed_at']??"",
+      closePrice: parseNum(json['close_price']),
+      openTime: json['open_time']??"",
+
+
+
+
+      pnlUsd: parseNum(json['floating_pnl_usd']),
+      pnlEgp: parseNum(json['floating_pnl_egp']),
 
 
 
@@ -401,24 +439,11 @@ class TradeOrOrder {
 
 
       price: parseNum(json['price']),
-      entryPrice: parseNum(json['entry_price']),
       executedPrice: parseNum(json['executed_price']),
-      closePrice: parseNum(json['close_price']),
-
-
-
-
       realizedPnl: parseNum(json['realized_pnl']),
       unrealizedPnl: parseNum(json['unrealized_pnl']),
-
-      closeKind: json['close_kind']?.toString(),
-      closedAt: parseDate(json['closed_at']),
-
-      prevClosePrice: parseNum(json['prev_close_price']),
       lowPrice: parseNum(json['low_price']),
       highPrice: parseNum(json['high_price']),
-
-      openTime: parseDate(json['open_time']),
 
       ch: parseNum(json['ch']),
       chp: parseNum(json['chp']),
@@ -471,6 +496,8 @@ class TradeOrOrder {
 
       'entry_price_per_bar': openPrice,
       'open_price_per_bar': openPriceOrder,
+
+
       'take_profit_per_bar': takeProfit,
       'sell_when_price_per_bar': sellWhenPrice,
       'stop_loss_per_bar': stopLoss,
@@ -478,9 +505,13 @@ class TradeOrOrder {
 
 
 
-
-
-
+      'close_price': closePrice,
+      'close_kind': closeKind,
+      'closed_at': closedAt,
+      'prev_close_price': prevClosePrice,
+      'open_time': openTime,
+      "floating_pnl_usd": pnlUsd,
+      "floating_pnl_egp": pnlEgp,
 
 
 
@@ -517,7 +548,6 @@ class TradeOrOrder {
       'price': price,
       'entry_price': entryPrice,
       'executed_price': executedPrice,
-      'close_price': closePrice,
 
 
 
@@ -525,14 +555,10 @@ class TradeOrOrder {
       'realized_pnl': realizedPnl,
       'unrealized_pnl': unrealizedPnl,
 
-      'close_kind': closeKind,
-      'closed_at': closedAt?.toIso8601String(),
-
-      'prev_close_price': prevClosePrice,
       'low_price': lowPrice,
       'high_price': highPrice,
 
-      'open_time': openTime?.toIso8601String(),
+
 
       'ch': ch,
       'chp': chp,

@@ -283,6 +283,12 @@ class GetOrderReportsErrorState extends WalletState {
 
 
 
+class GetTradesErrorState extends WalletState {}
+class GetTradesSuccessState extends WalletState {}
+class GetTradesLoadingState extends WalletState {}
+
+class WalletTotalsUpdatedState extends WalletState {}
+
 
 
 

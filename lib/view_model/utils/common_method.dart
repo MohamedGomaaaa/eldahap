@@ -62,19 +62,39 @@ class Methods {
   }
 
 
+  static String getCurrencyText({
+    required num amount,
+    required String? currency,
+  }) {
+    final value = removeTrailingZeros(amount);
+
+    switch (currency) {
+      case 'USD':
+        return '$value \$';
+
+      case 'EGP':
+        return '$value LE';
+
+      default:
+        return value.toString();
+    }
+  }
 
 
 
 
+  static String getCurrencyText2(String? currency) {
+    switch (currency) {
+      case 'USD':
+        return r'$';
 
+      case 'EGP':
+        return 'LE';
 
-
-
- // static String removeTrailingZeros(num value) {
- //    final s = value.toString();
- //    if (!s.contains('.')) return s;
- //    return s.replaceFirst(RegExp(r'\.?0+$'), '');
- //  }
+      default:
+        return "";
+    }
+  }
 
 
   static String removeTrailingZeros(num value, {int decimals = 2}) {

@@ -4,6 +4,7 @@ import 'package:official_gold/view_model/data/network/data_providers/wallet_prov
 import '../../../../model/convert_currency.dart';
 import '../../../../model/report_2.dart';
 import '../../../../model/setting.dart';
+import '../../../../model/trade_order_group.dart';
 import '../../../../model/trade_order_model.dart';
 import '../../../../model/wallet.dart';
 import '../../../models/wallet_models/transaction_model.dart';
@@ -226,9 +227,39 @@ class WalletRepository {
     }
   }
 
+//////////////////////////////////////////////////////////////////////////////////////////////
 
+  Future<Map<String, List<num>>> tradess() async {
+    final response = await walletProvider.tradess();
 
+    final List<num> usdPrices = [];
+    final List<num> egpPrices = [];
 
+    final result = response.data['result'] as List? ?? [];
+
+    for (final group in result) {
+      final currency = group['currency'];
+
+      final orders = group['orders'] as List? ?? [];
+
+      for (final order in orders) {
+        final price = TradeOrOrder.parseNum(
+          order['entry_price_per_bar'],
+        );
+
+        if (currency == 'USD') {
+          usdPrices.add(price!);
+        } else if (currency == 'EGP') {
+          egpPrices.add(price!);
+        }
+      }
+    }
+
+    return {
+      'usd': usdPrices,
+      'egp': egpPrices,
+    };
+  }
 
 
 

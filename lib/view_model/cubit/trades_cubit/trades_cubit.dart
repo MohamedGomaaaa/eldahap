@@ -169,6 +169,26 @@ class TradesCubit extends Cubit<TradesState> {
       emit(GetCommissionRateErrorState(msg: error.toString()));
     }
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 num calculateCommission(num amount) {
   final rate = commissionRateValue ?? 0;
   return (amount * rate) / 100;
