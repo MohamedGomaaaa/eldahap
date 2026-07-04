@@ -1,10 +1,8 @@
 import 'package:official_gold/model/report_1.dart';
 import 'package:official_gold/view_model/data/network/data_providers/wallet_providers.dart';
-
 import '../../../../model/convert_currency.dart';
 import '../../../../model/report_2.dart';
 import '../../../../model/setting.dart';
-import '../../../../model/trade_order_group.dart';
 import '../../../../model/trade_order_model.dart';
 import '../../../../model/wallet.dart';
 import '../../../models/wallet_models/transaction_model.dart';
@@ -19,12 +17,9 @@ class WalletRepository {
   }
 
 
-
-
-
   Future<WalletResult> wallet() async {
     try {
-      final  walletResponse = await walletProvider.wallet();
+      final walletResponse = await walletProvider.wallet();
 
       final wallet = Wallet.fromJson(walletResponse?.data);
 
@@ -34,7 +29,6 @@ class WalletRepository {
       rethrow;
     }
   }
-
 
 
   Future<ConvertCurrencyResult> convertCurrency({
@@ -61,9 +55,6 @@ class WalletRepository {
   }
 
 
-
-
-
   Future<SettingResult> getExchangeRate() async {
     try {
       final response = await walletProvider.getExchangeRate();
@@ -76,7 +67,6 @@ class WalletRepository {
       rethrow;
     }
   }
-
 
 
 /////////////////////////////////////////  old wallet gomaa
@@ -93,10 +83,6 @@ class WalletRepository {
 //     }
 //   }
 /////////////////////////////////////////////////////////////
-
-
-
-
 
 
   // Future<num> wallet() async {
@@ -119,9 +105,11 @@ class WalletRepository {
   }
 
 
-  Future<String> payUsdt({required String currency, required num amount, String? message}) async {
+  Future<String> payUsdt(
+      {required String currency, required num amount, String? message}) async {
     try {
-      final payUsdtResponse = await walletProvider.payUsdt(currency: currency, amount: amount, message: message);
+      final payUsdtResponse = await walletProvider.payUsdt(
+          currency: currency, amount: amount, message: message);
       return payUsdtResponse?.data?['result'];
     } catch (e) {
       rethrow;
@@ -147,10 +135,6 @@ class WalletRepository {
   //     rethrow;
   //   }
   // }
-
-
-
-
 
 
   Future<List<ReportResult2>> reports({required String type}) async {
@@ -179,25 +163,6 @@ class WalletRepository {
   }
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   Future<String> withdraw({required num amount,}) async {
     try {
       final withdrawResponse = await walletProvider.withdraw(amount: amount,);
@@ -217,10 +182,13 @@ class WalletRepository {
   }
 
 
-  Future<TransactionModel> transactions({int page = 1, int perPage = 10}) async {
+  Future<TransactionModel> transactions(
+      {int page = 1, int perPage = 10}) async {
     try {
-      final transactionsResponse = await walletProvider.transactions(page: page, perPage: perPage);
-      TransactionModel transactionModel = TransactionModel.fromJson(transactionsResponse?.data);
+      final transactionsResponse = await walletProvider.transactions(
+          page: page, perPage: perPage);
+      TransactionModel transactionModel = TransactionModel.fromJson(
+          transactionsResponse?.data);
       return transactionModel;
     } catch (e) {
       rethrow;
@@ -228,51 +196,75 @@ class WalletRepository {
   }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-
   Future<Map<String, List<num>>> tradess() async {
-    final response = await walletProvider.tradess();
+    try {
+      final response = await walletProvider.tradess();
 
-    final List<num> usdPrices = [];
-    final List<num> egpPrices = [];
+      final List<num> usdPrices = [];
+      final List<num> usdWeights = [];
 
-    final result = response.data['result'] as List? ?? [];
+      final List<num> egpPrices = [];
+      final List<num> egpWeights = [];
 
-    for (final group in result) {
-      final currency = group['currency'];
+      final result = response.data['result'] as List? ?? [];
 
-      final orders = group['orders'] as List? ?? [];
+      for (final group in result) {
+        final currency = group['currency'];
+        final orders = group['orders'] as List? ?? [];
 
-      for (final order in orders) {
-        final price = TradeOrOrder.parseNum(
-          order['entry_price_per_bar'],
-        );
+        for (final order in orders) {
+          final openPrice =
+          TradeOrOrder.parseNum(order['sell_when_price_per_bar'])==0?
+          TradeOrOrder.parseNum(order['open_price_per_bar']):
+          TradeOrOrder.parseNum(order['sell_when_price_per_bar']);
 
-        if (currency == 'USD') {
-          usdPrices.add(price!);
-        } else if (currency == 'EGP') {
-          egpPrices.add(price!);
+
+          final unitWeight = TradeOrOrder.parseNum(order['unit_gram_weight']) ?? 0;
+
+          if (currency == 'USD') {
+            usdPrices.add(openPrice!);
+            usdWeights.add(unitWeight);
+          } else if (currency == 'EGP') {
+            egpPrices.add(openPrice!);
+            egpWeights.add(unitWeight);
+          }
         }
       }
-    }
 
-    return {
-      'usd': usdPrices,
-      'egp': egpPrices,
-    };
+      // 🟢 طباعة القوائم الأربعة هنا للتأكد من تفصيل البيانات
+      _printSeparatedLists(
+        usdPrices: usdPrices,
+        usdWeights: usdWeights,
+        egpPrices: egpPrices,
+        egpWeights: egpWeights,
+      );
+
+      return {
+        'usd_prices': usdPrices,
+        'usd_weights': usdWeights,
+        'egp_prices': egpPrices,
+        'egp_weights': egpWeights,
+      };
+    } catch (e) {
+      print("Error in tradess: $e");
+      rethrow;
+    }
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
+// 🟢 دالة الطباعة المساعدة (Helper Function) عشان تخلي الكود منظم
+  void _printSeparatedLists({
+    required List<num> usdPrices,
+    required List<num> usdWeights,
+    required List<num> egpPrices,
+    required List<num> egpWeights,
+  }) {
+    print('================ 📊 Trades Data Log ================');
+    print('🇺🇸 [USD] Prices  (${usdPrices.length} items) => $usdPrices');
+    print('🇺🇸 [USD] Weights (${usdWeights.length} items) => $usdWeights');
+    print('----------------------------------------------------');
+    print('🇪🇬 [EGP] Prices  (${egpPrices.length} items) => $egpPrices');
+    print('🇪🇬 [EGP] Weights (${egpWeights.length} items) => $egpWeights');
+    print('====================================================');
+  }
 
 }
