@@ -365,31 +365,51 @@ class WalletCubit extends Cubit<WalletState> {
   List<num> egpTradesWeights = []; // دي اللي بنخزن فيها الأوزان حالياً
   List<num> usdTradesWeights = [];
 
+  // Future<void> getTradess() async {
+  //   emit(GetTradesLoadingState());
+  //
+  //   try {
+  //     final result = await WalletRepository().tradess();
+  //
+  //     // استقبال الأسعار والأوزان بشكل منفصل وصحيح
+  //     usdTradesPrices = result['usd_prices'] ?? [];
+  //     usdTradesWeights = result['usd_weights'] ?? [];
+  //
+  //     egpTradesPrices = result['egp_prices'] ?? [];
+  //     egpTradesWeights = result['egp_weights'] ?? [];
+  //
+  //     debugPrint(
+  //         'USD Prices => $usdTradesPrices | USD Weights => $usdTradesWeights');
+  //     debugPrint(
+  //         'EGP Prices => $egpTradesPrices | EGP Weights => $egpTradesWeights');
+  //
+  //     emit(GetTradesSuccessState());
+  //   } catch (e) {
+  //     debugPrint(e.toString());
+  //     emit(GetTradesErrorState());
+  //   }
+  // }
   Future<void> getTradess() async {
     emit(GetTradesLoadingState());
 
     try {
       final result = await WalletRepository().tradess();
 
-      // استقبال الأسعار والأوزان بشكل منفصل وصحيح
-      usdTradesPrices = result['usd_prices'] ?? [];
-      usdTradesWeights = result['usd_weights'] ?? [];
+      // تأمين التحويل بشكل صريح لضمان عدم حدوث خطأ Casting في نسخة الـ Release
 
-      egpTradesPrices = result['egp_prices'] ?? [];
-      egpTradesWeights = result['egp_weights'] ?? [];
+        usdTradesPrices = List<num>.from(result['usd_prices'] ?? []);
+        usdTradesWeights = List<num>.from(result['usd_weights'] ?? []);
+        egpTradesPrices = List<num>.from(result['egp_prices'] ?? []);
+        egpTradesWeights = List<num>.from(result['egp_weights'] ?? []);
 
-      debugPrint(
-          'USD Prices => $usdTradesPrices | USD Weights => $usdTradesWeights');
-      debugPrint(
-          'EGP Prices => $egpTradesPrices | EGP Weights => $egpTradesWeights');
 
+      // بمجرد جلب البيانات، يفضل استدعاء الحساب فوراً لتحديث الواجهة بناءً على آخر أسعار مخزنة
       emit(GetTradesSuccessState());
     } catch (e) {
       debugPrint(e.toString());
       emit(GetTradesErrorState());
     }
   }
-
 //////////////////////////////////////////////////////
 // 📌 قم بتعريف هذه المتغيرات داخل الكلاس الخاص بك (قبل الميثود)
   num? lastCalculatedUsdPrice;
@@ -404,18 +424,23 @@ class WalletCubit extends Cubit<WalletState> {
     required num liveEgpPrice,
   }) {
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method");
+
     // 1️⃣ التحقق إذا كان السعر متطابقاً مع آخر سعر تم حسابه (أي لم يتغير)
-    if (liveUsdPrice == lastCalculatedUsdPrice &&
+    if (lastCalculatedUsdPrice != null &&
+        lastCalculatedEgpPrice != null &&
+        liveUsdPrice == lastCalculatedUsdPrice &&
         liveEgpPrice == lastCalculatedEgpPrice) {
       // السعر لم يتغير، سنقوم بإرجاع القيم المحسوبة مسبقاً فوراً
-      // لنوفر موارد الجهاز ولن يتم تنفيذ الطباعة (Log)
+      print(">>>>>>>>>>>>>>>>>>>>>>>>>>.  cachedEgpTotal : $cachedEgpTotal  cachedUsdTotal : $cachedUsdTotal  ");
+
       return {
         'usdTotal': cachedUsdTotal,
         'egpTotal': cachedEgpTotal,
       };
     }
-    print(
-        ">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method and upgrade price");
+
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method and upgrade price cachedEgpTotal : $cachedEgpTotal  cachedUsdTotal : $cachedUsdTotal  ");
+
     // 2️⃣ تحديث الأسعار المحفوظة بالأسعار الجديدة لضمان عدم تكرار الحساب المرة القادمة
     lastCalculatedUsdPrice = liveUsdPrice;
     lastCalculatedEgpPrice = liveEgpPrice;
@@ -447,9 +472,42 @@ class WalletCubit extends Cubit<WalletState> {
     debugPrint('live EGP  => $liveEgpPrice');
     debugPrint('======================================================');
 
+    // 🔥 خطوة أساسية لحل مشكلة الـ Release Mode:
+    // نعمل emit لحالة نجاح عشان نجبر الـ UI اللي بيسمع للـ WalletCubit إنه يعمل Rebuild بالقيم الجديدة فوراً
+    emit(GetTradesSuccessState());
+
     return {
       'usdTotal': usdTotal,
       'egpTotal': egpTotal,
     };
   }
+
+
+  // 1️⃣ أضف دالة لتصفير الكاش والبيانات عند تغيير الحساب أو تسجيل الخروج
+  void resetWalletData() {
+    transactionModel = null;
+    allTransactions.clear();
+    isLoadingMoreTransactions = false;
+    hasMoreTransactions = true;
+    currentTransactionPage = 1;
+    walletDollar = 0;
+    walletEgp = 0;
+
+    // تصفير بيانات الحسابات المباشرة والكاش
+    usdTradesPrices.clear();
+    usdTradesWeights.clear();
+    egpTradesPrices.clear();
+    egpTradesWeights.clear();
+
+    lastCalculatedUsdPrice = null;
+    lastCalculatedEgpPrice = null;
+    cachedUsdTotal = 0;
+    cachedEgpTotal = 0;
+
+    emit(WalletInitial()); // إعادة Cubit للحالة البدئية
+  }
+
+
+
+
 }

@@ -123,7 +123,7 @@ class ForgetPasswordScreen extends StatelessWidget {
                                 LocaleKeys.send.tr(),
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                       fontSize: 16.sp,
-                                      color: AppColors.background,
+                                      color: AppColors.white,
                                     ),
                               ),
                             ),

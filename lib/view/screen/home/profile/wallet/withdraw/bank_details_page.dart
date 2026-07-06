@@ -641,7 +641,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                             strokeWidth: 2,
                           ),
                         ),
-                        SizedBox(width: 12),
+                        const SizedBox(width: 12),
                         Text(
                           LocaleKeys.sendProcess.tr(),
                           style: const TextStyle(

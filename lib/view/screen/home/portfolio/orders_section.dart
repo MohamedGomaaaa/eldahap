@@ -25,7 +25,7 @@ class OrdersSection extends StatelessWidget {
       child: RefreshIndicator(
         onRefresh: () async => context.read<TradesCubit>().getOrderss(),
         backgroundColor: AppColors.yellow2,
-        color: AppColors.black,
+        color: AppColors.white,
         child: BlocBuilder<TradesCubit, TradesState>(
           buildWhen: (previous, current) {
             return current is GetOrdersLoadingState ||

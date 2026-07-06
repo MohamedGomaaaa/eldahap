@@ -43,7 +43,7 @@ class HomeScreen extends StatelessWidget {
             );
           },
           backgroundColor: AppColors.yellow2,
-          color: AppColors.black,
+          color: AppColors.white,
           child: ListView(
             padding: EdgeInsets.all(12.sp),
             children: [

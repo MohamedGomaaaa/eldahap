@@ -27,7 +27,7 @@ class LayoutScreen extends StatelessWidget {
           appBar:
           cubit.index==3?
               null:
-          AppBarCustom(
+          const AppBarCustom(
             showBalance: true,
  //            actions: [
  //              Stack(

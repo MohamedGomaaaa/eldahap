@@ -660,7 +660,11 @@ class SinglePageView extends StatelessWidget {
                       backgroundColor: AppColors.yellow,
                       foregroundColor: AppColors.black,
                     ),
-                    child: Text('Retry'),
+                    child:  Text('Retry',               style: TextStyle(
+                      color: AppColors.white,
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16.sp,
+                    ),),
                   ),
                 ],
               ),
@@ -671,7 +675,7 @@ class SinglePageView extends StatelessWidget {
             return PageContent(page: state.page);
           }
 
-          return Center(
+          return const Center(
             child: Text(
               'Welcome',
               style: TextStyle(color: AppColors.white),
@@ -993,7 +997,7 @@ class DeliveryFeesDialog extends StatelessWidget {
                   child: Text(
                     'OK',
                     style: TextStyle(
-                      color: AppColors.black,
+                      color: AppColors.white,
                       fontWeight: FontWeight.bold,
                       fontSize: 16.sp,
                     ),

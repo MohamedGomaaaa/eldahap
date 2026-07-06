@@ -14,10 +14,7 @@ import 'dart:io';
 /// token 227|0uXa77GZ3DjN2jLWr5UnDseKwSxV8h9ztijLWUJ74d9bfac4
 
 
-///  اتاكد انه ميعملش كلوز والصفقه مفتوحه
 
-
-// also wallet with pl  in all pages and in buy and details also close calling it in main
 
 
 

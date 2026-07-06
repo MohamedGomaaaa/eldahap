@@ -63,28 +63,49 @@ class _WalletScreenState extends State<WalletScreen> {
   // 1. تعريف المتغير لحفظ الـ Cubit
   late WalletCubit _walletCubit;
 
+
+
+
+
+
+
   @override
   void initState() {
     super.initState();
-
     _walletCubit = WalletCubit.get(context);
 
-    // 1. جلب آخر أسعار متوفرة في LivePriceCubit فور الدخول للصفحة
-    final liveCubit = BlocProvider.of<LivePriceCubit>(context);
-    final initialUsd = liveCubit.metals['USD']?.buy ?? 0;
-    final initialEgp = liveCubit.metals['EGP']?.buy ?? 0;
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
+      // 1. جلب بيانات المحفظة والصفقات أولاً
+      await _walletCubit.initializeWalletData();
+      await _walletCubit.getTradess();
 
-    // 2. تحديث قيم الـ WalletCubit وتشغيل التايمر فوراً بالأسعار البدئية
-    _walletCubit.calculateTotals(liveEgpPrice:initialEgp , liveUsdPrice: initialUsd);
+      // 2. بعد جلب البيانات، نقوم بالحساب المبدئي بناءً على الأسعار الحالية المتوفرة
+      final liveCubit = BlocProvider.of<LivePriceCubit>(context);
+      final initialUsd = liveCubit.metals['USD']?.buy ?? 0;
+      final initialEgp = liveCubit.metals['EGP']?.buy ?? 0;
 
-
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      _walletCubit.initializeWalletData();
-      _walletCubit.getTradess();
+      _walletCubit.calculateTotals(liveEgpPrice: initialEgp, liveUsdPrice: initialUsd);
     });
 
     _modalScrollController.addListener(_onModalScroll);
   }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
   @override
   void dispose() {
@@ -127,16 +148,12 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
       body: BlocListener<LivePriceCubit, LivePriceState>(
         listener: (context, state) {
-          // ✅ عند وصول تحديث أسعار حي من السوكت، يتم إرسال الأسعار فوراً للتايمر
           if (state is LivePriceLive) {
             final usdPrice = state.metals['USD']?.buy ?? 0;
             final egpPrice = state.metals['EGP']?.buy ?? 0;
 
-            final cubit = WalletCubit.get(context);
-            // 1. تحديث الأسعار الحالية فقط
-            cubit.calculateTotals(liveEgpPrice:egpPrice , liveUsdPrice: usdPrice);(usdPrice, egpPrice);
-
-
+            // تحديث الأسعار وحساب الإجماليات فوراً
+            _walletCubit.calculateTotals(liveEgpPrice: egpPrice, liveUsdPrice: usdPrice);
           }
         },
         child: BlocBuilder<LivePriceCubit, LivePriceState>(
@@ -154,7 +171,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       await WalletCubit.get(context).getTradess();
                     },
                     backgroundColor: AppColors.yellow2,
-                    color: AppColors.black,
+                    color: AppColors.white,
                     child: SingleChildScrollView(
                       controller: _scrollController,
                       physics: const AlwaysScrollableScrollPhysics(),
@@ -162,7 +179,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          ////////////////////////////////////////////////////////////////////////////////////////// has live
+////////////////////////////////////////////////////////////////////////////////////////// has live
                           // يعرض الـ LiveStatusText فقط إذا كان هناك اتصال حي
                           if (hasLive)
                             Center(
@@ -171,21 +188,20 @@ class _WalletScreenState extends State<WalletScreen> {
                                 child: const LiveStatusText(),
                               ),
                             ),
-                          //////////////////////////////////////////////////////////////////////////////////// Total Portfolio
+//////////////////////////////////////////////////////////////////////////////////// Total Portfolio
                           // _buildPortfolioSection(),
                           // SizedBox(height: 20.h),
-                          ///////////////////////////////////////////////////////////////////////////////////// Balance Cards
+ ///////////////////////////////////////////////////////////////////////////////////// Balance Cards
                           _buildBalanceCards(hasLive),
-
-                          //////////////////////////////////////////////////////////////////////////////////// Action Buttons
+//////////////////////////////////////////////////////////////////////////////////// Action Buttons
                           widget.userMode == "demo"
                               ? const SizedBox()
                               : _buildActionButtons(),
                           SizedBox(height: 25.h),
-                          /////////////////////////////////////////////////////////////////// // Recent Transactions Header
+ /////////////////////////////////////////////////////////////////// // Recent Transactions Header
                           _buildTransactionsHeader(),
                           SizedBox(height: 15.h),
-                          ///////////////////////////////////////////////////////////////////////////////////// Transaction List
+///////////////////////////////////////////////////////////////////////////////////// Transaction List
                           _buildTransactionsList(),
                         ],
                       ),

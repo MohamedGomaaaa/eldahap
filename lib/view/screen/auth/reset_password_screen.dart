@@ -198,7 +198,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                                 LocaleKeys.resetPassword.tr(),
                                 style: Theme.of(context).textTheme.titleLarge?.copyWith(
                                   fontSize: 16.sp,
-                                  color: AppColors.background,
+                                  color: AppColors.white,
                                 ),
                               ),
                             ),

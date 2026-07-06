@@ -8,6 +8,7 @@ import 'package:official_gold/view_model/utils/navigation.dart';
 import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../model/user.dart';
 import '../../../../../view_model/cubit/home_cubit/home_cubit.dart';
+import '../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../view_model/data/local/shared_helper.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../auth/login_screen.dart';
@@ -67,7 +68,7 @@ class ProfileScreen extends StatelessWidget {
                       )),
                 );
               },
-            ),
+            ),const SizedBox(height: 3,),
             Text(
               LocaleKeys.profile.tr(),
               textAlign: TextAlign.center,
@@ -105,22 +106,32 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
 
-            ValueListenableBuilder<User>(
-              valueListenable: HomeCubit.get(context).user,
-              builder: (context, user, _) {
-                return ProfileTileWidget(
-                  title: LocaleKeys.myAccount.tr(),
-                  assetName: AppAssets.settings,
-                  onTap: () {
-                    print("User mode: ${user.mode.toString().toLowerCase()}");
-                    Navigation.push(
-                        context,
-                        MyAccountsPage(
-                            accountType: user.mode.toString().toLowerCase()));
-                  },
-                );
-              },
-            ),
+
+
+
+            // ValueListenableBuilder<User>(
+            //   valueListenable: HomeCubit.get(context).user,
+            //   builder: (context, user, _) {
+            //     return ProfileTileWidget(
+            //       title: LocaleKeys.myAccount.tr(),
+            //       assetName: AppAssets.settings,
+            //       onTap: () {
+            //         print("User mode: ${user.mode.toString().toLowerCase()}");
+            //         Navigation.push(
+            //             context,
+            //             MyAccountsPage(
+            //                 accountType: user.mode.toString().toLowerCase()));
+            //       },
+            //     );
+            //   },
+            // ),
+
+
+
+
+
+
+
 
             ProfileTileWidget(
               title: LocaleKeys.settings.tr(),
@@ -282,7 +293,10 @@ class ProfileScreen extends StatelessWidget {
         child: InkWell(
           onTap: () {
             SharedHelper.clear();
+            WalletCubit.get(context).resetWalletData();
             Navigation.pushAndRemoveUntil(context, const LoginScreen());
+            // تصفير بيانات المستخدم والبروفايل الحالية
+            HomeCubit.get(context).resetHomeData();
           },
           borderRadius: BorderRadius.circular(12.r),
           child: Container(

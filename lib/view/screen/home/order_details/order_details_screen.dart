@@ -18,8 +18,7 @@ import '../../../../view_model/utils/toast.dart';
 import '../../../../view_model/utils/validator.dart';
 import '../../../components/app_loader.dart';
 import '../../../components/creat_order_trade_details.dart';
-import '../../../components/live_status_text.dart';
-import '../../../components/live_text.dart';
+
 import '../../../components/shimmer_widget.dart';
 import '../../static_pages/static_page_screen.dart';
 import '../layout_screen.dart';

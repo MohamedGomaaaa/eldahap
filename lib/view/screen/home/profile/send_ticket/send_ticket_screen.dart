@@ -66,7 +66,7 @@ class SendTicketScreen extends StatelessWidget {
                                 cubit.getTicketResponse(ticket.id ?? 0);
                               },
                               backgroundColor: AppColors.yellow2,
-                              color: AppColors.black,
+                              color: AppColors.white,
                               child: ListView.separated(
                                 itemBuilder: (context, index) {
                                   return cubit.ticketResponses[index].user ==

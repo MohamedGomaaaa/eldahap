@@ -199,5 +199,24 @@ class HomeCubit extends Cubit<HomeState> {
       }
       throw error;
     });
+  }void resetHomeData() {
+    print(">>>>>>>>>>>>>>>>>>>>>>>>>>. Reseting/Cleaning Home Profile Data");
+
+    // 1. إعادة تعيين كائن المستخدم لكائن فارغ جديد
+    user.value = User();
+
+    // 2. تصفير الـ Controllers تماماً
+    nameController.clear();
+    emailController.clear();
+    phoneController.clear();
+    currentPasswordController.clear();
+    newPasswordController.clear();
+    confirmPasswordController.clear();
+
+    nationalIdFront = null;
+    nationalIdBack = null;
+
+    // 3. إرجاع الـ Cubit للحالة المبدئية
+    emit(HomeInitial());
   }
 }
