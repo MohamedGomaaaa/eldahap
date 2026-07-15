@@ -10,9 +10,9 @@ import '../../../../model/trade_order_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 
-
 import '../../../../view_model/cubit/order_cubit/order_cubit.dart';
 import '../../../../view_model/cubit/order_cubit/order_state.dart';
+import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 
 import '../../../../view_model/utils/navigation.dart';
@@ -25,44 +25,45 @@ import '../../../components/shimmer_widget.dart';
 import '../../create_nav_bar/layout_screen.dart';
 import '../../static_pages/static_page_screen.dart';
 
+// class OrderDetailsScreen extends StatelessWidget {
+//   final TradeOrOrder order;
+//   final String productTitle;
+//
+//   const OrderDetailsScreen({
+//     super.key,
+//     required this.order,
+//     required this.productTitle,
+//   });
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return OrderDetailsView(order: order, productTitle: productTitle);
+//   }
+// }
 
-
-class OrderDetailsScreen extends StatelessWidget {
+class OrderDetailsScreen extends StatefulWidget {
   final TradeOrOrder order;
   final String productTitle;
-// final TradesCubit tradesCubit;
+
   const OrderDetailsScreen({
     super.key,
     required this.order,
     required this.productTitle,
-    // required this.tradesCubit,
   });
 
   @override
-  Widget build(BuildContext context) {
-    return
-      OrderDetailsView(order: order, productTitle: productTitle);
-  }
+  State<OrderDetailsScreen> createState() => _OrderDetailsScreenState();
 }
 
-class OrderDetailsView extends StatefulWidget {
-  final TradeOrOrder order;
-  final String productTitle;
-
-  const OrderDetailsView({
-    super.key,
-    required this.order,
-    required this.productTitle,
-  });
-
-  @override
-  State<OrderDetailsView> createState() => _OrderDetailsViewState();
-}
-
-class _OrderDetailsViewState extends State<OrderDetailsView> {
+class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
   final ApiService _appService = ApiService();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-
+  // @override
+  // void initState() {
+  //   super.initState();
+  //
+  //   context.read<TradesCubit>().getCommissionRate();
+  // }
   @override
   Widget build(BuildContext context) {
     final order = widget.order;
@@ -77,19 +78,6 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
           icon: const Icon(Icons.arrow_back_ios, color: AppColors.white),
           onPressed: () => Navigator.pop(context),
         ),
-        // title: Row(
-        //   children: [
-        //     SizedBox(width: 12.w),
-        //     Text(
-        //       "$productTitle ${order.unitGramWeight!} gm",
-        //       style: TextStyle(
-        //         color: AppColors.yellow,
-        //         fontSize: 18.sp,
-        //         fontWeight: FontWeight.bold,
-        //       ),
-        //     ),
-        //   ],
-        // ),
       ),
       body: BlocBuilder<LivePriceCubit, LivePriceState>(
         builder: (context, liveState) {
@@ -108,7 +96,7 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
             },
             child: BlocConsumer<OrderCubit, OrderState>(
               listener: (context, state) {
-                if (state is CloseOrderSuccessState) {
+                if (state is DeleteOrderSuccess) {
                   Toast.showMsg(msg: "order is successfully Deleted");
                   Navigation.pushAndRemoveUntil(
                     context,
@@ -118,18 +106,17 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
               },
               builder: (BuildContext context, state) {
                 OrderCubit orderCubit = OrderCubit.get(context);
-                return (state is CloseOrderLoadingState)
-                    ?ShimmerWidget(
-                  child: Container(
-                    padding: EdgeInsets.all(12.sp),
-                    width: double.infinity,
-
-                    decoration: BoxDecoration(
-                      color: AppColors.yellow2,
-                      borderRadius: BorderRadius.circular(12.r),
-                    ),
-                  ),
-                )
+                return (state is DeleteOrderLoading)
+                    ? ShimmerWidget(
+                        child: Container(
+                          padding: EdgeInsets.all(12.sp),
+                          width: double.infinity,
+                          decoration: BoxDecoration(
+                            color: AppColors.yellow2,
+                            borderRadius: BorderRadius.circular(12.r),
+                          ),
+                        ),
+                      )
                     : Stack(
                         children: [
                           SingleChildScrollView(
@@ -141,30 +128,12 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-//////////////////////////////////////////////////////////////////////////////////////////////////////// live socket status
-//                                   Center(
-//                                     child: Container(
-//                                       margin: const EdgeInsets.symmetric(
-//                                           vertical: 10),
-//                                       child: const LiveStatusText(),
-//                                     ),
-//                                   ),
-/////////////////////////////////////////////////////////////////////////////////////////// live price
-//                                   LivePriceText(
-//                                     padding: const EdgeInsets.all(10),
-//                                     price: livePrice,
-//                                     decimals: 2,
-//                                     fakeMinDelta: 0.01,
-//                                     fakeMaxDelta: 0.05,
-//                                     fakeTickEvery:
-//                                         const Duration(milliseconds: 900),
-//                                   ),
-//                                   SizedBox(height: 24.h),
+
 ///////////////////////////////////////////////////////////////////////////////////////////// Creat Trade Order Details
                                   CreatTradeOrderDetails(
                                     productTitle: productTitle,
-                                    tradeOrOrder:order,
-                                    isOrder:true,
+                                    tradeOrOrder: order,
+                                    isOrder: true,
                                   ),
                                   SizedBox(height: 16.h),
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////  delete
@@ -178,7 +147,6 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                         context: context,
                                         title: 'Delete order',
                                         onPressed: () {
-                                          // Navigator.pop(context); // اقفل البوتوم شيت
                                           if (widget.order.status ==
                                                   "pending" &&
                                               widget.order.type == "order") {
@@ -199,7 +167,7 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                       padding:
                                           EdgeInsets.symmetric(vertical: 16.h),
                                       decoration: BoxDecoration(
-                                        color: state is CloseOrderLoadingState
+                                        color: state is DeleteOrderLoading
                                             ? AppColors.grey.withOpacity(0.5)
                                             : AppColors.grey,
                                         borderRadius:
@@ -225,7 +193,8 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                                   _buildTakeProfitSection(livePrice),
                                   SizedBox(height: 32.h),
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////  save button
-                                  _buildSaveButton(context,order.id!,orderCubit),
+                                  _buildSaveButton(
+                                      context, order.id!, orderCubit),
                                   SizedBox(height: 20.h),
                                 ],
                               ),
@@ -372,9 +341,8 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                     SizedBox(height: 12.h),
                     TextFormField(
                       validator: (value) => Validator.validateStopLoss(
-                        openPrice:widget.order .openPrice!,
+                        openPrice: widget.order.openPrice!,
                         enteredValue: value,
-
                       ),
                       controller: cubit.stopLossController,
                       textInputAction: TextInputAction.done,
@@ -480,9 +448,8 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                     SizedBox(height: 12.h),
                     TextFormField(
                       validator: (value) => Validator.validateTakeProfit(
-                        openPrice:widget.order .openPrice!,
+                        openPrice: widget.order.openPrice!,
                         enteredValue: value,
-
                         requiredField: cubit.takeProfitEnabled,
                       ),
                       controller: cubit.takeProfitController,
@@ -522,10 +489,8 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////// save order
-  Widget _buildSaveButton(BuildContext context,int orderId,OrderCubit cubit) {
+  Widget _buildSaveButton(BuildContext context, int orderId, OrderCubit cubit) {
     return InkWell(
-
-
       onTap: () {
         confirmBottomSheet(
           context: context,
@@ -541,18 +506,16 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
             // }
 
             if ((cubit.stopLossEnabled == false &&
-                cubit.takeProfitEnabled == false) ||
+                    cubit.takeProfitEnabled == false) ||
                 (cubit.takeProfitController.text.trim().isEmpty &&
                     cubit.takeProfitEnabled == true) ||
                 (cubit.stopLossController.text.trim().isEmpty &&
                     cubit.stopLossEnabled == true)) {
-              Toast.showMsg(
-                  msg: LocaleKeys.canNotDoOpreation.tr());
+              Toast.showMsg(msg: LocaleKeys.canNotDoOpreation.tr());
               return;
             }
 
-            AppLoader.showLoader(
-                context, ValueKey("updateOrder"));
+            AppLoader.showLoader(context, ValueKey("updateOrder"));
 
             if (cubit.takeProfitEnabled == false) {
               cubit.takeProfitController.text = "0";
@@ -577,18 +540,15 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                 ctx: context,
               );
 
-              AppLoader.closeLoader(
-                  context, const ValueKey("updateOrder"));
+              AppLoader.closeLoader(context, const ValueKey("updateOrder"));
 
               Navigation.push(context, LayoutScreen());
             } catch (e) {
-              AppLoader.closeLoader(
-                  context, ValueKey("updateOrder"));
+              AppLoader.closeLoader(context, ValueKey("updateOrder"));
             }
           },
         );
       },
-
 
       // onTap: ()async{
       //   // FocusManager.instance.primaryFocus?.unfocus();
@@ -653,7 +613,8 @@ void confirmBottomSheet({
   required BuildContext context,
   required String title,
   required void Function()? onPressed,
-}) {
+})
+{
   showModalBottomSheet(
     context: context,
     isDismissible: false,
@@ -719,4 +680,3 @@ void confirmBottomSheet({
     },
   );
 }
-

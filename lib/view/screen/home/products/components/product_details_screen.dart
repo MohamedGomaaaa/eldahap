@@ -1333,7 +1333,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Colors.transparent,
               ),
-              child: const Icon(
+              child: const FaIcon(
                 FontAwesomeIcons.minus,
                 size: 12,
                 color: AppColors.yellow,
@@ -1353,7 +1353,7 @@ class ProductDetailsScreen extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Colors.transparent,
               ),
-              child: const Icon(
+              child: const FaIcon(
                 FontAwesomeIcons.plus,
                 size: 12,
                 color: AppColors.yellow,

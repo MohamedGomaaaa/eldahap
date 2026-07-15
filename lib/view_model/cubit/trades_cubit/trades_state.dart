@@ -11,11 +11,21 @@ final class GetTradesSuccessState extends TradesState {}
 
 final class GetTradesErrorState extends TradesState {}
 
+
+
+
+
+
 final class GetOrdersLoadingState extends TradesState {}
 
 final class GetOrdersSuccessState extends TradesState {}
 
 final class GetOrdersErrorState extends TradesState {}
+
+
+
+
+
 
 final class UpdateTradeLoadingState extends TradesState {}
 

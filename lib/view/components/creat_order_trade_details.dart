@@ -1,3 +1,4 @@
+import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
@@ -7,10 +8,12 @@ import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../../view_model/utils/common_method.dart';
+import '../../l10n/locale_keys.g.dart';
+import '../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import 'live_status_text.dart';
 import 'live_text.dart';
 
-class CreatTradeOrderDetails extends StatelessWidget {
+class CreatTradeOrderDetails extends StatefulWidget {
   final TradeOrOrder tradeOrOrder;
   final bool isOrder;
   final String productTitle;
@@ -22,26 +25,38 @@ class CreatTradeOrderDetails extends StatelessWidget {
   });
 
   @override
+  State<CreatTradeOrderDetails> createState() => _CreatTradeOrderDetailsState();
+}
+
+class _CreatTradeOrderDetailsState extends State<CreatTradeOrderDetails> {
+
+  @override
+  void initState() {
+    super.initState();
+    context.read<TradesCubit>().getCommissionRate();
+
+  }
+  @override
   Widget build(BuildContext context) {
     return BlocBuilder<LivePriceCubit, LivePriceState>(
       builder: (context, liveState) {
         // ✅ العملة حسب category index (0 => USD, 1 => EGP)
-        final String currencyKey = tradeOrOrder.currency ?? "USD";
+        final String currencyKey = widget.tradeOrOrder.currency ?? "USD";
         MetalPrices? mp;
         if (liveState is LivePriceLive) {
           mp = liveState.metals[currencyKey];
         }
 
         final double livePrice =
-            (mp?.buy ?? 0).toDouble() * (tradeOrOrder.unitGramWeight ?? 1);
+            (mp?.buy ?? 0).toDouble() * (widget.tradeOrOrder.unitGramWeight ?? 1);
 
-        final double openPrice = (tradeOrOrder.openPrice ?? 0).toDouble();
+        final double openPrice = (widget.tradeOrOrder.openPrice ?? 0).toDouble();
 
         // ✅ لو مفيش live فعلاً (لسه السوكت مجابش سعر)
         final bool hasLive = (liveState is LivePriceLive) && livePrice > 0;
 
         final double pnl =
-            (livePrice - openPrice) * (tradeOrOrder.quantity ?? 0).toDouble();
+            (livePrice - openPrice) * (widget.tradeOrOrder.quantity ?? 0).toDouble();
 
         final bool isProfit = pnl >= 0;
 
@@ -57,31 +72,31 @@ class CreatTradeOrderDetails extends StatelessWidget {
             Align(
               alignment: Alignment.center,
               child: Text(
-                "$productTitle ${tradeOrOrder.unitGramWeight} gm",
+                "${widget.productTitle} ${widget.tradeOrOrder.unitGramWeight} gm",
                 style: Theme.of(context).textTheme.displayMedium?.copyWith(
                       color: AppColors.white,
                     ),
               ),
             ),
             SizedBox(
-              height: isOrder == true ? 12.sp : 0,
+              height: widget.isOrder == true ? 12.sp : 0,
             ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// grey creat ar
-            isOrder == true
+            widget.isOrder == true
                 ? const SizedBox()
                 : Container(
                     alignment: Alignment.centerLeft,
                     margin: EdgeInsets.only(top: 10.sp),
                     child: Text(
                       Methods.formatCreatedAt(
-                          tradeOrOrder.createdAt!.toString()),
+                          widget.tradeOrOrder.createdAt!.toString()),
                       style: Theme.of(context).textTheme.labelMedium?.copyWith(
                             color: AppColors.greyText,
                           ),
                     ),
                   ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// Bought
-            creatBuyPrice(context: context, isOrder: isOrder),
+            creatBuyPrice(context: context, isOrder: widget.isOrder),
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// live price and live status
             Container(
@@ -109,29 +124,29 @@ class CreatTradeOrderDetails extends StatelessWidget {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade id
             creatDetails(
               context: context,
-              title: isOrder ? 'order id' : 'trade id',
-              value: tradeOrOrder.id!,
+              title: widget.isOrder ? 'order id' : 'trade id',
+              value: widget.tradeOrOrder.id!,
               creatPnl: const SizedBox(),
             ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// order type
-            isOrder == true
+            widget.isOrder == true
                 ? creatDetails(
                     context: context,
                     title: 'Type',
-                    value: tradeOrOrder.sellWhenPrice! < livePrice
+                    value: widget.tradeOrOrder.sellWhenPrice! < livePrice
                         ? 'Buy Limit'
                         : "Buy Stop",
                     creatPnl: const SizedBox(),
                   )
                 : const SizedBox(),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// pl & profit Or Lose
-            isOrder == false
+            widget.isOrder == false
                 ? creatDetails(
                     context: context,
                     title: 'P&L',
                     isPnl: true,
-                    currency: tradeOrOrder.currency!,
-                    value: tradeOrOrder.id!,
+                    currency: widget.tradeOrOrder.currency!,
+                    value: widget.tradeOrOrder.id!,
                     creatPnl: Flexible(
                       child: LivePriceText(
                         price: pnl,
@@ -162,21 +177,21 @@ class CreatTradeOrderDetails extends StatelessWidget {
 //           creatPnl: const SizedBox(),
 //         ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// trade size
-            isOrder == false
+            widget.isOrder == false
                 ? creatDetails(
                     context: context,
                     title: "trade size",
-                    value: (tradeOrOrder.quantity ?? 0) * livePrice,
+                    value: (widget.tradeOrOrder.quantity ?? 0) * livePrice,
                     creatPnl: const SizedBox(),
-                    currency: tradeOrOrder.currency!)
+                    currency: widget.tradeOrOrder.currency!)
                 : const SizedBox(),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// buy price
             creatDetails(
                 context: context,
                 title: "Buy price",
-                value: tradeOrOrder.openPrice!,
+                value: widget.tradeOrOrder.openPrice!,
                 creatPnl: const SizedBox(),
-                currency: tradeOrOrder.currency!),
+                currency: widget.tradeOrOrder.currency!),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// Enter price
 //             creatDetails(
 //                 context: context,
@@ -188,82 +203,87 @@ class CreatTradeOrderDetails extends StatelessWidget {
             creatDetails(
                 context: context,
                 title: "Buy When",
-                value: tradeOrOrder.sellWhenPrice!,
+                value: widget.tradeOrOrder.sellWhenPrice!,
                 creatPnl: const SizedBox(),
-                currency: tradeOrOrder.currency!),
+                currency: widget.tradeOrOrder.currency!),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// close price
             creatDetails(
                 context: context,
                 title: "close price",
-                value: tradeOrOrder.closePrice!,
+                value: widget.tradeOrOrder.closePrice!,
                 creatPnl: const SizedBox(),
-                currency: tradeOrOrder.currency!),
+                currency: widget.tradeOrOrder.currency!),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// close at
             creatDetails(
               context: context,
               title: "close At",
-              value: tradeOrOrder.closedAt.toString().trim().isNotEmpty
-                  ? Methods.formatCreatedAt(tradeOrOrder.closedAt!.toString())
-                  : tradeOrOrder.closedAt!.toString(),
+              value: widget.tradeOrOrder.closedAt.toString().trim().isNotEmpty
+                  ? Methods.formatCreatedAt(widget.tradeOrOrder.closedAt!.toString())
+                  : widget.tradeOrOrder.closedAt!.toString(),
               creatPnl: const SizedBox(),
             ),
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////// close kind
             creatDetails(
               context: context,
               title: "close kind",
-              value: tradeOrOrder.closeKind.toString(),
+              value: widget.tradeOrOrder.closeKind.toString(),
               creatPnl: const SizedBox(),
             ),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// take profit
             creatDetails(
                 context: context,
                 title: "take profit",
-                value: tradeOrOrder.takeProfit!,
+                value: widget.tradeOrOrder.takeProfit!,
                 creatPnl: const SizedBox(),
-                currency: tradeOrOrder.currency!),
+                currency: widget.tradeOrOrder.currency!),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// stop lose
             creatDetails(
                 context: context,
                 title: "stop lose",
-                value: tradeOrOrder.stopLoss!,
+                value: widget.tradeOrOrder.stopLoss!,
                 creatPnl: const SizedBox(),
-                currency: tradeOrOrder.currency!),
+                currency: widget.tradeOrOrder.currency!),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision percaentage
-//         BlocBuilder<TradesCubit, TradesState>(
-//           builder: (context, state) {
-//             final cubit = context.read<TradesCubit>();
-//
-//             final percent = cubit.commissionRate?.commissionRatePercent;
-//
-//             // 👇 لوج للتأكد
-//             debugPrint("commissionRate = ${cubit.commissionRate}");
-//
-//             return creatDetails(
-//               context: context,
-//               title: LocaleKeys.appCommision.tr().toUpperCase(),
-//               value: percent ?? "Loading...", // 👈 مهم جدًا
-//               creatPnl: const SizedBox(),
-//             );
-//           },
-//         ),
+        BlocBuilder<TradesCubit, TradesState>(
+          builder: (context, state) {
+            final cubit = context.read<TradesCubit>();
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision value
-//         creatDetails(  context: context,
-//             title: LocaleKeys.appCommision2.tr().toUpperCase(),
-//             value: widget.tradesCubit.calculateCommission(
-//                 (trade.quantity ?? 0) * livePrice),
-//             creatPnl: const SizedBox(),
-//             currency: widget.trade.currency!),
+            final percent = cubit.commissionRate?.commissionRatePercent;
+
+            // 👇 لوج للتأكد
+            debugPrint("commissionRate = ${cubit.commissionRate}");
+
+            return Column(
+              children: [
+                creatDetails(
+                  context: context,
+                  title: LocaleKeys.appCommision.tr().toUpperCase(),
+                  value: percent ?? "Loading...", // 👈 مهم جدًا
+                  creatPnl: const SizedBox(),
+                ),
+ ///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision value
+        creatDetails(  context: context,
+                title: LocaleKeys.appCommision2.tr().toUpperCase(),
+                value: state is  GetCommissionRateLoadingState ?0:cubit.calculateCommission(
+                    (widget.tradeOrOrder.quantity ?? 0) * livePrice*widget.tradeOrOrder.unitGramWeight! ),
+                creatPnl: const SizedBox(),
+                currency: widget.tradeOrOrder.currency!),
+              ],
+            );
+          },
+        ),
+
+
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// "Creat At"
-            isOrder == false
+            widget.isOrder == false
                 ? const SizedBox()
                 : creatDetails(
                     context: context,
                     title: "Creat At",
-                    value: tradeOrOrder.createdAt.toString().trim().isNotEmpty
+                    value: widget.tradeOrOrder.createdAt.toString().trim().isNotEmpty
                         ? Methods.formatCreatedAt(
-                            tradeOrOrder.createdAt!.toString())
-                        : tradeOrOrder.createdAt!.toString(),
+                            widget.tradeOrOrder.createdAt!.toString())
+                        : widget.tradeOrOrder.createdAt!.toString(),
                     creatPnl: const SizedBox(),
                   ),
           ],
@@ -345,7 +365,7 @@ class CreatTradeOrderDetails extends StatelessWidget {
                   vertical: 4.h,
                 ),
                 child: Text(
-                  '+${tradeOrOrder.quantity}',
+                  '+${widget.tradeOrOrder.quantity}',
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.white,
                         fontSize: 13,
@@ -369,8 +389,8 @@ class CreatTradeOrderDetails extends StatelessWidget {
           isOrder == true
               ? const SizedBox()
               : Text(
-                  "${Methods.removeTrailingZeros(isOrder ? tradeOrOrder.openPrice! : tradeOrOrder.openPrice!)} "
-                  "${Methods.getCurrencyText2(tradeOrOrder.currency)}",
+                  "${Methods.removeTrailingZeros(isOrder ? widget.tradeOrOrder.openPrice! : widget.tradeOrOrder.openPrice!)} "
+                  "${Methods.getCurrencyText2(widget.tradeOrOrder.currency)}",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.white,
                       ),

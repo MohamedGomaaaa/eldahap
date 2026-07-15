@@ -6,6 +6,7 @@ import 'package:official_gold/view/screen/home/portfolio/widgets/order_group.dar
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
+
 import '../../../../view_model/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,8 +18,9 @@ import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 
 class AllOrders extends StatelessWidget {
-
-   const AllOrders({super.key, });
+  const AllOrders({
+    super.key,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -33,16 +35,16 @@ class AllOrders extends StatelessWidget {
             return current is GetOrdersLoadingState ||
                 current is GetOrdersSuccessState ||
                 current is GetOrdersErrorState ||
-
-
-           current is CloseOrderLoadingState||
+                current is CloseOrderLoadingState ||
                 current is OrdersRefreshingState; // ✅ NEW
-
           },
           builder: (context, state) {
-            if (state is GetOrdersLoadingState || state is OrdersRefreshingState|| state is CloseOrderLoadingState) {
+            if (state is GetOrdersLoadingState ||
+                state is OrdersRefreshingState ||
+                state is CloseOrderLoadingState) {
               return ListView.separated(
-                padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 0.sp),
+                padding:
+                    EdgeInsets.symmetric(vertical: 12.sp, horizontal: 0.sp),
                 itemBuilder: (context, index) {
                   return ShimmerWidget(
                     child: Container(
@@ -70,7 +72,8 @@ class AllOrders extends StatelessWidget {
                 final g = cubit.wholeOrders[index];
                 final key = '${g.metal ?? ''}_${g.currency ?? ''}';
                 return OrderGroup(
-                  groupKey: key, tradeGroup: g,
+                  groupKey: key,
+                  tradeGroup: g,
                 );
               },
               separatorBuilder: (_, __) => SizedBox(height: 12.sp),
@@ -81,4 +84,3 @@ class AllOrders extends StatelessWidget {
     );
   }
 }
-

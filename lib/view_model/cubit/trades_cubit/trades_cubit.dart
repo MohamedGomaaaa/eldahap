@@ -17,42 +17,7 @@ class TradesCubit extends Cubit<TradesState> {
    TradesCubit() : super(TradesInitial());
 
   static TradesCubit get(context) => BlocProvider.of<TradesCubit>(context);
-  //
-  // final LivePriceCubit livePriceCubit;
-  // StreamSubscription? _livePriceSubscription;
-  //
-  // TradesCubit({required this.livePriceCubit}) : super(TradesInitial()) {
-  //   // الاستماع المباشر لتغيرات الأسعار في الخلفية
-  //   _livePriceSubscription = livePriceCubit.stream.listen((liveState) {
-  //     if (liveState is LivePriceLive) {
-  //       final double liveUsdPrice =
-  //           (liveState.metals['USD']?.buy ?? 0).toDouble();
-  //       final double liveEgpPrice =
-  //           (liveState.metals['EGP']?.buy ?? 0).toDouble();
-  //
-  //       // الحساب هنا آمن تماماً لأنه يحدث خارج الـ UI build loop
-  //       calculateTotalPnl(
-  //         liveUsdPrice: liveUsdPrice,
-  //         liveEgpPrice: liveEgpPrice,
-  //       );
-  //
-  //       // calculateSingleTradesPnl(
-  //       //   liveUsdPrice: liveUsdPrice,
-  //       //   liveEgpPrice: liveEgpPrice,
-  //       // );
-  //     }
-  //   });
-  // }
-  //
-  // @override
-  // Future<void> close() {
-  //   _livePriceSubscription
-  //       ?.cancel(); // إغلاق الاشتراك عند تدمير الكيوبيت لتجنب Leak
-  //   return super.close();
-  // }
 
-  /////////////////////////////////////////////////////////////////////////////////
-  // open trade list
   final Set<String> _expandedGroupKeys = {};
   bool isGroupExpanded(String key) => _expandedGroupKeys.contains(key);
 
@@ -177,7 +142,6 @@ class TradesCubit extends Cubit<TradesState> {
     emit(CloseOrderLoadingState());
     await TradesRepository().closeOrder(orderId: orderId).then((value) async {
       emit(CloseOrderSuccessState());
-
       // ✅ بعد العملية: اعمل get مع shimmer
       await getOrderss(showShimmer: false);
     }).catchError((error) {
@@ -217,10 +181,19 @@ class TradesCubit extends Cubit<TradesState> {
   }
 
 //////////////////////////////////////////////////////////////////////////////////////////////// calculate Commission
-
   num calculateCommission(num amount) {
     final rate = commissionRateValue ?? 0;
-    return (amount * rate) / 100;
+    final result = (amount * rate) / 100;
+
+    // 🔴 طباعة تفاصيل المعادلة في الـ Console لسهولة المتابعة
+    debugPrint('🧮 [Commission Calculation]:');
+    debugPrint('   🔹 Trade Amount (حجم الصفقة): $amount');
+    debugPrint('   🔹 Commission Rate (نسبة العمولة): $rate%');
+    debugPrint('   🔹 Equation: ($amount * $rate) / 100');
+    debugPrint('   🔹 Result (العمولة الناتجة): $result');
+    debugPrint('----------------------------------------------');
+
+    return result;
   }
 
 //////////////////////////////////////////////////////////////////////////////////////////////// calculate Total  and single Pnl

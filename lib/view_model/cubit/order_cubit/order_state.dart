@@ -33,20 +33,26 @@ class TakeProfitAmountChanged extends OrderState {
 
 class OrderDeleted extends OrderState {}
 
-class GetOrdersErrorState extends OrderState {}
-class GetOrdersSuccessState extends OrderState {}
-class GetOrdersLoadingState extends OrderState {}
+// class GetOrdersErrorState extends OrderState {}
+// class GetOrdersSuccessState extends OrderState {}
+// class GetOrdersLoadingState extends OrderState {}
+
+
+
+
+
+
 // class CloseOrderErrorState extends OrderState {}
 // class CloseOrderSuccessState extends OrderState {}
 // class CloseOrderLoadingState extends OrderState {}
+//
 
 
 
 
-
-class CloseOrderErrorState extends OrderState {}
-class CloseOrderSuccessState extends OrderState {}
-class CloseOrderLoadingState extends OrderState {}
+class CloseOrderError extends OrderState {}
+class DeleteOrderSuccess extends OrderState {}
+class DeleteOrderLoading extends OrderState {}
 
 
 

@@ -12,6 +12,7 @@ import '../../../../model/trade_order_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
+import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../../view_model/utils/navigation.dart';
 import '../../../../view_model/utils/toast.dart';
@@ -51,6 +52,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
 
     // ✅ أهم سطر: خلي السويتشات دايمًا مقفولة أول ما تفتح الشاشة
     WidgetsBinding.instance.addPostFrameCallback((_) {
+
       if (!mounted) return;
       final cubit = ProductCubit.get(context);
       cubit
@@ -99,46 +101,6 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                       const AppBarCustom(
                         showBalance: true,
                       ),
-////////////////////////////////////////////////////////////////////////////////////////////////////////////  live price
-//                       Row(
-//                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-//                         children: [
-//                           Center(
-//                             child: Container(
-//                               margin: const EdgeInsets.symmetric(vertical: 10),
-//                               child: const LiveStatusText(),
-//                             ),
-//                           ),
-//                           LivePriceText(
-//                             price: livePrice,
-//                             decimals: 2,
-//                             fakeMinDelta: 0.01,
-//                             fakeMaxDelta: 0.05,
-//                             fakeTickEvery: const Duration(milliseconds: 900),
-//                           ),
-//                         ],
-//                       ),
-
-//                       Center(
-//                         child: Container(
-//                           margin: const EdgeInsets.symmetric(vertical: 10),
-//                           child: const LiveStatusText(),
-//                         ),
-//                       ),
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////  title
-//                       Align(
-//                         alignment: Alignment.center,
-//                         child: Text(
-//                           "${widget.productTitle} ${trade.unitGramWeight} gm",
-//                           style: Theme.of(context)
-//                               .textTheme
-//                               .displayMedium
-//                               ?.copyWith(
-//                                 color: AppColors.white,
-//                               ),
-//                         ),
-//                       ),
-//                       SizedBox(height: 12.sp),
 ///////////////////////////////////////////////////////////////////////////////////////////// Creat Trade Order Details
                       CreatTradeOrderDetails(
                        tradeOrOrder:trade,
@@ -218,7 +180,7 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
             child: Column(
               mainAxisSize: MainAxisSize.min,
               children: [
-                ///////////////////////////////////////////////////////////////////////////////////////////////////////// Stop Loss XXXXXXXXXXXXXXxX
+///////////////////////////////////////////////////////////////////////////////////////////////////////// Stop Loss XXXXXXXXXXXXXXxX
                 Container(
                   padding: EdgeInsets.all(12.sp),
                   decoration: BoxDecoration(
