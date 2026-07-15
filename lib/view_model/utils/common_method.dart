@@ -105,6 +105,22 @@ class Methods {
     return s.replaceFirst(RegExp(r'\.?0+$'), '');
   }
 
+  static num calculatePnl({
+    required num livePrice,
+    required num weight,
+    required num openPrice,
+    required num quantity,
+    bool log = false,
+  }) {
+    final pnl = ((livePrice * weight) - openPrice) * quantity;
 
+    // if (log) {
+    //   debugPrint(
+    //     '($livePrice × $weight - $openPrice) × $quantity = $pnl',
+    //   );
+    // }
+
+    return  pnl;
+  }
 
 }

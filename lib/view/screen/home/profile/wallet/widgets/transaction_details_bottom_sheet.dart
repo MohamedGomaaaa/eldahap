@@ -1,4 +1,4 @@
-import '../../../../../../view_model/models/wallet_models/transaction_model.dart';
+import '../../../../../../model/transaction_model.dart';
 import '../../../../../../view_model/utils/colors.dart';
 
 import 'package:flutter_screenutil/flutter_screenutil.dart';

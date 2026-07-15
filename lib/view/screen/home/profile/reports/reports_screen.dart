@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/l10n/locale_keys.g.dart';
 import 'package:official_gold/view/components/gradient_widget.dart';
-import 'package:official_gold/view/screen/home/profile/components/profile_tile_widget.dart';
+import 'package:official_gold/view/components/profile_tile_widget.dart';
 import 'package:official_gold/view_model/utils/navigation.dart';
 
 import '../../../../../view_model/utils/colors.dart';

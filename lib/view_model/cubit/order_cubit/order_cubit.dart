@@ -6,10 +6,11 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../model/trade_order_model.dart';
+import '../../../../../model/trade_order_model.dart';
 
-import '../../../../view_model/data/network/repos/trades_repository.dart';
+import '../../../../../view_model/data/network/repos/trades_repository.dart';
 import 'order_state.dart';
+
 
 
 

@@ -4,16 +4,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/l10n/locale_keys.g.dart';
 import 'package:official_gold/view/components/svg_widget.dart';
-import 'package:official_gold/view/screen/auth/login_screen.dart';
-import 'package:official_gold/view_model/cubit/auth_cubit/auth_cubit.dart';
 import 'package:official_gold/view_model/cubit/layout_cubit/layout_cubit.dart';
-import 'package:official_gold/view_model/data/local/shared_helper.dart';
 import 'package:official_gold/view_model/utils/assets.dart';
 import 'package:official_gold/view_model/utils/colors.dart';
-import 'package:official_gold/view_model/utils/navigation.dart';
-
-import '../../components/gradient_widget.dart';
 import '../../components/app_bar_widget.dart';
+import '../../components/gradient_widget.dart';
 
 class LayoutScreen extends StatelessWidget {
   const LayoutScreen({super.key});
@@ -24,59 +19,14 @@ class LayoutScreen extends StatelessWidget {
       builder: (context, state) {
         var cubit = LayoutCubit.get(context);
         return Scaffold(
-          appBar:
-          cubit.index==3?
-              null:
-          const AppBarCustom(
-            showBalance: true,
- //            actions: [
- //              Stack(
- //                alignment: Alignment.center,
- //                children: [
- //                  BlocBuilder<AuthCubit, AuthState>(
- //                    buildWhen: (previous, current) {
- //                      return current is LogoutLoadingState ||
- //                          current is LogoutSuccessState ||
- //                          current is LogoutErrorState;
- //                    },
- //                    builder: (context, state) {
- //                      return Visibility(
- //                        visible: state is LogoutLoadingState,
- //                        child: const CircularProgressIndicator(
- //                          color: AppColors.yellow2,
- //                        ),
- //                      );
- //                    },
- //                  ),
- // ///////////////////////////////////////////////////////////////////////////////////////////////// log out
- //                  IconButton(
- //                    onPressed: () {
- //                      SharedHelper.clear();
- //                      // AuthCubit.get(context).logout().then((value) {
- //                      //   Navigation.pushAndRemoveUntil(
- //                      //     context,
- //                      //     const LoginScreen(),
- //                      //   );
- //                      // });
- //                      Navigation.pushAndRemoveUntil(context, const LoginScreen());
- //                    },
- //                    icon: Icon(
- //                      Icons.logout_rounded,
- //                      color: AppColors.yellow2,
- //                      size: 20.sp,
- //                    ),
- //                    tooltip: LocaleKeys.logout.tr(),
- //                  ),
- //                ],
- //              ),
- //            ],
-          ),
-          body:
-
-
-          Column(
+          appBar: cubit.index == 3
+          ? null
+              : const AppBarCustom(
+                  showBalance: true,
+                ),
+          body: Column(
             children: [
-              SizedBox(height:    cubit.index==3? 38:0),
+              SizedBox(height: cubit.index == 3 ? 38 : 0),
               Expanded(
                 child: GradientWidget(
                   child: cubit.screens[cubit.index],
@@ -146,7 +96,7 @@ class LayoutScreen extends StatelessWidget {
                     height: 24.h,
                     color: AppColors.grey,
                   ),
-                  label:  LocaleKeys.chart.tr(),
+                  label: LocaleKeys.chart.tr(),
                   backgroundColor: AppColors.background,
                   activeIcon: SvgWidget(
                     assetName: AppAssets.chart,
@@ -156,15 +106,15 @@ class LayoutScreen extends StatelessWidget {
                 ),
                 BottomNavigationBarItem(
                   icon: SvgWidget(
-                    assetName: AppAssets.liveChat,
-                    height: 25.h,
+                    assetName: AppAssets.wallet,
+                    height: 20.h,
                     color: AppColors.grey,
                   ),
-                  label: LocaleKeys.liveChat.tr(),
+                  label: LocaleKeys.wallet.tr(),
                   backgroundColor: AppColors.background,
                   activeIcon: SvgWidget(
-                    assetName: AppAssets.liveChat,
-                    height: 26.h,
+                    assetName: AppAssets.wallet,
+                    height: 20.h,
                     color: AppColors.yellow2,
                   ),
                 ),

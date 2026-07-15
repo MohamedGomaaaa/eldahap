@@ -11,6 +11,8 @@ import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 
 
+import '../../../../view_model/cubit/order_cubit/order_cubit.dart';
+import '../../../../view_model/cubit/order_cubit/order_state.dart';
 import '../../../../view_model/utils/colors.dart';
 
 import '../../../../view_model/utils/navigation.dart';
@@ -20,10 +22,10 @@ import '../../../components/app_loader.dart';
 import '../../../components/creat_order_trade_details.dart';
 
 import '../../../components/shimmer_widget.dart';
+import '../../create_nav_bar/layout_screen.dart';
 import '../../static_pages/static_page_screen.dart';
-import '../layout_screen.dart';
-import 'order_cubit.dart';
-import 'order_state.dart';
+
+
 
 class OrderDetailsScreen extends StatelessWidget {
   final TradeOrOrder order;
@@ -370,8 +372,9 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                     SizedBox(height: 12.h),
                     TextFormField(
                       validator: (value) => Validator.validateStopLoss(
+                        openPrice:widget.order .openPrice!,
                         enteredValue: value,
-                        livePrice: livePrice,
+
                       ),
                       controller: cubit.stopLossController,
                       textInputAction: TextInputAction.done,
@@ -477,8 +480,9 @@ class _OrderDetailsViewState extends State<OrderDetailsView> {
                     SizedBox(height: 12.h),
                     TextFormField(
                       validator: (value) => Validator.validateTakeProfit(
+                        openPrice:widget.order .openPrice!,
                         enteredValue: value,
-                        livePrice: livePrice,
+
                         requiredField: cubit.takeProfitEnabled,
                       ),
                       controller: cubit.takeProfitController,

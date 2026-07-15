@@ -10,7 +10,7 @@ import 'package:official_gold/view_model/utils/navigation.dart';
 import '../../../view_model/cubit/auth_cubit/auth_cubit.dart';
 import '../../../view_model/utils/toast.dart';
 import '../../../view_model/utils/validator.dart';
-import '../home/layout_screen.dart';
+import '../create_nav_bar/layout_screen.dart';
 import 'creat_country_phone.dart';
 import 'forget_password_screen.dart';
 

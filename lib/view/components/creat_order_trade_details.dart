@@ -369,7 +369,7 @@ class CreatTradeOrderDetails extends StatelessWidget {
           isOrder == true
               ? const SizedBox()
               : Text(
-                  "${Methods.removeTrailingZeros(isOrder ? tradeOrOrder.openPriceOrder! : tradeOrOrder.openPrice!)} "
+                  "${Methods.removeTrailingZeros(isOrder ? tradeOrOrder.openPrice! : tradeOrOrder.openPrice!)} "
                   "${Methods.getCurrencyText2(tradeOrOrder.currency)}",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.white,

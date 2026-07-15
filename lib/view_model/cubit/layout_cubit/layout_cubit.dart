@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view/screen/home/home/home_screen.dart';
-import 'package:official_gold/view/screen/home/portfolio/portfolio_screen.dart';
+import 'package:official_gold/view/screen/home/portfolio/portfolio_all_trades_orders_screen.dart';
 import 'package:official_gold/view/screen/home/products/products_screen.dart';
+import 'package:official_gold/view_model/cubit/live_price_cubit/live_cubit.dart';
 
 import '../../../view/screen/home/charts/charts.dart';
 import '../../../view/screen/home/product_chart/product_chart_screen.dart';
@@ -19,12 +20,16 @@ class LayoutCubit extends Cubit<LayoutState> {
   int index = 0;
 
   List<Widget> screens = [
-    HomeScreen(),
-    ProductsScreen(),
-    PortfolioScreen(),
+    const HomeScreen(),
+    const ProductsScreen(),
+    const PortfolioScreen(),
     // WalletScreen(comingFromNavBar:true,userMode: "",),
-    TradingViewPage(type: 1), // 1 = Gold, 2 = Silver, 3 = Bitcoin
-    TawkChatPage()
+
+    const TradingViewPage(type: 1), // 1 = Gold, 2 = Silver, 3 = Bitcoin
+
+    const WalletScreen(comingFromNavBar: false)
+
+    // const TawkChatPage()
     // ProfileScreen(),
     //PayUsdtScreen(),
   ];

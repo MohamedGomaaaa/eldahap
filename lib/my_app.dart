@@ -70,17 +70,37 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
   Widget build(BuildContext context) {
     return MultiBlocProvider(
       providers: [
+        // 1. Move this to the very top so other Cubits can access it immediately
+        BlocProvider(create: (_) => LivePriceCubit()..start()),
+
+        // 2. The rest of your cubits follow safely below
         BlocProvider(create: (context) => AuthCubit()),
         BlocProvider(create: (context) => LayoutCubit()),
         BlocProvider(create: (context) => HomeCubit()..getProfile()),
         BlocProvider(create: (context) => ProductCubit()),
-        BlocProvider(create: (context) => WalletCubit()),
-        BlocProvider(create: (context) => TicketCubit()),
-        BlocProvider(create: (context) => TradesCubit()),
 
-        // ✅ Cubit واحد للتطبيق كله
-        BlocProvider(create: (_) => LivePriceCubit()..start()),
+        BlocProvider<WalletCubit>(
+          create: (context) => WalletCubit(
+
+          ),
+        ),
+        BlocProvider(create: (context) => TicketCubit()),
+        BlocProvider(create: (context) => TradesCubit(
+
+        )),
       ],
+      // providers: [
+      //   BlocProvider(create: (context) => AuthCubit()),
+      //   BlocProvider(create: (context) => LayoutCubit()),
+      //   BlocProvider(create: (context) => HomeCubit()..getProfile()),
+      //   BlocProvider(create: (context) => ProductCubit()),
+
+      //   BlocProvider(create: (context) => WalletCubit(livePriceCubit: BlocProvider.of<LivePriceCubit>(context) )),
+      //   BlocProvider(create: (context) => TicketCubit()),
+      //   BlocProvider(create: (context) => TradesCubit(livePriceCubit: BlocProvider.of<LivePriceCubit>(context))),
+      //   // ✅ Cubit واحد للتطبيق كله
+      //   BlocProvider(create: (_) => LivePriceCubit()..start()),
+      // ],
       child: ScreenUtilInit(
         designSize: const Size(360, 690),
         minTextAdapt: true,

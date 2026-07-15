@@ -17,8 +17,9 @@ import '../../../../view_model/utils/navigation.dart';
 import '../../../../view_model/utils/toast.dart';
 import '../../../../view_model/utils/validator.dart';
 import '../../../components/creat_order_trade_details.dart';
+import '../../create_nav_bar/layout_screen.dart';
 import '../../static_pages/static_page_screen.dart';
-import '../layout_screen.dart';
+
 
 
 
@@ -294,8 +295,9 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 return TextFormField(
                                   validator: (value) =>
                                       Validator.validateStopLoss(
+                                        openPrice:  widget.trade .openPrice!,
                                     enteredValue: value,
-                                    livePrice: livePrice,
+
                                   ),
                                   controller: cubit.stopLossController,
                                   textInputAction: TextInputAction.done,
@@ -410,8 +412,9 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
                                 return TextFormField(
                                   validator: (value) =>
                                       Validator.validateTakeProfit(
+                                          openPrice:  widget.trade .openPrice!,
                                     enteredValue: value,
-                                    livePrice: livePrice,
+
                                     requiredField: cubit.takeProfit,
                                   ),
                                   controller: cubit.takeProfitController,

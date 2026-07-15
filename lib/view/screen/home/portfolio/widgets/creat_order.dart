@@ -7,7 +7,7 @@ import '../../../../../view_model/utils/common_method.dart';
 import '../../../../../view_model/utils/navigation.dart';
 import '../../../../../view_model/utils/toast.dart';
 import '../../../../components/live_text.dart';
-import '../../order_details/order_details_screen.dart';
+import '../order_details_screen.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../../../model/metal_price_model.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';

@@ -118,7 +118,7 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                     ),
                   ),
                 ],
-              ),const SizedBox(width: 4,),
+              ),const SizedBox(width: 5,),
 
 
 
@@ -128,10 +128,11 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                 builder: (context, state) {
                   // جلب بيانات المستخدم مباشرة من الـ Cubit بشكل آمن
                   final user = HomeCubit.get(context).user.value;
-
                   return Text(
-                    "Welcome ${user.name ?? ''}",
+                    user.email==null ||user.name==null?"":
+                    "Welcome ${user.name ?? ''}\n${user.email}",
                     style: Theme.of(context).textTheme.headlineSmall,
+                    textAlign: TextAlign.start,
                   );
                 },
               ),

@@ -194,9 +194,7 @@ class InfoItemWidget extends StatelessWidget {
       _buildInfoRow(
         label: "Open price",
         value: _formatAmount(
-          (type == LocaleKeys.orderReports)
-              ? tradeOrOrder.openPriceOrder!.toString()
-              : tradeOrOrder.openPrice!.toString(),
+        tradeOrOrder.openPrice!.toString(),
           tradeOrOrder.currency!,
         ),
         context: context,

@@ -3,8 +3,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../model/trade_order_group.dart';
 import '../../../../../model/trade_order_model.dart';
-import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
-import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../../view_model/utils/assets.dart';
 import '../../../../../view_model/utils/colors.dart';
@@ -12,14 +10,18 @@ import '../../../../../view_model/utils/common_method.dart';
 import '../../../../components/live_text.dart';
 import '../../../../components/svg_widget.dart';
 import 'creat_trade.dart';
-class TradeWidget extends StatelessWidget {
+
+
+class TradeGroup extends StatelessWidget {
   final GroupOfTradesOrOrders tradeGroup;
   final String groupKey;
+  final num totalPnlOfEachGroup;
 
-  const TradeWidget({
+  const TradeGroup({
     super.key,
     required this.groupKey,
-     required this.tradeGroup,
+    required this.tradeGroup,
+    required this.totalPnlOfEachGroup,
   });
 
   @override
@@ -28,30 +30,25 @@ class TradeWidget extends StatelessWidget {
 
     return BlocBuilder<TradesCubit, TradesState>(
       builder: (context, state) {
-
-
         final isOpen = tradesCubit.isGroupExpanded(groupKey);
-
         final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
               (g) => '${g.metal ?? ''}_${g.currency ?? ''}' == groupKey,
-          orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
+          orElse: () => tradeGroup,
         );
-
         final tradeList = group.tradesOrOrders ?? [];
-        final TradeOrOrder summaryTrade =
-        tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
-
+        final TradeOrOrder summaryTrade = tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
         final bool hasMoreThanOne = tradeList.length > 1;
         final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
 
+        // حساب حالة الربح للجروب بالكامل
+        final bool isProfit = totalPnlOfEachGroup >= 0;
 
-
-
-
-
-
-
-
+        // ✅ قراءة البيانات الجاهزة للـ summaryTrade لتمريها لاحقاً
+        final int summaryTradeId = summaryTrade.id ?? 0;
+        final num summaryTradePnl = tradesCubit.singleTradePnlMap[summaryTradeId] ?? 0.0;
+        final num summaryLivePrice = tradesCubit.singleTradeLivePriceMap[summaryTradeId] ?? 0.0;
+        final bool isSummaryProfit = summaryTradePnl >= 0;
+        final bool isSummaryLive = summaryLivePrice > 0;
 
         return Material(
           color: AppColors.transparent,
@@ -82,7 +79,6 @@ class TradeWidget extends StatelessWidget {
                             ),
                             child: Row(
                               children: [
- // ////////////////////////////////////////////////////////////////////////////////////////  gold image
                                 Padding(
                                   padding: const EdgeInsets.all(6.0),
                                   child: SvgWidget(
@@ -91,7 +87,6 @@ class TradeWidget extends StatelessWidget {
                                   ),
                                 ),
                                 SizedBox(width: 6.sp),
-///////////////////////////////////////////////////////////////////////////////////////////  product name
                                 Expanded(
                                   child: Text(
                                     "${tradeGroup.title}",
@@ -101,81 +96,22 @@ class TradeWidget extends StatelessWidget {
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                 ),
-// ////////////////////////////////////////////////////////////////////////////////////////  total onl
                                 SizedBox(width: 8.w),
-                                BlocBuilder<LivePriceCubit, LivePriceState>(
-                                  builder: (context, liveState) {
-                                    double totalPnl = 0.0;
-
-                                    if (liveState is LivePriceLive) {
-                                      for (final trade in tradeList) {
-                                        final String currencyKey =
-                                        (trade.currency ?? 'USD')
-                                            .toUpperCase();
-
-                                        final mp =   liveState.metals[currencyKey];
-
-
-                                        final double livePrice =
-                                            ((mp?.buy ?? 0).toDouble()) *
-                                                (trade.unitGramWeight ?? 0);
-
-                                        final double openPrice = (trade.openPrice ?? 0).toDouble();
-
-
-                                        final double qty =  (trade.quantity ?? 0).toDouble();
-
-
-                                        totalPnl += (livePrice - openPrice) * qty;
-
-                                      }
-                                    }
-
-                                    final bool isProfit = totalPnl >= 0;
-
-                                    return 
-                                    //   Text(
-                                    //   totalPnl.toStringAsFixed(2),
-                                    //   style: TextStyle(
-                                    //     color: isProfit
-                                    //         ? AppColors.blueColor
-                                    //         : AppColors.red,
-                                    //     fontWeight: FontWeight.bold,
-                                    //   ),
-                                    // );
-
-
-
-
-
-                                    LivePriceText(
-                                      price: double.parse(Methods.removeTrailingZeros(num.parse(totalPnl.toString()))),
-                                      decimals: 2,
-                                      fakeMinDelta: 0.01,
-                                      fakeMaxDelta: 0.05,
-                                      fakeTickEvery:
-                                      const Duration(milliseconds: 900),
-                                      neutralColor: Colors.transparent,
-                                      upColor: Colors.transparent,
-                                      downColor: Colors.transparent,
-                                      padding: EdgeInsets.zero,
-                                      width: null, // ✅ ياخد عرض الأب (Flexible)
-                                      alignment: Alignment.centerRight,
-                                      style: Theme.of(context)
-                                          .textTheme
-                                          .bodyLarge
-                                          ?.copyWith(
-                                        color: isProfit
-                                            ? AppColors.blueColor
-                                            : AppColors.red,
-                                      ),
-                                    );   
-                                    
-                                    
-                                    
-                                    
-                                    
-                                  },
+                                LivePriceText(
+                                  price: double.parse(Methods.removeTrailingZeros(totalPnlOfEachGroup)),
+                                  decimals: 2,
+                                  fakeMinDelta: 0.01,
+                                  fakeMaxDelta: 0.05,
+                                  fakeTickEvery: const Duration(milliseconds: 900),
+                                  neutralColor: Colors.transparent,
+                                  upColor: Colors.transparent,
+                                  downColor: Colors.transparent,
+                                  padding: EdgeInsets.zero,
+                                  width: null,
+                                  alignment: Alignment.centerRight,
+                                  style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                    color: isProfit ? AppColors.blueColor : AppColors.red,
+                                  ),
                                 ),
                               ],
                             ),
@@ -205,7 +141,6 @@ class TradeWidget extends StatelessWidget {
                           ),
                         ),
                       ],
-////////////////////////////////////////////////////////////////////////////////////////  list of tade group
                       Expanded(
                         child: AnimatedCrossFade(
                           duration: const Duration(milliseconds: 250),
@@ -218,11 +153,22 @@ class TradeWidget extends StatelessWidget {
                               final isLast = index == tradeList.length - 1 ||
                                   (hasMoreThanOne == false && index == 0);
 
+                              // ✅ قراءة حسابات الصفقة المحددة من الكيوبت مباشرة
+                              final int tradeId = trade.id ?? 0;
+                              final num tradePnl = tradesCubit.singleTradePnlMap[tradeId] ?? 0.0;
+                              final num livePrice = tradesCubit.singleTradeLivePriceMap[tradeId] ?? 0.0;
+                              final bool tradeIsProfit = tradePnl >= 0;
+                              final bool tradeHasLive = livePrice > 0;
+
                               return CreatTrade(
                                 productTitle: tradeGroup.title ?? '',
                                 trade: trade,
                                 tradesCubit: tradesCubit,
                                 lastIndex: isLast,
+                                livePrice: livePrice,
+                                pnl: tradePnl,
+                                isProfit: tradeIsProfit,
+                                hasLive: tradeHasLive,
                               );
                             }),
                           ),
@@ -231,6 +177,10 @@ class TradeWidget extends StatelessWidget {
                             lastIndex: true,
                             trade: summaryTrade,
                             tradesCubit: tradesCubit,
+                            livePrice: summaryLivePrice,
+                            pnl: summaryTradePnl,
+                            isProfit: isSummaryProfit,
+                            hasLive: isSummaryLive,
                           ),
                         ),
                       ),
@@ -248,11 +198,13 @@ class TradeWidget extends StatelessWidget {
 // class TradeWidget extends StatelessWidget {
 //   final GroupOfTradesOrOrders tradeGroup;
 //   final String groupKey;
+//   final num totalPnlOfEachGroup; // 👈 تم إضافة المتغير لاستقبال الربح/الخسارة جاهزاً
 //
 //   const TradeWidget({
 //     super.key,
 //     required this.groupKey,
 //     required this.tradeGroup,
+//     required this.totalPnlOfEachGroup, // 👈 مطلوب الآن
 //   });
 //
 //   @override
@@ -263,20 +215,16 @@ class TradeWidget extends StatelessWidget {
 //       builder: (context, state) {
 //         final isOpen = tradesCubit.isGroupExpanded(groupKey);
 //         final group = tradesCubit.groupOfTradesOrOrders.firstWhere(
-//           (g) => (g.metal ?? '') == groupKey,
-//           orElse: () => GroupOfTradesOrOrders(tradesOrOrders: []),
+//               (g) => '${g.metal ?? ''}_${g.currency ?? ''}' == groupKey,
+//           orElse: () => tradeGroup,
 //         );
 //         final tradeList = group.tradesOrOrders ?? [];
-//
-//         // final totalQty = tradeList.fold<double>(
-//         //   0.0,
-//         //   (sum, t) => sum + (double.tryParse(t.quantity.toString()) ?? 0.0),
-//         // );
-//         final TradeOrOrder summaryTrade =  tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
-//         // ✅ لو صفقة واحدة: مفيش سهم
+//         final TradeOrOrder summaryTrade = tradeList.isNotEmpty ? tradeList.first : TradeOrOrder();
 //         final bool hasMoreThanOne = tradeList.length > 1;
-//         // ✅ لو صفقة واحدة نخليها تظهر كأنها مفتوحة على طول
 //         final bool effectiveOpen = hasMoreThanOne ? isOpen : true;
+//
+//         // حساب حالة الربح من المتغير الجاهز
+//         final bool isProfit = totalPnlOfEachGroup >= 0;
 //
 //         return Material(
 //           color: AppColors.transparent,
@@ -296,37 +244,56 @@ class TradeWidget extends StatelessWidget {
 //                   child: Row(
 //                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
 //                     children: [
-//                       Material(
-//                         color: AppColors.black,
-//                         borderRadius: BorderRadius.circular(50.sp),
-//                         child: Row(
-//                           children: [
-//  ////////////////////////////////////////////////////////////////////////////////////////////  gold image
-//                             Padding(
-//                               padding: const EdgeInsets.all(6.0),
-//                               child: SvgWidget(
-//                                 assetName: AppAssets.gold3,
-//                                 width: 20.sp,
-//                               ),
+//                       Expanded(
+//                         child: Material(
+//                           color: AppColors.black,
+//                           borderRadius: BorderRadius.circular(50.sp),
+//                           child: Padding(
+//                             padding: EdgeInsets.symmetric(
+//                               horizontal: 8.sp,
+//                               vertical: 6.sp,
 //                             ),
-//                             SizedBox(width: 6.sp),
-// ///////////////////////////////////////////////////////////////////////////////////////////  product name
-//                             Text(
-//                               "${tradeGroup.title}",
-//                               style: const TextStyle(color: AppColors.white),
+//                             child: Row(
+//                               children: [
+//                                 Padding(
+//                                   padding: const EdgeInsets.all(6.0),
+//                                   child: SvgWidget(
+//                                     assetName: AppAssets.gold3,
+//                                     width: 20.sp,
+//                                   ),
+//                                 ),
+//                                 SizedBox(width: 6.sp),
+//                                 Expanded(
+//                                   child: Text(
+//                                     "${tradeGroup.title}",
+//                                     style: const TextStyle(
+//                                       color: AppColors.white,
+//                                     ),
+//                                     overflow: TextOverflow.ellipsis,
+//                                   ),
+//                                 ),
+//                                 SizedBox(width: 8.w),
+//                                 // ❌ تم حذف الـ BlocBuilder الخاص بالـ LivePriceCubit
+//                                 // ✅ نستخدم المتغير الممرر جاهزاً
+//                                 LivePriceText(
+//                                   price: double.parse(Methods.removeTrailingZeros(totalPnlOfEachGroup)),
+//                                   decimals: 2,
+//                                   fakeMinDelta: 0.01,
+//                                   fakeMaxDelta: 0.05,
+//                                   fakeTickEvery: const Duration(milliseconds: 900),
+//                                   neutralColor: Colors.transparent,
+//                                   upColor: Colors.transparent,
+//                                   downColor: Colors.transparent,
+//                                   padding: EdgeInsets.zero,
+//                                   width: null,
+//                                   alignment: Alignment.centerRight,
+//                                   style: Theme.of(context).textTheme.bodyLarge?.copyWith(
+//                                     color: isProfit ? AppColors.blueColor : AppColors.red,
+//                                   ),
+//                                 ),
+//                               ],
 //                             ),
-//                             SizedBox(width: 6.w),
-//
-//
-// ////////////////////////////////////////////////////////////////////////////////////////  total onl
-// //                             Text(
-// //                               "${(livePrice - openPrice)*trade.quantity!,
-// //                               style: const TextStyle(color: AppColors.white),
-// //                             ),
-//
-//
-//
-//                           ],
+//                           ),
 //                         ),
 //                       ),
 //                     ],
@@ -338,7 +305,6 @@ class TradeWidget extends StatelessWidget {
 //                   child: Row(
 //                     crossAxisAlignment: CrossAxisAlignment.start,
 //                     children: [
-//                       // ✅ السهم يظهر فقط لو فيه أكتر من صفقة
 //                       if (hasMoreThanOne) ...[
 //                         InkWell(
 //                           onTap: () => tradesCubit.toggleGroup(groupKey),
@@ -353,34 +319,31 @@ class TradeWidget extends StatelessWidget {
 //                           ),
 //                         ),
 //                       ],
-//
 //                       Expanded(
 //                         child: AnimatedCrossFade(
 //                           duration: const Duration(milliseconds: 250),
 //                           crossFadeState: effectiveOpen
 //                               ? CrossFadeState.showFirst
 //                               : CrossFadeState.showSecond,
-//                           // ✅ OPEN: قائمة trades
-//                           firstChild:
-//                           Column(
+//                           firstChild: Column(
 //                             children: List.generate(tradeList.length, (index) {
 //                               final trade = tradeList[index];
-//                               final isLast = index == tradeList.length - 1||(hasMoreThanOne==false&&index==0);
+//                               final isLast = index == tradeList.length - 1 ||
+//                                   (hasMoreThanOne == false && index == 0);
+//
 //                               return CreatTrade(
-//                                 productTitle:tradeGroup.title! ,
+//                                 productTitle: tradeGroup.title ?? '',
 //                                 trade: trade,
 //                                 tradesCubit: tradesCubit,
-//                                 lastIndex:isLast,
+//                                 lastIndex: isLast,
 //                               );
 //                             }),
 //                           ),
-//                           // ✅ CLOSED: ملخص بالتجميعة (يظهر فقط لو فيه أكتر من صفقة)
 //                           secondChild: CreatTrade(
-//                             productTitle:tradeGroup.title! ,
+//                             productTitle: tradeGroup.title ?? '',
 //                             lastIndex: true,
 //                             trade: summaryTrade,
 //                             tradesCubit: tradesCubit,
-//
 //                           ),
 //                         ),
 //                       ),

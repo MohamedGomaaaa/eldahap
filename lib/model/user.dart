@@ -3,15 +3,28 @@ class User {
   String? name;
   String? email;
   String? mobile;
-  int? isVerified;
-  int? publish;
+
+
   String? type;
   String? mode;
-num? balance;
+
   String? nationalIdFront;
   String? nationalIdBack;
   bool? nationalIdFrontApproved;
   bool? nationalIdBackApproved;
+
+  int? isVerified;
+  int? publish;
+  num? balance;
+
+
+
+
+
+
+
+
+
 
   User({
     this.id,
@@ -31,8 +44,8 @@ num? balance;
 
   User.fromJson(Map<String, dynamic> json) {
     id = json['id'];
-    name = json['name'];
-    email = json['email'];
+    name = json['name']??"";
+    email = json['email']??"";
     mobile = json['mobile'];
     isVerified = json['is_verified'];
     publish = json['publish'];

@@ -76,7 +76,7 @@ class TradeOrOrder {
 
 
   final num? openPrice;
-  final num ? openPriceOrder;
+  // final num ? openPriceOrder;
   final num? stopLoss;
   final num? takeProfit;
   final num? sellWhenPrice;
@@ -114,7 +114,7 @@ class TradeOrOrder {
 
   TradeOrOrder({
     this.openPrice,
-    this.openPriceOrder,
+    // this.openPriceOrder,
     this.stopLoss,
     this.takeProfit,
     this.sellWhenPrice,
@@ -136,7 +136,7 @@ class TradeOrOrder {
     this.status,
     this.mode,
     this.productId,
-    this.quantity,
+     this.quantity,
     this.unitGramWeight,
     this.unitKarat,
     this.product,
@@ -232,6 +232,8 @@ class TradeOrOrder {
       mode: json['mode']?.toString(),
 
       productId: parseInt(json['product_id']),
+
+
       quantity: parseNum(json['quantity']),
 
       unitGramWeight: parseNum(json['unit_gram_weight'] ?? "0"),
@@ -257,8 +259,18 @@ class TradeOrOrder {
               // sellWhenPrice: parseNum(json['sell_when_price']),
 
 
-           openPriceOrder: parseNum(json['open_price_per_bar']),
-           openPrice: parseNum(json['entry_price_per_bar']),
+        // openPriceOrder: parseNum(json['open_price_per_bar']),
+
+
+
+
+        openPrice: parseNum(json['sell_when_price_per_bar']) == 0 ? parseNum(json['open_price_per_bar']) : parseNum(json['sell_when_price_per_bar']),
+
+
+
+
+
+
            stopLoss: parseNum(json['stop_loss_per_bar']),
            takeProfit: parseNum(json['take_profit_per_bar']),
            sellWhenPrice: parseNum(json['sell_when_price_per_bar']),
@@ -345,7 +357,7 @@ class TradeOrOrder {
       // 'stop_loss': stopLoss,
 
       'entry_price_per_bar': openPrice,
-      'open_price_per_bar': openPriceOrder,
+      // 'open_price_per_bar': openPriceOrder,
 
 
       'take_profit_per_bar': takeProfit,

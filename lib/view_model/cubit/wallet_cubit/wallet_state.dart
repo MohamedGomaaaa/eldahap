@@ -283,9 +283,9 @@ class GetOrderReportsErrorState extends WalletState {
 
 
 
-class GetTradesErrorState extends WalletState {}
-class GetTradesSuccessState extends WalletState {}
-class GetTradesLoadingState extends WalletState {}
+class GetTradesErrorState2 extends WalletState {}
+class GetTradesSuccessState2 extends WalletState {}
+class GetTradesLoadingState2 extends WalletState {}
 
 class WalletTotalsUpdatedState extends WalletState {}
 

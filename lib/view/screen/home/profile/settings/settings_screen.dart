@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/components/app_bar_widget.dart';
-import 'package:official_gold/view/screen/home/profile/components/profile_tile_widget.dart';
+import 'package:official_gold/view/components/profile_tile_widget.dart';
 import 'package:official_gold/view_model/cubit/home_cubit/home_cubit.dart';
 import '../../../../../l10n/locale_keys.g.dart';
 import '../../../../../view_model/utils/colors.dart';

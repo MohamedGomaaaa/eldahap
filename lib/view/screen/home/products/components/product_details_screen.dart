@@ -606,7 +606,7 @@ class ProductDetailsScreen extends StatelessWidget {
                                                               validator:
                                                                   (value) =>
                                                                   Validator
-                                                                      .validatePriceWithRange(
+                                                                      .validateSellWhenPrice(
                                                                     enteredValue: value,
                                                                     livePrice:
                                                                     liveOpenPrice,
@@ -822,10 +822,13 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                     validator:
                                                                         (value) =>
                                                                         Validator.validateStopLoss(
+                                                                          openPrice: cubit.sellWhenController.text.trim().isEmpty?liveOpenPrice:
+                                                                       num.parse(cubit.sellWhenController.text),
+
+
                                                                           enteredValue:
                                                                           value,
-                                                                          livePrice:
-                                                                          liveOpenPrice,
+
                                                                         ),
                                                                     style: Theme.of(
                                                                         context)
@@ -1062,10 +1065,11 @@ class ProductDetailsScreen extends StatelessWidget {
                                                                     validator:
                                                                         (value) =>
                                                                         Validator.validateTakeProfit(
+                                                                          openPrice: cubit.sellWhenController.text.trim().isEmpty?liveOpenPrice:
+                                                                          num.parse(cubit.sellWhenController.text),
                                                                           enteredValue:
                                                                           value,
-                                                                          livePrice:
-                                                                          liveOpenPrice,
+
                                                                           requiredField:
                                                                           cubit.takeProfit,
                                                                         ),

@@ -5,7 +5,7 @@ import '../../../../model/report_2.dart';
 import '../../../../model/setting.dart';
 import '../../../../model/trade_order_model.dart';
 import '../../../../model/wallet.dart';
-import '../../../models/wallet_models/transaction_model.dart';
+import '../../../../model/transaction_model.dart';
 
 
 class WalletRepository {
@@ -200,11 +200,8 @@ class WalletRepository {
     try {
       final response = await walletProvider.tradess();
 
-      final List<num> usdPrices = [];
-      final List<num> usdWeights = [];
-
-      final List<num> egpPrices = [];
-      final List<num> egpWeights = [];
+      final List<TradeOrOrder> usdTrades = [];
+      final List<TradeOrOrder> egpTrades = [];
 
       final result = response.data['result'] as List? ?? [];
 
@@ -213,37 +210,56 @@ class WalletRepository {
         final orders = group['orders'] as List? ?? [];
 
         for (final order in orders) {
-          final openPrice =
-          TradeOrOrder.parseNum(order['sell_when_price_per_bar'])==0?
-          TradeOrOrder.parseNum(order['open_price_per_bar']):
-          TradeOrOrder.parseNum(order['sell_when_price_per_bar']);
-
-
-          final unitWeight = TradeOrOrder.parseNum(order['unit_gram_weight']) ?? 0;
+          final trade = TradeOrOrder.fromJson(order);
 
           if (currency == 'USD') {
-            usdPrices.add(openPrice!);
-            usdWeights.add(unitWeight);
+            usdTrades.add(trade);
           } else if (currency == 'EGP') {
-            egpPrices.add(openPrice!);
-            egpWeights.add(unitWeight);
+            egpTrades.add(trade);
           }
         }
       }
 
-      // 🟢 طباعة القوائم الأربعة هنا للتأكد من تفصيل البيانات
+      final usdPrices = usdTrades
+          .map((e) => TradeOrOrder.parseNum(e.openPrice) ?? 0)
+          .toList();
+
+      final egpPrices = egpTrades
+          .map((e) =>TradeOrOrder.parseNum(e.openPrice) ?? 0)
+          .toList();
+      final usdWeights = usdTrades
+          .map((e) => TradeOrOrder.parseNum(e.unitGramWeight) ?? 0)
+          .toList();
+
+      final usdQuantities = usdTrades
+          .map((e) => TradeOrOrder.parseNum(e.quantity) ?? 0)
+          .toList();
+
+      final egpWeights = egpTrades
+          .map((e) => TradeOrOrder.parseNum(e.unitGramWeight) ?? 0)
+          .toList();
+
+      final egpQuantities = egpTrades
+          .map((e) => TradeOrOrder.parseNum(e.quantity) ?? 0)
+          .toList();
+
       _printSeparatedLists(
         usdPrices: usdPrices,
         usdWeights: usdWeights,
+        usdQuantities: usdQuantities,
         egpPrices: egpPrices,
         egpWeights: egpWeights,
+        egpQuantities: egpQuantities,
       );
 
       return {
         'usd_prices': usdPrices,
         'usd_weights': usdWeights,
+        'usd_quantities': usdQuantities,
+
         'egp_prices': egpPrices,
         'egp_weights': egpWeights,
+        'egp_quantities': egpQuantities,
       };
     } catch (e) {
       print("Error in tradess: $e");
@@ -251,19 +267,26 @@ class WalletRepository {
     }
   }
 
-// 🟢 دالة الطباعة المساعدة (Helper Function) عشان تخلي الكود منظم
   void _printSeparatedLists({
     required List<num> usdPrices,
     required List<num> usdWeights,
+    required List<num> usdQuantities,
     required List<num> egpPrices,
     required List<num> egpWeights,
+    required List<num> egpQuantities,
   }) {
     print('================ 📊 Trades Data Log ================');
-    print('🇺🇸 [USD] Prices  (${usdPrices.length} items) => $usdPrices');
-    print('🇺🇸 [USD] Weights (${usdWeights.length} items) => $usdWeights');
+
+    print('🇺🇸 USD Prices (${usdPrices.length}) => $usdPrices');
+    print('🇺🇸 USD Weights (${usdWeights.length}) => $usdWeights');
+    print('🇺🇸 USD Quantities (${usdQuantities.length}) => $usdQuantities');
+
     print('----------------------------------------------------');
-    print('🇪🇬 [EGP] Prices  (${egpPrices.length} items) => $egpPrices');
-    print('🇪🇬 [EGP] Weights (${egpWeights.length} items) => $egpWeights');
+
+    print('🇪🇬 EGP Prices (${egpPrices.length}) => $egpPrices');
+    print('🇪🇬 EGP Weights (${egpWeights.length}) => $egpWeights');
+    print('🇪🇬 EGP Quantities (${egpQuantities.length}) => $egpQuantities');
+
     print('====================================================');
   }
 

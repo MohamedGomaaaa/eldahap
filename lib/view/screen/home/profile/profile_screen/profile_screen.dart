@@ -13,7 +13,7 @@ import '../../../../../view_model/data/local/shared_helper.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../auth/login_screen.dart';
 import '../../../static_pages/static_page_screen.dart';
-import '../components/profile_tile_widget.dart';
+import '../../../../components/profile_tile_widget.dart';
 import '../faq/faq_screen.dart';
 import '../my_account/my_account_screen.dart';
 import '../reports/reports_screen.dart';
@@ -158,9 +158,9 @@ class ProfileScreen extends StatelessWidget {
                   onTap: () {
                     Navigation.push(
                       context,
-                      WalletScreen(
+                      const WalletScreen(
                           comingFromNavBar: false,
-                          userMode: user.mode.toString().toLowerCase()),
+                         ),
                     );
                   },
                 );

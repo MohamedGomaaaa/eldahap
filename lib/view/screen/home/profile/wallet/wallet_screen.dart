@@ -11,51 +11,50 @@ import 'package:official_gold/view/screen/home/profile/wallet/widgets/transactio
 import 'package:official_gold/view/screen/home/profile/wallet/withdraw/withdraw_alAmount_page.dart';
 import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import 'package:official_gold/view_model/utils/text_style.dart';
+import '../../../../../model/user.dart';
+import '../../../../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
-import '../../../../../view_model/models/wallet_models/transaction_model.dart';
+import '../../../../../model/transaction_model.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../../../view_model/utils/common_method.dart';
 import '../../../../../view_model/utils/validator.dart';
 import '../../../../components/live_status_text.dart';
 import '../../../../components/live_text.dart';
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 class WalletScreen extends StatefulWidget {
   final bool comingFromNavBar;
-  final String userMode;
-  const WalletScreen(
-      {super.key, required this.comingFromNavBar, required this.userMode});
+
+  const WalletScreen({
+    super.key,
+    required this.comingFromNavBar,
+
+  });
 
   @override
   State<WalletScreen> createState() => _WalletScreenState();
 }
 
 class _WalletScreenState extends State<WalletScreen> {
-//   final ScrollController _scrollController = ScrollController();
-//   final ScrollController _modalScrollController = ScrollController();
-//   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     // ✅ جلب البيانات وطلبات الـ trades عند فتح الصفحة لأول مرة في الخلفية
-//     WidgetsBinding.instance.addPostFrameCallback((_) {
-//       WalletCubit.get(context).initializeWalletData();
-//       WalletCubit.get(context).getTradess();
-//     });
-//
-//     _modalScrollController.addListener(_onModalScroll);
-//   }
-//
-//   @override
-//   void dispose() {
-//     // ✅ إيقاف التايمر عند الخروج لمنع أي تسريب في الذاكرة (Memory Leak)
-//      WalletCubit.get(context).stopTotalsTimer();
-//     _scrollController.dispose();
-//     _modalScrollController.removeListener(_onModalScroll);
-//     _modalScrollController.dispose();
-//     super.dispose();
-//   }
   final ScrollController _scrollController = ScrollController();
   final ScrollController _modalScrollController = ScrollController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -63,53 +62,28 @@ class _WalletScreenState extends State<WalletScreen> {
   // 1. تعريف المتغير لحفظ الـ Cubit
   late WalletCubit _walletCubit;
 
-
-
-
-
-
-
   @override
   void initState() {
     super.initState();
     _walletCubit = WalletCubit.get(context);
 
     WidgetsBinding.instance.addPostFrameCallback((_) async {
-      // 1. جلب بيانات المحفظة والصفقات أولاً
       await _walletCubit.initializeWalletData();
-      await _walletCubit.getTradess();
+      await _walletCubit.getTradess2();
 
-      // 2. بعد جلب البيانات، نقوم بالحساب المبدئي بناءً على الأسعار الحالية المتوفرة
-      final liveCubit = BlocProvider.of<LivePriceCubit>(context);
-      final initialUsd = liveCubit.metals['USD']?.buy ?? 0;
-      final initialEgp = liveCubit.metals['EGP']?.buy ?? 0;
+      final liveCubit = context.read<LivePriceCubit>();
 
-      _walletCubit.calculateTotals(liveEgpPrice: initialEgp, liveUsdPrice: initialUsd);
+      _walletCubit.calculateTotals(
+        liveUsdPrice: liveCubit.metals['USD']?.buy ?? 0,
+        liveEgpPrice: liveCubit.metals['EGP']?.buy ?? 0,
+      );
     });
 
     _modalScrollController.addListener(_onModalScroll);
   }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   @override
   void dispose() {
-
     _scrollController.dispose();
     _modalScrollController.removeListener(_onModalScroll);
     _modalScrollController.dispose();
@@ -128,146 +102,91 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: AppColors.background,
-      appBar: widget.comingFromNavBar == true
-          ? null
-          : AppBar(
-              backgroundColor: AppColors.background,
-              elevation: 0,
-              leading: IconButton(
-                icon: const Icon(Icons.arrow_back_ios, color: AppColors.yellow),
-                onPressed: () => Navigator.of(context).pop(),
-              ),
-              title: Text(
-                LocaleKeys.wallet.tr(),
-                style: const TextStyle(
-                  color: AppColors.textYellow,
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              centerTitle: false,
-            ),
-      body: BlocListener<LivePriceCubit, LivePriceState>(
-        listener: (context, state) {
-          if (state is LivePriceLive) {
-            final usdPrice = state.metals['USD']?.buy ?? 0;
-            final egpPrice = state.metals['EGP']?.buy ?? 0;
+      body:
+      BlocBuilder<LivePriceCubit, LivePriceState>(
+        builder: (context, state) {
+          final bool hasLive = state is LivePriceLive;
+          final double liveUsd = hasLive ? (state.metals['USD']?.buy ?? 0).toDouble() : 0.0;
+          final double liveEgp = hasLive ? (state.metals['EGP']?.buy ?? 0).toDouble() : 0.0;
+          final cubit = WalletCubit.get(context);
+          cubit.calculateTotals(
+            liveUsdPrice: liveUsd,
+            liveEgpPrice: liveEgp,
+          );
+          return SingleChildScrollView(
+            controller: _scrollController,
+            physics: const AlwaysScrollableScrollPhysics(),
 
-            // تحديث الأسعار وحساب الإجماليات فوراً
-            _walletCubit.calculateTotals(liveEgpPrice: egpPrice, liveUsdPrice: usdPrice);
-          }
-        },
-        child: BlocBuilder<LivePriceCubit, LivePriceState>(
-          builder: (context, state) {
-            // ✅ التحقق ما إذا كان البث المباشر يعمل والأسعار متوفرة بنجاح
-            final bool hasLive = state is LivePriceLive;
+            child:
+ ////////////////////////////////////////////////////////////////////////////////////////// has live
+              // يعرض الـ LiveStatusText فقط إذا كان هناك اتصال حي
+              Column(
+                children: [
+                  Center(
+                    child: Container(
+                      margin: const EdgeInsets.only(bottom: 15),
+                      child: const LiveStatusText(),
+                    ),
+                  ),
+                  Stack(
+                    children: [
+                      AbsorbPointer(
+                        absorbing: !hasLive,
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            await WalletCubit.get(context).initializeWalletData();
+                            await WalletCubit.get(context).getTradess2();
+                          },
+                          backgroundColor: AppColors.yellow2,
+                          color: AppColors.white,
+                          child: SingleChildScrollView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            // controller: _scrollController,
+                            // physics: const AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.all(16.sp),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
 
-            return Stack(
-              children: [
-                AbsorbPointer(
-                  absorbing: !hasLive,
-                  child: RefreshIndicator(
-                    onRefresh: () async {
-                      await WalletCubit.get(context).initializeWalletData();
-                      await WalletCubit.get(context).getTradess();
-                    },
-                    backgroundColor: AppColors.yellow2,
-                    color: AppColors.white,
-                    child: SingleChildScrollView(
-                      controller: _scrollController,
-                      physics: const AlwaysScrollableScrollPhysics(),
-                      padding: EdgeInsets.all(16.sp),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-////////////////////////////////////////////////////////////////////////////////////////// has live
-                          // يعرض الـ LiveStatusText فقط إذا كان هناك اتصال حي
-                          if (hasLive)
-                            Center(
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 15),
-                                child: const LiveStatusText(),
-                              ),
-                            ),
-//////////////////////////////////////////////////////////////////////////////////// Total Portfolio
-                          // _buildPortfolioSection(),
-                          // SizedBox(height: 20.h),
- ///////////////////////////////////////////////////////////////////////////////////// Balance Cards
-                          _buildBalanceCards(hasLive),
+ //////////////////////////////////////////////////////////////////////////////////// Total Portfolio
+                                // _buildPortfolioSection(),
+                                // SizedBox(height: 20.h),
+///////////////////////////////////////////////////////////////////////////////////// Balance Cards
+                                _buildBalanceCards(hasLive),
 //////////////////////////////////////////////////////////////////////////////////// Action Buttons
-                          widget.userMode == "demo"
-                              ? const SizedBox()
-                              : _buildActionButtons(),
-                          SizedBox(height: 25.h),
- /////////////////////////////////////////////////////////////////// // Recent Transactions Header
-                          _buildTransactionsHeader(),
-                          SizedBox(height: 15.h),
-///////////////////////////////////////////////////////////////////////////////////// Transaction List
-                          _buildTransactionsList(),
-                        ],
+                                _buildActionButtons(),
+                                SizedBox(height: 25.h),
+////////////////////////////////////////////////////////////////// // Recent Transactions Header
+                                _buildTransactionsHeader(),
+                                SizedBox(height: 15.h),
+ ///////////////////////////////////////////////////////////////////////////////////// Transaction List
+                                _buildTransactionsList(),
+                              ],
+                            ),
+                          ),
+                        ),
                       ),
-                    ),
+                      if (!hasLive)
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            ignoring: true, // مجرد لون فقط
+                            child: Container(
+                              color:
+                              Colors.grey.withOpacity(0.3), // غير النسبة براحتك
+                            ),
+                          ),
+                        ),
+                    ],
                   ),
-                ),
-                if (!hasLive)
-                  Positioned.fill(
-                    child: IgnorePointer(
-                      ignoring: true, // مجرد لون فقط
-                      child: Container(
-                        color:
-                            Colors.grey.withOpacity(0.3), // غير النسبة براحتك
-                      ),
-                    ),
-                  ),
-              ],
-            );
-          },
-        ),
+                ],
+              ),
+
+          );
+        },
       ),
     );
   }
 
-  // Portfolio Section
-  Widget _buildPortfolioSection() {
-    return Center(
-      child: Column(
-        children: [
-          Text(
-            LocaleKeys.currentBalance.tr().toUpperCase(),
-            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
-          ),
-          SizedBox(height: 8.h),
-          BlocBuilder<WalletCubit, WalletState>(
-            buildWhen: (previous, current) {
-              return current is GetWalletSuccessState ||
-                  current is GetWalletLoadingState ||
-                  current is GetWalletErrorState;
-            },
-            builder: (context, state) {
-              if (state is GetWalletLoadingState) {
-                return const CircularProgressIndicator(
-                  color: AppColors.yellow,
-                );
-              }
-              if (state is GetWalletErrorState) {
-                return const Text(
-                  'Error loading balance',
-                  style: TextStyle(color: AppColors.red),
-                );
-              }
-              return Text(
-                '\$ ${WalletCubit.get(context).walletDollar.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textYellow,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
 
   // Balance Card Widget
   Widget _balanceCard(
@@ -292,7 +211,7 @@ class _WalletScreenState extends State<WalletScreen> {
             style: const TextStyle(color: AppColors.greyText, fontSize: 14),
           ),
           SizedBox(height: 6.h),
-          livePnlWalletBalance,
+           livePnlWalletBalance,
           SizedBox(height: 6.h),
           testWidget,
           SizedBox(height: 6.h),
@@ -306,8 +225,8 @@ class _WalletScreenState extends State<WalletScreen> {
     return BlocBuilder<WalletCubit, WalletState>(
       builder: (context, state) {
         final cubit = WalletCubit.get(context);
-        final isLoading =cubit.isWalletLoading || state is ConvertCurrencyLoadingState;
-
+        final isLoading =
+            cubit.isWalletLoading || state is ConvertCurrencyLoadingState;
 
         // ✅ استخدام القيمة الإجمالية التراكمية إذا كانت أكبر من صفر، وإلا استخدام قيمة المحفظة العادية
 
@@ -320,27 +239,30 @@ class _WalletScreenState extends State<WalletScreen> {
               children: [
                 Expanded(
                   child: _balanceCard(
+
                     icon: Icons.account_balance_wallet_outlined,
                     title: LocaleKeys.dollarBalance.tr(),
-                    livePnlWalletBalance: cubit.usdTradesPrices.isEmpty
-                        ? Text(
-                            Methods.removeTrailingZeros(displayUsd),
-                            style: WhiteTitle.display5(context),
-                          )
-                        : LivePriceText(
+                    livePnlWalletBalance: !hasLive?const SizedBox():
+                    // cubit.usdTradesPrices.isEmpty
+                    //     ? Text(
+                    //         Methods.removeTrailingZeros(displayUsd),
+                    //         style: WhiteTitle.display5(context),
+                    //       )
+                    //     :
+                    LivePriceText(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 4, vertical: 10),
                             fontSize: 14,
-                            price: !hasLive?0:
-
-                            double.parse(displayUsd
-                                .toString()), // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالدولار
+                            price: !hasLive
+                                ? 0
+                                : double.parse(displayUsd
+                                    .toString()), // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالدولار
                             decimals: 2,
                             fakeMinDelta: 0.01,
                             fakeMaxDelta: 0.05,
                             fakeTickEvery: const Duration(milliseconds: 900),
                           ),
-                    testWidget: testWidget(
+                    testWidget:!hasLive?const SizedBox(): testWidget(
                         totalPnl: cubit.cachedUsdTotal,
                         walletBalance: cubit.walletDollar),
                   ),
@@ -348,21 +270,25 @@ class _WalletScreenState extends State<WalletScreen> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _balanceCard(
-                    testWidget: testWidget(
+                    testWidget: !hasLive?const SizedBox():testWidget(
                         totalPnl: cubit.cachedEgpTotal,
                         walletBalance: cubit.walletEgp),
                     icon: Icons.account_balance,
                     title: LocaleKeys.egyBalance.tr(),
-                    livePnlWalletBalance: cubit.egpTradesPrices.isEmpty
-                        ? Text(
-                            Methods.removeTrailingZeros(displayEgp),
-                            style: WhiteTitle.display5(context),
-                          )
-                        : LivePriceText(
+                    livePnlWalletBalance: !hasLive?const SizedBox():
+                    // cubit.egpTradesPrices.isEmpty
+                    //     ? Text(
+                    //         Methods.removeTrailingZeros(displayEgp),
+                    //         style: WhiteTitle.display5(context),
+                    //       )
+                    //     :
+                    LivePriceText(
                             padding: const EdgeInsets.symmetric(
                                 horizontal: 4, vertical: 10),
                             fontSize: 14,
-                            price:!hasLive?0: double.parse(displayEgp.toString()),
+                            price: !hasLive
+                                ? 0
+                                : double.parse(displayEgp.toString()),
                             // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالجنيه
                             decimals: 2,
                             fakeMinDelta: 0.01,
@@ -495,54 +421,63 @@ class _WalletScreenState extends State<WalletScreen> {
 
   // Action Buttons Section
   Widget _buildActionButtons() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text(
-          "Manage Your Money",
-          style: TextStyle(
-            color: AppColors.greyText,
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        SizedBox(height: 10.h),
-        Row(
-          children: [
-            _actionButton(
-              Icons.add_circle_outline,
-              LocaleKeys.deposit.tr(),
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => const RechargeAmountScreen()),
-                );
-                final cubit = WalletCubit.get(context);
-                cubit.getTransactions(refresh: true);
-              },
-            ),
-            SizedBox(width: 12.w),
-            _actionButton(
-              Icons.download_rounded,
-              LocaleKeys.withdraw.tr(),
-              onTap: () async {
-                await Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => WithdrawalAmountPage()),
-                );
-                final cubit = WalletCubit.get(context);
-                cubit.getTransactions(refresh: true);
-              },
-            ),
-          ],
-        ),
-      ],
+    return ValueListenableBuilder<User>(
+      valueListenable: HomeCubit.get(context).user,
+      builder: (context, user, _) {
+        return user.mode?.toLowerCase() == "demo"
+            ? const SizedBox()
+            : Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    "Manage Your Money\n${user.mode} mode",
+                    style: const TextStyle(
+                      color: AppColors.greyText,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                  SizedBox(height: 10.h),
+                  Row(
+                    children: [
+                      _actionButton(
+                        Icons.add_circle_outline,
+                        LocaleKeys.deposit.tr(),
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) =>
+                                    const RechargeAmountScreen()),
+                          );
+                          final cubit = WalletCubit.get(context);
+                          cubit.getTransactions(refresh: true);
+                        },
+                      ),
+                      SizedBox(width: 12.w),
+                      _actionButton(
+                        Icons.download_rounded,
+                        LocaleKeys.withdraw.tr(),
+                        onTap: () async {
+                          await Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => WithdrawalAmountPage()),
+                          );
+                          final cubit = WalletCubit.get(context);
+                          cubit.getTransactions(refresh: true);
+                        },
+                      ),
+                    ],
+                  ),
+                ],
+              );
+      },
     );
   }
 
   Widget _actionButton(IconData icon, String label,
-      {required VoidCallback onTap}) {
+      {required VoidCallback onTap})
+  {
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -775,7 +710,8 @@ class _WalletScreenState extends State<WalletScreen> {
     required Color iconBgColor,
     required String dateTime,
     required bool isPositive,
-  }) {
+  })
+  {
     return InkWell(
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
@@ -870,7 +806,7 @@ class _WalletScreenState extends State<WalletScreen> {
                               ),
                             ),
 
-                            ///////////////////////////////////////// mode
+///////////////////////////////////////// mode
 
                             // SizedBox(width: 8.w),
                             // Container(
@@ -885,7 +821,7 @@ class _WalletScreenState extends State<WalletScreen> {
                           ],
                         ),
                       ),
-                      ///////////////////////////////////////// date
+ ///////////////////////////////////////// date
                       Text(
                         dateTime,
                         style: TextStyle(
@@ -1063,7 +999,7 @@ class _WalletScreenState extends State<WalletScreen> {
                                     style: ElevatedButton.styleFrom(
                                         backgroundColor: AppColors.yellow,
                                         foregroundColor: AppColors.black),
-                                    child: const Text("Load More"),
+                                    child:  Text("Load More",style: WhiteTitle.display5(context),),
                                   ),
                                 ),
                               );
@@ -1089,6 +1025,49 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
           );
         },
+      ),
+    );
+  }
+
+  // Portfolio Section
+  Widget _buildPortfolioSection() {
+    return Center(
+      child: Column(
+        children: [
+          Text(
+            LocaleKeys.currentBalance.tr().toUpperCase(),
+            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+          ),
+          SizedBox(height: 8.h),
+          BlocBuilder<WalletCubit, WalletState>(
+            buildWhen: (previous, current) {
+              return current is GetWalletSuccessState ||
+                  current is GetWalletLoadingState ||
+                  current is GetWalletErrorState;
+            },
+            builder: (context, state) {
+              if (state is GetWalletLoadingState) {
+                return const CircularProgressIndicator(
+                  color: AppColors.yellow,
+                );
+              }
+              if (state is GetWalletErrorState) {
+                return const Text(
+                  'Error loading balance',
+                  style: TextStyle(color: AppColors.red),
+                );
+              }
+              return Text(
+                '\$ ${WalletCubit.get(context).walletDollar.toStringAsFixed(2)}',
+                style: const TextStyle(
+                  fontSize: 34,
+                  fontWeight: FontWeight.bold,
+                  color: AppColors.textYellow,
+                ),
+              );
+            },
+          ),
+        ],
       ),
     );
   }

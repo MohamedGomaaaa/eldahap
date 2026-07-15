@@ -45,9 +45,9 @@ class Validator {
     }
     return null;
   }
-// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Price With Range
+// ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Buy When
 
-  static String? validatePriceWithRange(
+  static String? validateSellWhenPrice(
       {required String? enteredValue,
       required num livePrice,
       double percentage = 50}) {
@@ -68,8 +68,7 @@ class Validator {
 
     // validate range
     if (enteredPrice < minPrice || enteredPrice > maxPrice) {
-      return "price_must_be_between" +
-          " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
+      return "price_must_be_between" " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
     }
 
     return null;
@@ -79,10 +78,10 @@ class Validator {
 
   static String? validateStopLoss(
       {required String? enteredValue,
-      required num livePrice,
+      // required num livePrice,
+      required num openPrice,
       bool requiredField = false,
-      double percentage = 50})
-  {
+      double percentage = 50}) {
     // null or empty
     if (enteredValue == null || enteredValue.trim().isEmpty) {
       return requiredField ? "please_fill_field" : null;
@@ -94,14 +93,13 @@ class Validator {
       return "invalid_number";
     }
 
-    // calculate limits
-    final num minPrice = livePrice * (1 - percentage / 100); // 75
-    final num maxPrice = livePrice * (1 + percentage / 100); // 125
+    // // calculate limits
+    // final num minPrice = livePrice * (1 - percentage / 100); // 75
+    // final num maxPrice = livePrice * (1 + percentage / 100); // 125
 
     // validate range
-    if (enteredPrice < minPrice || enteredPrice > maxPrice) {
-      return "price_must_be_between" +
-          " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
+    if (enteredPrice > openPrice) {
+      return "price_must_be less than ${Methods.removeTrailingZeros(openPrice)}";
     }
 
     return null;
@@ -124,7 +122,8 @@ class Validator {
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Take Profit
   static String? validateTakeProfit(
       {required String? enteredValue,
-      required num livePrice,
+      required num openPrice,
+      // required num livePrice,
       bool requiredField = false,
       double percentage = 50}) {
     // null or empty
@@ -138,14 +137,13 @@ class Validator {
       return "invalid_number";
     }
 
-    // calculate limits
-    final num minPrice = livePrice * (1 - percentage / 100); // 75
-    final num maxPrice = livePrice * (1 + percentage / 100); // 125
+    // // calculate limits
+    // final num minPrice = livePrice * (1 - percentage / 100); // 75
+    // final num maxPrice = livePrice * (1 + percentage / 100); // 125
 
     // validate range
-    if (enteredPrice < minPrice || enteredPrice > maxPrice) {
-      return "price_must_be_between" +
-          " ${minPrice.toStringAsFixed(0)} - ${maxPrice.toStringAsFixed(0)}";
+    if (enteredPrice < openPrice) {
+      return "price_must_be more than ${Methods.removeTrailingZeros(openPrice)}";
     }
 
     return null;
@@ -211,6 +209,7 @@ class Validator {
     }
     return null;
   }
+
 /////////////////////////////////////////////////////////////////////////////////////////////////////
   static String? validateAmount({
     required String? value,
@@ -244,16 +243,16 @@ class Validator {
 
     return null;
   }
+
 ///////////////////////////////////////////////////////////////////////////////////////////////
 // في class Validator - أضف هذه الدالة الجديدة
   static String? validateWithdrawalAmount({
     required String? value,
-    required num walletBalance,  // رصيد المحفظة (دولار أو جنيه)
-    required String currency,    // "Dollar" أو "LE"
+    required num walletBalance, // رصيد المحفظة (دولار أو جنيه)
+    required String currency, // "Dollar" أو "LE"
     bool requiredField = true,
-    double minAmount = 1.0,     // الحد الأدنى (قابل للتعديل)
-  })
-  {
+    double minAmount = 1.0, // الحد الأدنى (قابل للتعديل)
+  }) {
     // 1. فاضي أو null
     if (value == null || value.trim().isEmpty) {
       return requiredField ? "${currency}_amount_required".tr() : null;
@@ -282,6 +281,7 @@ class Validator {
 
     return null;
   }
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
   static String? validateDepositAmount({
     required String? value,
@@ -312,11 +312,4 @@ class Validator {
 
     return null;
   }
-
-
-
-
-
-
-
 }
