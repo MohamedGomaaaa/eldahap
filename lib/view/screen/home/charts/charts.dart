@@ -8,6 +8,13 @@
 //   State<Charts2> createState() => _ChartsState();
 // }
 //
+
+
+
+
+
+
+
 // // https://www.tradingview.com/chart/?symbol=OANDA%3AXAUUSD&theme=dark
 // // https://www.tradingview.com/chart/?symbol=OANDA%3AXAUUSD&theme=dark
 // class _ChartsState extends State<Charts2> {
