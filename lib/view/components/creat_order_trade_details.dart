@@ -374,6 +374,10 @@ class _CreatTradeOrderDetailsState extends State<CreatTradeOrderDetails> {
             ),
           ),
 
+
+
+
+
           const Spacer(),
           isOrder == true
               ? const SizedBox()
