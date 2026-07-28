@@ -4,17 +4,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/components/shimmer_widget.dart';
 import 'package:official_gold/view/screen/home/portfolio/widgets/order_group.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
-
-import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
-
-import '../../../../view_model/utils/colors.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:official_gold/view/components/shimmer_widget.dart';
-import 'package:official_gold/view/screen/home/portfolio/widgets/order_group.dart';
-import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
-
 import '../../../../view_model/utils/colors.dart';
 
 class AllOrders extends StatelessWidget {
@@ -25,7 +14,7 @@ class AllOrders extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => TradesCubit(),
+      create: (_) => TradesCubit()..getOrderss(),
       child: RefreshIndicator(
         onRefresh: () async => context.read<TradesCubit>().getOrderss(),
         backgroundColor: AppColors.yellow2,

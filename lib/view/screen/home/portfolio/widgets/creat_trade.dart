@@ -234,9 +234,7 @@ required this.livePrice,
         borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
       builder: (context) {
-        final open = (trade.openPrice ?? 0).toDouble();
-        final pnl = livePrice - open;
-        final isProfit = pnl >= 0;
+
 
         return Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),

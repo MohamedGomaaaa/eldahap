@@ -244,14 +244,15 @@ class _CreatTradeOrderDetailsState extends State<CreatTradeOrderDetails> {
                 creatPnl: const SizedBox(),
                 currency: widget.tradeOrOrder.currency!),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// app Commision percaentage
-        BlocBuilder<TradesCubit, TradesState>(
+            widget.isOrder == true
+                ? const SizedBox():  BlocBuilder<TradesCubit, TradesState>(
           builder: (context, state) {
             final cubit = context.read<TradesCubit>();
 
-            final percent = cubit.commissionRate?.commissionRatePercent;
+            final percent = cubit.commissionResult?.commissionRatePercent;
 
             // 👇 لوج للتأكد
-            debugPrint("commissionRate = ${cubit.commissionRate}");
+            debugPrint("commissionRate = ${cubit.commissionResult}");
 
             return Column(
               children: [
@@ -265,15 +266,13 @@ class _CreatTradeOrderDetailsState extends State<CreatTradeOrderDetails> {
         creatDetails(  context: context,
                 title: LocaleKeys.appCommision2.tr().toUpperCase(),
                 value: state is  GetCommissionRateLoadingState ?0:cubit.calculateCommission(
-                    (widget.tradeOrOrder.quantity ?? 0) * livePrice*widget.tradeOrOrder.unitGramWeight! ),
+                    (widget.tradeOrOrder.quantity ?? 0) * livePrice ),
                 creatPnl: const SizedBox(),
                 currency: widget.tradeOrOrder.currency!),
               ],
             );
           },
         ),
-
-
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// "Creat At"
             widget.isOrder == false
                 ? const SizedBox()

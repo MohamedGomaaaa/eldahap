@@ -138,7 +138,9 @@ class _RechargePaymentMethodsScreenState
             SizedBox(height: 20.h),
             isLoading
                 ? const Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color: AppColors.yellow,
+                    ),
                   )
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -237,16 +239,16 @@ class _RechargePaymentMethodsScreenState
                         fontWeight: FontWeight.w500,
                       ),
                     ),
-                    if (method.accountNumber != null) ...[
-                      SizedBox(height: 4.h),
-                      Text(
-                        "${LocaleKeys.account_number.tr()}: ${method.accountNumber}",
-                        style: const TextStyle(
-                          color: AppColors.greyText,
-                          fontSize: 12,
-                        ),
-                      ),
-                    ],
+                    // if (method.accountNumber != null) ...[
+                    //   SizedBox(height: 4.h),
+                    //   Text(
+                    //     "${LocaleKeys.account_number.tr()}: ${method.accountNumber}",
+                    //     style: const TextStyle(
+                    //       color: AppColors.greyText,
+                    //       fontSize: 12,
+                    //     ),
+                    //   ),
+                    // ],
                   ],
                 ),
               ),

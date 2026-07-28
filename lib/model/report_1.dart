@@ -2,6 +2,7 @@ import 'package:official_gold/model/trade_order_model.dart';
 
 
 
+
 class Report1 {
   ReportResult1? result;
 

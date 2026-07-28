@@ -243,8 +243,8 @@ class InfoItemWidget extends StatelessWidget {
       ),
       _buildInfoRow(
         label: "close price",
-        value: _formatAmount(
-          tradeOrOrder.closePrice!.toString(),
+        value: _formatAmount ((tradeOrOrder.closePrice!*tradeOrOrder.unitGramWeight!).toString(),
+
           tradeOrOrder.currency!,
         ),
         context: context,

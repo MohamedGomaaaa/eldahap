@@ -264,7 +264,10 @@ abstract class  LocaleKeys {
   static const termsAndConditions = 'termsAndConditions';
   static const privacyPolicy = 'privacyPolicy';
   static const aboutUs = 'aboutUs';
-  static const address = 'address';
+    static const address = 'address';
+
+   static const address2 = 'Binance Address';
+
   static const binanceId = 'binanceId';
   static const canNotDoOpreation = 'canNotDoOpreation';
   static const pleaseFillAllFields = 'pleaseFillAllFields';

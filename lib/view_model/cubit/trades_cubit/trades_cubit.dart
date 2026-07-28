@@ -1,16 +1,11 @@
 import 'dart:async';
-
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/trades_repository.dart';
 import '../../../model/commission_rate_model.dart';
-import '../../../model/metal_price_model.dart';
 import '../../../model/trade_order_group.dart';
-import '../../../model/trade_order_model.dart';
 import '../../utils/common_method.dart';
-import '../live_price_cubit/live_cubit.dart';
-import '../live_price_cubit/live_states.dart';
 part 'trades_state.dart';
 
 class TradesCubit extends Cubit<TradesState> {
@@ -155,16 +150,16 @@ class TradesCubit extends Cubit<TradesState> {
   }
 
   ///////////////////////////////////////////////////////////////////////////////// get Commission Rate
-  CommissionRateResult? commissionRate;
-  num? commissionRateValue; // الرقم نفسه (0.1)
+  CommissionRateResult? commissionResult;
+  num? commissionRate; // الرقم نفسه (0.1)
   Future<void> getCommissionRate() async {
     emit(GetCommissionRateLoadingState());
     try {
       final res = await TradesRepository().getCommissionRate();
       // خزّن الريسبونس كامل
-      commissionRate = res.result;
+      commissionResult = res.result;
       // خزّن الرقم لوحده
-      commissionRateValue = res.result?.commissionRate;
+      commissionRate = res.result?.commissionRate;
 
       emit(GetCommissionRateSuccessState());
     } on DioException catch (error) {
@@ -182,7 +177,7 @@ class TradesCubit extends Cubit<TradesState> {
 
 //////////////////////////////////////////////////////////////////////////////////////////////// calculate Commission
   num calculateCommission(num amount) {
-    final rate = commissionRateValue ?? 0;
+    final rate = commissionRate ?? 0;
     final result = (amount * rate) / 100;
 
     // 🔴 طباعة تفاصيل المعادلة في الـ Console لسهولة المتابعة

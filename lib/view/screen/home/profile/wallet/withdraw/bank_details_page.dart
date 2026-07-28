@@ -582,8 +582,8 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 /////////////////////////////////////////////////////////////////////////////////////////////// // address
                 _buildTextField(
                   controller: _addressController,
-                  label: (LocaleKeys.address.tr()),
-                  hint: (LocaleKeys.address.tr()),
+                  label: (LocaleKeys.address2.tr()),
+                  hint: (LocaleKeys.address2.tr()),
                   validator: (String? val){
                     return null;
                   },

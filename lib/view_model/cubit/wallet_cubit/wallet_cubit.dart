@@ -408,7 +408,10 @@ class WalletCubit extends Cubit<WalletState> {
 
       egpQuantity = List<num>.from(result['egp_quantities'] ?? []);
       egpWeights = List<num>.from(result['egp_weights'] ?? []);
-
+      lastCalculatedUsdPrice = null;
+      lastCalculatedEgpPrice = null;
+      cachedUsdTotal = 0.0;
+      cachedEgpTotal = 0.0;
       // بمجرد جلب البيانات، يفضل استدعاء الحساب فوراً لتحديث الواجهة بناءً على آخر أسعار مخزنة
       emit(GetTradesSuccessState2());
     } catch (e) {
