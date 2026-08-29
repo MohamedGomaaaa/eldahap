@@ -8,6 +8,7 @@ import 'package:official_gold/view_model/utils/app_constant.dart';
 import '../../../model/report_2.dart';
 import '../../../model/trade_order_model.dart';
 import '../../../model/transaction_model.dart';
+import '../../../model/metal_price_model.dart';
 import '../../utils/common_method.dart';
 import '../../utils/toast.dart';
 import '../live_price_cubit/live_cubit.dart';
@@ -374,23 +375,14 @@ class WalletCubit extends Cubit<WalletState> {
       getTransactions(refresh: true);
       emit(DepositSuccessState(value));
     }).catchError((error) {
-      if (error is DioException) {
-        Toast.showError(
-            msg: error.response?.data?.toString() ?? 'Error on Make Deposit');
-        debugPrint(error.response?.data?.toString());
-      }
       emit(DepositErrorState(msg: error.response?.data?.toString()));
       throw error;
     });
   }
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////// get trades
-  List<num> usdTradesPrices = [];
-  List<num> egpTradesPrices = [];
-  List<num> egpWeights = []; // دي اللي بنخزن فيها الأوزان حالياً
-  List<num> usdWeights = [];
-  List<num> egpQuantity = [];
-  List<num> usdQuantity = [];
+  List<TradeOrOrder> usdTrades = [];
+  List<TradeOrOrder> egpTrades = [];
 
   Future<void> getTradess2() async {
     emit(GetTradesLoadingState2());
@@ -398,18 +390,9 @@ class WalletCubit extends Cubit<WalletState> {
     try {
       final result = await WalletRepository().tradess();
 
-      // تأمين التحويل بشكل صريح لضمان عدم حدوث خطأ Casting في نسخة الـ Release
+      usdTrades = result['usd_trades'] ?? [];
+      egpTrades = result['egp_trades'] ?? [];
 
-      usdTradesPrices = List<num>.from(result['usd_prices'] ?? []);
-      usdQuantity = List<num>.from(result['usd_quantities'] ?? []);
-      usdWeights = List<num>.from(result['usd_weights'] ?? []);
-
-      egpTradesPrices = List<num>.from(result['egp_prices'] ?? []);
-
-      egpQuantity = List<num>.from(result['egp_quantities'] ?? []);
-      egpWeights = List<num>.from(result['egp_weights'] ?? []);
-      lastCalculatedUsdPrice = null;
-      lastCalculatedEgpPrice = null;
       cachedUsdTotal = 0.0;
       cachedEgpTotal = 0.0;
       // بمجرد جلب البيانات، يفضل استدعاء الحساب فوراً لتحديث الواجهة بناءً على آخر أسعار مخزنة
@@ -420,89 +403,154 @@ class WalletCubit extends Cubit<WalletState> {
     }
   }
 
-
-
-//////////////////////////////////////////////////////
-// 📌 قم بتعريف هذه المتغيرات داخل الكلاس الخاص بك (قبل الميثود)
-  num? lastCalculatedUsdPrice;
-  num? lastCalculatedEgpPrice;
-
   num cachedUsdTotal = 0;
   num cachedEgpTotal = 0;
+
+  final Map<int, _WalletCacheEntry> _walletSingleTradesPnl = {};
+  final Map<String, double> _lastWalletPrices = {};
+
   Map<String, dynamic> calculateTotals({
-    required double liveUsdPrice,
-    required double liveEgpPrice,
-  })
-  {
+    required Map<String, Map<String, MetalPrices>> livePrices,
+  }) {
     // 1️⃣ حماية أولى: إذا لم تصل الصفقات بعد من الـ API، اخرج فوراً ولا تخزن كاش صفر
-    if (usdTradesPrices.isEmpty && egpTradesPrices.isEmpty) {
+    if (usdTrades.isEmpty && egpTrades.isEmpty) {
       debugPrint(">>>>>>>>> WalletCubit: No Trades Data Loaded Yet >>>>>>>>>>");
       cachedUsdTotal = 0.0;
       cachedEgpTotal = 0.0;
-      lastCalculatedUsdPrice = 0.0;
-      lastCalculatedEgpPrice = 0.0;
       return {'usdTotal': 0.0, 'egpTotal': 0.0};
     }
-
-    // 2️⃣ حماية ثانية: لا تسمح بالخروج السريع (return cached) إذا كان الكاش مصفراً بالرغم من وجود صفقات
-    if (liveUsdPrice == lastCalculatedUsdPrice && liveEgpPrice == lastCalculatedEgpPrice) {
-      if (cachedUsdTotal != 0.0 || cachedEgpTotal != 0.0) {
-        debugPrint('>>>>>>>>>>> price not change -> returning cached values >>>>>>>>>>>>>>>. cachedEgpTotal : $cachedEgpTotal  cachedUsdTotal : $cachedUsdTotal');
-        return {
-          'usdTotal': cachedUsdTotal,
-          'egpTotal': cachedEgpTotal,
-        };
-      }
-    }
-
-    // تحديث أسعار المقارنة
-    lastCalculatedUsdPrice = liveUsdPrice;
-    lastCalculatedEgpPrice = liveEgpPrice;
 
     double usdTotal = 0.0;
     double egpTotal = 0.0;
 
-    // 3️⃣ حساب صفقات الـ USD بأمان تام مع التحقق من الأطوال
-    for (int i = 0; i < usdTradesPrices.length; i++) {
-      if (i >= usdQuantity.length || i >= usdWeights.length) break;
+    // 2️⃣ حساب صفقات الـ USD بأمان تام
+    for (final trade in usdTrades) {
+      final int tradeId = trade.id ?? 0;
+      final String metal = (trade.metal ?? 'XAU').toUpperCase();
+      final double liveUsdPrice = (livePrices[metal]?['USD']?.buy ?? 0).toDouble();
 
-      final num weight = usdWeights[i];
-      final num qty = usdQuantity[i];
+      final String priceKey = '${metal}_USD';
+      final double lastPrice = _lastWalletPrices[priceKey] ?? -1.0;
 
-      usdTotal += Methods.calculatePnl(
-        livePrice: liveUsdPrice,
-        weight: weight,
-        openPrice: usdTradesPrices[i],
-        quantity: qty,
-        log: false, // اجعلها false حتى لا يمتلئ اللوج بلا داعٍ
-      );
+      final double openPrice = (trade.openPrice ?? 0).toDouble();
+      final double unitGramWeight = (trade.unitGramWeight ?? 0).toDouble();
+      final double quantity = (trade.quantity ?? 1).toDouble();
+      final String currency = (trade.currency ?? 'USD').toUpperCase();
+
+      final cachedEntry = _walletSingleTradesPnl[tradeId];
+      final bool tradeChanged = cachedEntry == null ||
+          cachedEntry.openPrice != openPrice ||
+          cachedEntry.unitGramWeight != unitGramWeight ||
+          cachedEntry.quantity != quantity ||
+          cachedEntry.metal != metal ||
+          cachedEntry.currency != currency;
+
+      if (liveUsdPrice > 0) {
+        if (liveUsdPrice != lastPrice || tradeChanged) {
+          final double pnl = Methods.calculatePnl(
+            livePrice: liveUsdPrice,
+            weight: unitGramWeight,
+            openPrice: openPrice,
+            quantity: quantity,
+            log: false,
+          ).toDouble();
+          _walletSingleTradesPnl[tradeId] = _WalletCacheEntry(
+            pnl: pnl,
+            openPrice: openPrice,
+            unitGramWeight: unitGramWeight,
+            quantity: quantity,
+            metal: metal,
+            currency: currency,
+          );
+        }
+      } else {
+        if (cachedEntry == null) {
+          _walletSingleTradesPnl[tradeId] = _WalletCacheEntry(
+            pnl: 0.0,
+            openPrice: openPrice,
+            unitGramWeight: unitGramWeight,
+            quantity: quantity,
+            metal: metal,
+            currency: currency,
+          );
+        }
+      }
+
+      usdTotal += _walletSingleTradesPnl[tradeId]!.pnl;
     }
 
-    // 4️⃣ حساب صفقات الـ EGP بأمان تام مع التحقق من الأطوال
-    for (int i = 0; i < egpTradesPrices.length; i++) {
-      if (i >= egpQuantity.length || i >= egpWeights.length) break;
+    // 3️⃣ حساب صفقات الـ EGP بأمان تام
+    for (final trade in egpTrades) {
+      final int tradeId = trade.id ?? 0;
+      final String metal = (trade.metal ?? 'XAU').toUpperCase();
+      final double liveEgpPrice = (livePrices[metal]?['EGP']?.buy ?? 0).toDouble();
 
-      final num weight = egpWeights[i];
-      final num qty = egpQuantity[i];
+      final String priceKey = '${metal}_EGP';
+      final double lastPrice = _lastWalletPrices[priceKey] ?? -1.0;
 
-      egpTotal += Methods.calculatePnl(
-        livePrice: liveEgpPrice,
-        weight: weight,
-        openPrice: egpTradesPrices[i],
-        quantity: qty,
-        log: false,
-      );
+      final double openPrice = (trade.openPrice ?? 0).toDouble();
+      final double unitGramWeight = (trade.unitGramWeight ?? 0).toDouble();
+      final double quantity = (trade.quantity ?? 1).toDouble();
+      final String currency = (trade.currency ?? 'EGP').toUpperCase();
+
+      final cachedEntry = _walletSingleTradesPnl[tradeId];
+      final bool tradeChanged = cachedEntry == null ||
+          cachedEntry.openPrice != openPrice ||
+          cachedEntry.unitGramWeight != unitGramWeight ||
+          cachedEntry.quantity != quantity ||
+          cachedEntry.metal != metal ||
+          cachedEntry.currency != currency;
+
+      if (liveEgpPrice > 0) {
+        if (liveEgpPrice != lastPrice || tradeChanged) {
+          final double pnl = Methods.calculatePnl(
+            livePrice: liveEgpPrice,
+            weight: unitGramWeight,
+            openPrice: openPrice,
+            quantity: quantity,
+            log: false,
+          ).toDouble();
+          _walletSingleTradesPnl[tradeId] = _WalletCacheEntry(
+            pnl: pnl,
+            openPrice: openPrice,
+            unitGramWeight: unitGramWeight,
+            quantity: quantity,
+            metal: metal,
+            currency: currency,
+          );
+        }
+      } else {
+        if (cachedEntry == null) {
+          _walletSingleTradesPnl[tradeId] = _WalletCacheEntry(
+            pnl: 0.0,
+            openPrice: openPrice,
+            unitGramWeight: unitGramWeight,
+            quantity: quantity,
+            metal: metal,
+            currency: currency,
+          );
+        }
+      }
+
+      egpTotal += _walletSingleTradesPnl[tradeId]!.pnl;
     }
 
-    // 5️⃣ حفظ النتائج الفعلية في الكاش لمنع التكرار المستقبلي
+    // 4️⃣ تحديث أسعار المقارنة المخزنة للأسعار التي كانت صالحة ومتاحة (> 0)
+    for (final metal in ['XAU', 'XAG']) {
+      for (final currency in ['USD', 'EGP']) {
+        final double buyPrice = (livePrices[metal]?[currency]?.buy ?? 0).toDouble();
+        if (buyPrice > 0) {
+          _lastWalletPrices['${metal}_$currency'] = buyPrice;
+        }
+      }
+    }
+
     cachedUsdTotal = usdTotal;
     cachedEgpTotal = egpTotal;
 
     debugPrint('================ 📊 Wallet PNL Live Calculation ================');
     debugPrint('USD Total pnl => $usdTotal');
     debugPrint('EGP Total pnl => $egpTotal');
-    debugPrint('live USD      => $liveUsdPrice');
-    debugPrint('live EGP      => $liveEgpPrice');
     debugPrint('================================================================');
 
     return {
@@ -510,110 +558,7 @@ class WalletCubit extends Cubit<WalletState> {
       'egpTotal': egpTotal,
     };
   }
-// 📌 الميثود بعد التعديل
-//   Map<String, num> calculateTotals({
-//     required num liveUsdPrice,
-//     required num liveEgpPrice,
-//   })
-//   {
-//     print(">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method");
-//
-//     // 1️⃣ التحقق إذا كان السعر متطابقاً مع آخر سعر تم حسابه (أي لم يتغير)
-//
-//     if (usdTradesPrices.isEmpty && egpTradesPrices.isEmpty) {
-//       debugPrint(">>>>>>>>> WalletCubit: No Trades Data Loaded Yet for calculations >>>>>>>>>>");
-//       cachedUsdTotal = 0.0;
-//       cachedEgpTotal = 0.0;
-//       return {'usdTotal': 0.0, 'egpTotal': 0.0};
-//     }
-//
-//
-//
-//
-//     if (liveUsdPrice == 0 || liveEgpPrice == 0) {
-//       cachedUsdTotal = 0;
-//       cachedEgpTotal = 0;
-//
-//       print(  ">>>>>>>  first enter >>>>>>.  cachedEgpTotal : $cachedEgpTotal  cachedUsdTotal : $cachedUsdTotal  ");
-//
-//
-//       return {
-//         'usdTotal': 0,
-//         'egpTotal': 0,
-//       };
-//     }
-//
-//     if (lastCalculatedUsdPrice != null &&
-//         lastCalculatedEgpPrice != null &&
-//         liveUsdPrice == lastCalculatedUsdPrice &&
-//         liveEgpPrice == lastCalculatedEgpPrice) {
-//       // السعر لم يتغير، سنقوم بإرجاع القيم المحسوبة مسبقاً فوراً
-//
-//       print(">>>>>>>>>>> price not change >>>>>>>>>>>>>>>.  cachedEgpTotal : $cachedEgpTotal  cachedUsdTotal : $cachedUsdTotal  ");
-//
-//       return {
-//         'usdTotal': cachedUsdTotal,
-//         'egpTotal': cachedEgpTotal,
-//       };
-//     }
-//
-//     print(
-//         ">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method and upgrade price cachedEgpTotal : $cachedEgpTotal  cachedUsdTotal : $cachedUsdTotal  ");
-//
-//     // 2️⃣ تحديث الأسعار المحفوظة بالأسعار الجديدة لضمان عدم تكرار الحساب المرة القادمة
-//     lastCalculatedUsdPrice = liveUsdPrice;
-//     lastCalculatedEgpPrice = liveEgpPrice;
-//
-//     num usdTotal = 0;
-//     num egpTotal = 0;
-//
-// // 3️⃣ حساب الـ PNL للدولار (كل صفقة بالوزن والكمية بتاعتها بالـ Index)
-//     for (int i = 0; i < usdTradesPrices.length; i++) {
-//       // سحب الوزن والكمية الخاصة بالصفقة الحالية باستخدام الـ i
-//       final num weight = i < usdWeights.length ? usdWeights[i] : 0;
-//       final num qty = i < usdQuantity.length ? usdQuantity[i] : 1;
-//       // الحسبة بالملي: (السعر الحي × وزن الجرام) - سعر الفتح الحالي والكل مضروب في الكمية
-//       usdTotal += Methods.calculatePnl(
-//         livePrice: liveUsdPrice,
-//         weight: weight,
-//         openPrice: usdTradesPrices[i],
-//         quantity: qty,
-//         log: true,
-//       );
-//     }
-//
-//     // 4️⃣ حساب الـ PNL للمصري (كل صفقة بالوزن والكمية بتاعتها بالـ Index)
-//     for (int i = 0; i < egpTradesPrices.length; i++) {
-//       // سحب الوزن والكمية الخاصة بالصفقة الحالية باستخدام الـ i
-//       final num weight = i < egpWeights.length ? egpWeights[i] : 0;
-//       final num qty = i < egpQuantity.length ? egpQuantity[i] : 1;
-//
-//       egpTotal += Methods.calculatePnl(
-//         livePrice: liveEgpPrice,
-//         weight: weight,
-//         openPrice: egpTradesPrices[i],
-//         quantity: qty,
-//         log: true,
-//       );
-//     }
-//
-//     // 5️⃣ حفظ نتائج إجمالي PNL الجديد لتجنب إعادة الحساب مستقبلاً لو ثبت السعر
-//     cachedUsdTotal = usdTotal;
-//     cachedEgpTotal = egpTotal;
-//
-//     // 6️⃣ الطباعة (ستحدث هنا فقط إذا كان هناك تغيير حقيقي في السعر)
-//     debugPrint('================ PNL Live Calculation ================');
-//     debugPrint('USD Total pnl => $usdTotal');
-//     debugPrint('EGP Total pnl => $egpTotal');
-//     debugPrint('live USD  => $liveUsdPrice');
-//     debugPrint('live EGP  => $liveEgpPrice');
-//     debugPrint('======================================================');
-//
-//     return {
-//       'usdTotal': usdTotal,
-//       'egpTotal': egpTotal,
-//     };
-//   }
+
 //////////////////////////////////////////////////////////////////////////////////////////
   // 1️⃣ أضف دالة لتصفير الكاش والبيانات عند تغيير الحساب أو تسجيل الخروج
   void resetWalletData() {
@@ -624,17 +569,31 @@ class WalletCubit extends Cubit<WalletState> {
     currentTransactionPage = 1;
     walletDollar = 0;
     walletEgp = 0;
-    usdTradesPrices.clear();
-    egpQuantity.clear();
-    egpTradesPrices.clear();
-    usdQuantity.clear();
-    egpWeights.clear();
-    usdWeights.clear();
-    lastCalculatedUsdPrice = null;
-    lastCalculatedEgpPrice = null;
+    usdTrades.clear();
+    egpTrades.clear();
+    _walletSingleTradesPnl.clear();
+    _lastWalletPrices.clear();
     cachedUsdTotal = 0;
     cachedEgpTotal = 0;
 
     emit(WalletInitial()); // إعادة Cubit للحالة البدئية
   }
+}
+
+class _WalletCacheEntry {
+  final double pnl;
+  final double openPrice;
+  final double unitGramWeight;
+  final double quantity;
+  final String metal;
+  final String currency;
+
+  _WalletCacheEntry({
+    required this.pnl,
+    required this.openPrice,
+    required this.unitGramWeight,
+    required this.quantity,
+    required this.metal,
+    required this.currency,
+  });
 }

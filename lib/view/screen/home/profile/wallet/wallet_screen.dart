@@ -16,6 +16,7 @@ import '../../../../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../../view_model/cubit/live_price_cubit/live_states.dart';
 import '../../../../../model/transaction_model.dart';
+import '../../../../../model/metal_price_model.dart';
 import '../../../../../view_model/utils/colors.dart';
 import '../../../../../view_model/utils/common_method.dart';
 import '../../../../../view_model/utils/validator.dart';
@@ -74,8 +75,7 @@ class _WalletScreenState extends State<WalletScreen> {
       final liveCubit = context.read<LivePriceCubit>();
 
       _walletCubit.calculateTotals(
-        liveUsdPrice: liveCubit.metals['XAU']?['USD']?.buy ?? 0,
-        liveEgpPrice: liveCubit.metals['XAU']?['EGP']?.buy ?? 0,
+        livePrices: liveCubit.metals,
       );
     });
 
@@ -106,12 +106,12 @@ class _WalletScreenState extends State<WalletScreen> {
       BlocBuilder<LivePriceCubit, LivePriceState>(
         builder: (context, state) {
           final bool hasLive = state is LivePriceLive;
-          final double liveUsd = hasLive ? (state.metals['XAU']?['USD']?.buy ?? 0).toDouble() : 0.0;
-          final double liveEgp = hasLive ? (state.metals['XAU']?['EGP']?.buy ?? 0).toDouble() : 0.0;
           final cubit = WalletCubit.get(context);
+          final livePrices = hasLive
+              ? state.metals
+              : const <String, Map<String, MetalPrices>>{};
           cubit.calculateTotals(
-            liveUsdPrice: liveUsd,
-            liveEgpPrice: liveEgp,
+            livePrices: livePrices,
           );
           return SingleChildScrollView(
             controller: _scrollController,

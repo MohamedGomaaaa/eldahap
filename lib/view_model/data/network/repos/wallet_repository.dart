@@ -196,7 +196,7 @@ class WalletRepository {
   }
 
 //////////////////////////////////////////////////////////////////////////////////////////////
-  Future<Map<String, List<num>>> tradess() async {
+  Future<Map<String, List<TradeOrOrder>>> tradess() async {
     try {
       final response = await walletProvider.tradess();
 
@@ -220,74 +220,13 @@ class WalletRepository {
         }
       }
 
-      final usdPrices = usdTrades
-          .map((e) => TradeOrOrder.parseNum(e.openPrice) ?? 0)
-          .toList();
-
-      final egpPrices = egpTrades
-          .map((e) =>TradeOrOrder.parseNum(e.openPrice) ?? 0)
-          .toList();
-      final usdWeights = usdTrades
-          .map((e) => TradeOrOrder.parseNum(e.unitGramWeight) ?? 0)
-          .toList();
-
-      final usdQuantities = usdTrades
-          .map((e) => TradeOrOrder.parseNum(e.quantity) ?? 0)
-          .toList();
-
-      final egpWeights = egpTrades
-          .map((e) => TradeOrOrder.parseNum(e.unitGramWeight) ?? 0)
-          .toList();
-
-      final egpQuantities = egpTrades
-          .map((e) => TradeOrOrder.parseNum(e.quantity) ?? 0)
-          .toList();
-
-      _printSeparatedLists(
-        usdPrices: usdPrices,
-        usdWeights: usdWeights,
-        usdQuantities: usdQuantities,
-        egpPrices: egpPrices,
-        egpWeights: egpWeights,
-        egpQuantities: egpQuantities,
-      );
-
       return {
-        'usd_prices': usdPrices,
-        'usd_weights': usdWeights,
-        'usd_quantities': usdQuantities,
-
-        'egp_prices': egpPrices,
-        'egp_weights': egpWeights,
-        'egp_quantities': egpQuantities,
+        'usd_trades': usdTrades,
+        'egp_trades': egpTrades,
       };
     } catch (e) {
       print("Error in tradess: $e");
       rethrow;
     }
   }
-
-  void _printSeparatedLists({
-    required List<num> usdPrices,
-    required List<num> usdWeights,
-    required List<num> usdQuantities,
-    required List<num> egpPrices,
-    required List<num> egpWeights,
-    required List<num> egpQuantities,
-  }) {
-    print('================ 📊 Trades Data Log ================');
-
-    print('🇺🇸 USD Prices (${usdPrices.length}) => $usdPrices');
-    print('🇺🇸 USD Weights (${usdWeights.length}) => $usdWeights');
-    print('🇺🇸 USD Quantities (${usdQuantities.length}) => $usdQuantities');
-
-    print('----------------------------------------------------');
-
-    print('🇪🇬 EGP Prices (${egpPrices.length}) => $egpPrices');
-    print('🇪🇬 EGP Weights (${egpWeights.length}) => $egpWeights');
-    print('🇪🇬 EGP Quantities (${egpQuantities.length}) => $egpQuantities');
-
-    print('====================================================');
-  }
-
 }

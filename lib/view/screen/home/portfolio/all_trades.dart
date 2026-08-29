@@ -5,6 +5,7 @@ import 'package:official_gold/view/components/shimmer_widget.dart';
 import 'package:official_gold/view/screen/home/portfolio/widgets/trade_group.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
 import '../../../../model/trade_order_group.dart';
+import '../../../../model/metal_price_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/utils/colors.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart'; // 👈 استدعاء مهم لحالات السعر الحي
@@ -57,20 +58,15 @@ class AllTrades extends StatelessWidget {
             // الـ BlocBuilder الخاص بالسعر الحي الذي يُغذي القائمة بالكامل
             return BlocBuilder<LivePriceCubit, LivePriceState>(
               builder: (context, liveState) {
-                // 1. استخراج الأسعار الحية
-                final double liveUsd = liveState is LivePriceLive
-                    ? (liveState.metals['XAU']?['USD']?.buy ?? 0).toDouble()
-                    : 0.0;
-                final double liveEgp = liveState is LivePriceLive
-                    ? (liveState.metals['XAU']?['EGP']?.buy ?? 0).toDouble()
-                    : 0.0;
-
                 final tradesCubit = TradesCubit.get(context);
+
+                final livePrices = liveState is LivePriceLive
+                    ? liveState.metals
+                    : const <String, Map<String, MetalPrices>>{};
 
                 // 2. أمر تحديث الحسابات والكاش في الكيوبيت
                 tradesCubit.calculateTotalAndSinglePnl(
-                  liveUsdPrice: liveUsd,
-                  liveEgpPrice: liveEgp,
+                  livePrices: livePrices,
                 );
 
                 // 3. رسم الواجهة بناءً على البيانات المحسوبة

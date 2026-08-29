@@ -5,6 +5,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view_model/data/network/repos/trades_repository.dart';
 import '../../../model/commission_rate_model.dart';
 import '../../../model/trade_order_group.dart';
+import '../../../model/metal_price_model.dart';
 import '../../utils/common_method.dart';
 part 'trades_state.dart';
 
@@ -186,16 +187,16 @@ class TradesCubit extends Cubit<TradesState> {
     debugPrint('   🔹 Commission Rate (نسبة العمولة): $rate%');
     debugPrint('   🔹 Equation: ($amount * $rate) / 100');
     debugPrint('   🔹 Result (العمولة الناتجة): $result');
-    debugPrint('----------------------------------------------');
+    debugPrint('---------------------------------------');
 
     return result;
   }
 
-//////////////////////////////////////////////////////////////////////////////////////////////// calculate Total  and single Pnl
-
-// متغيرات الكاش لمنع التكرار اللانهائي في التجميع والطباعة
-  num _lastUsdPrice = 0.0;
-  num _lastEgpPrice = 0.0;
+  // متغيرات الكاش لمنع التكرار اللانهائي في التجميع والطباعة
+  double _lastGoldUsd = 0.0;
+  double _lastGoldEgp = 0.0;
+  double _lastSilverUsd = 0.0;
+  double _lastSilverEgp = 0.0;
 
   Map<String, num> totalPnlOfEachGroupMap = {};
   num totalUsdPnl = 0.0;
@@ -205,17 +206,12 @@ class TradesCubit extends Cubit<TradesState> {
   Map<String, num> lastSingleCurrencyPrices = {'USD': 0.0, 'EGP': 0.0};
 
 
-
-
-
-
 // ✅ استبدلنا cachedSingleTrades بالخريطتين دول عشان يكونوا أسهل في القراءة في الـ UI
   Map<int, num> singleTradePnlMap = {};
   Map<int, num> singleTradeLivePriceMap = {};
 // ده بتحيب اجمالي المكسب والخساره واجمالي لكل الثفقت و لكل ثفقه لوحدها
   void calculateTotalAndSinglePnl({
-    required num liveUsdPrice,
-    required num liveEgpPrice,
+    required Map<String, Map<String, MetalPrices>> livePrices,
   })
   {
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method");
@@ -225,16 +221,23 @@ class TradesCubit extends Cubit<TradesState> {
       print(">>>>>>>>>>>> No Trades Loaded Yet");
       totalUsdPnl = 0.0;
       totalEgpPnl = 0.0;
-      _lastUsdPrice = 0.0;
-      _lastEgpPrice = 0.0;
+      _lastGoldUsd = 0.0;
+      _lastGoldEgp = 0.0;
+      _lastSilverUsd = 0.0;
+      _lastSilverEgp = 0.0;
       totalPnlOfEachGroupMap.clear();
       singleTradePnlMap.clear();       // ✅ تنظيف السنجل كاش
       singleTradeLivePriceMap.clear(); // ✅ تنظيف السنجل كاش
       return;
     }
 
+    final double goldUsd = (livePrices['XAU']?['USD']?.buy ?? 0).toDouble();
+    final double goldEgp = (livePrices['XAU']?['EGP']?.buy ?? 0).toDouble();
+    final double silverUsd = (livePrices['XAG']?['USD']?.buy ?? 0).toDouble();
+    final double silverEgp = (livePrices['XAG']?['EGP']?.buy ?? 0).toDouble();
+
     // 2️⃣ حماية ثانية: انتظر حتى يصل السعران اللحظيان الحقيقيان من السوكت
-    if (liveUsdPrice <= 0 || liveEgpPrice <= 0) {
+    if (goldUsd <= 0 || goldEgp <= 0) {
       totalUsdPnl = 0;
       totalEgpPnl = 0;
       print(">>>>>>>>>> first enter (Zero Live Price) >>>>>>>>>>>>>>>>. cachedEgpTotal : $totalEgpPnl  cachedUsdTotal : $totalUsdPnl");
@@ -242,8 +245,10 @@ class TradesCubit extends Cubit<TradesState> {
     }
 
     // 3️⃣ حماية ثالثة: نعتمد الخروج السريع بالكاش المخزن فقط إذا كان يحتوي على قيم فعلية محسوبة سابقاً وليس أصفاراً
-    if (_lastUsdPrice == liveUsdPrice &&
-        _lastEgpPrice == liveEgpPrice &&
+    if (_lastGoldUsd == goldUsd &&
+        _lastGoldEgp == goldEgp &&
+        _lastSilverUsd == silverUsd &&
+        _lastSilverEgp == silverEgp &&
         totalPnlOfEachGroupMap.isNotEmpty) {
       if (totalUsdPnl != 0.0 || totalEgpPnl != 0.0) {
         print(">>>>>>>>>>>> return without calculation -> returning cached values >>>>>>>>>>>>>>. cachedEgpTotal : $totalEgpPnl  cachedUsdTotal : $totalUsdPnl");
@@ -253,8 +258,10 @@ class TradesCubit extends Cubit<TradesState> {
 
     print(">>>>>>>>>>>>>>>>>>>>>>>>>>. Enter calculation method and upgrade price cachedEgpTotal : $totalEgpPnl  cachedUsdTotal : $totalUsdPnl");
 
-    _lastUsdPrice = liveUsdPrice;
-    _lastEgpPrice = liveEgpPrice;
+    _lastGoldUsd = goldUsd;
+    _lastGoldEgp = goldEgp;
+    _lastSilverUsd = silverUsd;
+    _lastSilverEgp = silverEgp;
 
     num usdTotal = 0;
     num egpTotal = 0;
@@ -266,8 +273,9 @@ class TradesCubit extends Cubit<TradesState> {
     for (final group in groupOfTradesOrOrders) {
       final groupKey = '${group.metal}_${group.currency}';
       final currency = (group.currency ?? '').toUpperCase();
+      final metal = (group.metal ?? 'XAU').toUpperCase();
 
-      final livePrice = currency == 'USD' ? liveUsdPrice : liveEgpPrice;
+      final livePrice = (livePrices[metal]?[currency]?.buy ?? 0).toDouble();
       num groupTotal = 0;
       final trades = group.tradesOrOrders ?? [];
 
@@ -326,23 +334,9 @@ class TradesCubit extends Cubit<TradesState> {
       debugPrint('------------------------------------------------------------------');
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     // ✅ البرنتات بتاعتك كلها محفوظة زي ما هي
     debugPrint('================ 📊 TradesCubit Live Calculation ================');
-    debugPrint('📈 Live Prices  => USD: $liveUsdPrice | EGP: $liveEgpPrice');
+    debugPrint('📈 Live Prices  => Gold USD: $goldUsd | Gold EGP: $goldEgp | Silver USD: $silverUsd | Silver EGP: $silverEgp');
     debugPrint('------------------------------------------------------------------');
 
     totalPnlOfEachGroupMap.forEach((key, value) {
@@ -355,21 +349,16 @@ class TradesCubit extends Cubit<TradesState> {
     debugPrint('==================================================================');
   }
 
-
-
-
-
-
-
-
-/////////////////////////////////////////////////////////////////////////////////
+  /////////////////////////////////////////////////////////////////////////////////
   // 📌 ميثود تصفير البيانات والكاش بالكامل (Clean Reset)
   void clearCubitData() {
     // 1. تصفير بيانات التوتال (Total PNL)
     totalUsdPnl = 0.0;
     totalEgpPnl = 0.0;
-    _lastUsdPrice = 0.0;
-    _lastEgpPrice = 0.0;
+    _lastGoldUsd = 0.0;
+    _lastGoldEgp = 0.0;
+    _lastSilverUsd = 0.0;
+    _lastSilverEgp = 0.0;
     totalPnlOfEachGroupMap.clear();
 
     // 2. تصفير كاش الصفقات الفردية (Single Trades Cache)
