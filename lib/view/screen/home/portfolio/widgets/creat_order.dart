@@ -34,9 +34,11 @@ class CreatOrder extends StatelessWidget {
       builder: (context, liveState) {
         // ✅ العملة من order (fallback USD)
         final String currencyKey = (order.currency ?? 'USD').toUpperCase();
+        // ✅ تحديد نوع المعدن
+        final String metalKey = (order.metal ?? 'XAU').toUpperCase();
         MetalPrices? mp;
         if (liveState is LivePriceLive) {
-          mp = liveState.metals[currencyKey];
+          mp = liveState.metals[metalKey]?[currencyKey];
         }
         // ✅ livePrice من السوكت
         final double livePrice = (mp?.buy ?? 0).toDouble()*order.unitGramWeight!;

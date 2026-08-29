@@ -29,10 +29,19 @@ class LivePriceCubit extends Cubit<LivePriceState> {
 
   bool _hasInternet = true;
 
-  final Map<String, MetalPrices> metals = {
-    'USD': const MetalPrices(market: 0, buy: 0, sell: 0, currency: 'USD', timestamp: ''),
-    'EGP': const MetalPrices(market: 0, buy: 0, sell: 0, currency: 'EGP', timestamp: ''),
+  final Map<String, Map<String, MetalPrices>> metals = {
+    'XAU': {
+      'USD': const MetalPrices(market: 0, buy: 0, sell: 0, currency: 'USD', timestamp: ''),
+      'EGP': const MetalPrices(market: 0, buy: 0, sell: 0, currency: 'EGP', timestamp: ''),
+    },
+    'XAG': {
+      'USD': const MetalPrices(market: 0, buy: 0, sell: 0, currency: 'USD', timestamp: ''),
+      'EGP': const MetalPrices(market: 0, buy: 0, sell: 0, currency: 'EGP', timestamp: ''),
+    },
   };
+
+  /// ✅ تتبع هل وصلت بيانات XAG من السوكت
+  bool _receivedXAG = false;
 
   void _log(String m) {
     // ignore: avoid_print
@@ -88,7 +97,7 @@ class LivePriceCubit extends Cubit<LivePriceState> {
       emit(
         LivePriceLive(
           message: '✅ السعر لايف شغال',
-          metals: Map<String, MetalPrices>.from(metals),
+          metals: metals.map((k, v) => MapEntry(k, Map<String, MetalPrices>.from(v))),
           lastTick: null,
         ),
       );
@@ -123,6 +132,8 @@ class LivePriceCubit extends Cubit<LivePriceState> {
             return;
           }
 
+          final m = p.metal.toUpperCase(); // XAU/XAG
+
           final normalized = MetalPrices(
             market: p.market,
             buy: p.buy,
@@ -131,18 +142,32 @@ class LivePriceCubit extends Cubit<LivePriceState> {
             timestamp: p.timestamp,
           ).normalized(decimals: 5);
 
-          metals[c] = normalized;
+          metals[m] ??= {};
+          metals[m]![c] = normalized;
 
+          // ✅ تتبع وصول XAG
+          if (m == 'XAG' && !_receivedXAG) {
+            _receivedXAG = true;
+            _log('✅ أول tick فضة XAG وصل!');
+          }
+
+          // ✅ Live Price Log
+          final emoji = m == 'XAU' ? '🟨' : '⬜';
+          final label = m == 'XAU' ? 'GOLD' : 'SILVER';
           _log(
-            'tick => $c '
-                'buy=${normalized.buy} market=${normalized.market} sell=${normalized.sell} '
-                'ts=${normalized.timestamp}',
+            '\n$emoji $label LIVE PRICE\n'
+            'Metal: $m\n'
+            'Currency: $c\n'
+            'Market: ${normalized.market}\n'
+            'Buy: ${normalized.buy}\n'
+            'Sell: ${normalized.sell}\n'
+            'Time: ${normalized.timestamp}\n',
           );
 
           emit(
             LivePriceLive(
               message: '✅ السعر لايف شغال',
-              metals: Map<String, MetalPrices>.from(metals),
+              metals: metals.map((k, v) => MapEntry(k, Map<String, MetalPrices>.from(v))),
               lastTick: p,
             ),
           );

@@ -14,7 +14,7 @@ class LivePriceStopped extends LivePriceState {
 
 class LivePriceLive extends LivePriceState {
   final String message;
-  final Map<String, MetalPrices> metals; // keys: "USD" , "EGP"
+  final Map<String, Map<String, MetalPrices>> metals; // keys: "XAU"/"XAG" → "USD"/"EGP"
   final LivePriceModel? lastTick; // ✅ nullable
 
   LivePriceLive({

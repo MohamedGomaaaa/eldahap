@@ -83,9 +83,11 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
         builder: (context, liveState) {
           // ✅ العملة حسب category index (0 => USD, 1 => EGP)
           final String currencyKey = order.currency ?? "USD";
+          // ✅ تحديد نوع المعدن
+          final String metalKey = (order.metal ?? 'XAU').toUpperCase();
           MetalPrices? mp;
           if (liveState is LivePriceLive) {
-            mp = liveState.metals[currencyKey];
+            mp = liveState.metals[metalKey]?[currencyKey];
           }
           final double livePrice =
               (mp?.buy ?? 0).toDouble() * (order.unitGramWeight ?? 1);

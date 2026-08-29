@@ -87,9 +87,11 @@ class LiveStatusText extends StatelessWidget {
   }
 
   bool _hasAnyPrice(LivePriceLive s) {
-    // ✅ يعتبر “جاهز” لو في أي عملة فيها buy أو sell أكبر من صفر
-    for (final p in s.metals.values) {
-      if (p.buy > 0 || p.sell > 0) return true;
+    // ✅ يعتبر "جاهز" لو في أي معدن/عملة فيها buy أو sell أكبر من صفر
+    for (final currencyMap in s.metals.values) {
+      for (final p in currencyMap.values) {
+        if (p.buy > 0 || p.sell > 0) return true;
+      }
     }
     return false;
   }

@@ -59,10 +59,10 @@ class AllTrades extends StatelessWidget {
               builder: (context, liveState) {
                 // 1. استخراج الأسعار الحية
                 final double liveUsd = liveState is LivePriceLive
-                    ? (liveState.metals['USD']?.buy ?? 0).toDouble()
+                    ? (liveState.metals['XAU']?['USD']?.buy ?? 0).toDouble()
                     : 0.0;
                 final double liveEgp = liveState is LivePriceLive
-                    ? (liveState.metals['EGP']?.buy ?? 0).toDouble()
+                    ? (liveState.metals['XAU']?['EGP']?.buy ?? 0).toDouble()
                     : 0.0;
 
                 final tradesCubit = TradesCubit.get(context);

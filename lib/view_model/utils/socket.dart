@@ -134,8 +134,9 @@ class LivePriceSocketService {
 
             final model = LivePriceModel.fromJson(payload);
 
-            // ✅ XAU فقط
-            if (model.metal.toUpperCase() != 'XAU') {
+            // ✅ XAU و XAG فقط
+            final metal = model.metal.toUpperCase();
+            if (metal != 'XAU' && metal != 'XAG') {
               _log('SKIP (metal=${model.metal})');
               return;
             }

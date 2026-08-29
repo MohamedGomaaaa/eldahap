@@ -413,7 +413,7 @@ class HomeScreen extends StatelessWidget {
 
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////     PreciousMetalsWidget
-              PreciousMetalsWidget(),
+              const PreciousMetalsWidget(),
 
               SizedBox(
                 height: 12.h,

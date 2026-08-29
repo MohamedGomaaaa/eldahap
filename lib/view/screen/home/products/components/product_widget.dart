@@ -46,20 +46,23 @@ class ProductWidget extends StatelessWidget {
         ),
         child: BlocBuilder<LivePriceCubit, LivePriceState>(
           builder: (context, state) {
-            // ✅ لو index==0 اعرض الدولار / لو 1 اعرض المصري
-            final String currencyKey = (tabIndex == 0) ? 'USD' : 'EGP';
+            // ✅ تحديد العملة من المنتج مباشرة (مع fallback لـ tabIndex)
+            final String currencyKey = (product.currency ?? (tabIndex == 0 ? 'USD' : 'EGP')).toUpperCase();
+
+            // ✅ تحديد نوع المعدن من المنتج
+            final String metalKey = (product.symbol?.split("/")[0] ?? 'XAU').toUpperCase();
+
+            // ✅ هات الأسعار من الستيت
+            final allMetals = (state is LivePriceLive)
+                ? state.metals
+                : const <String, Map<String, MetalPrices>>{};
 
             // ✅ هل في لايف فعلاً؟
             final bool hasLive = state is LivePriceLive &&
-                (state.metals[currencyKey]?.buy ?? 0) > 0 &&
-                (state.metals[currencyKey]?.sell ?? 0) > 0;
+                (allMetals[metalKey]?[currencyKey]?.buy ?? 0) > 0 &&
+                (allMetals[metalKey]?[currencyKey]?.sell ?? 0) > 0;
 
-            // ✅ هات الأسعار من الستيت
-            final metals = (state is LivePriceLive)
-                ? state.metals
-                : const <String, MetalPrices>{};
-
-            final MetalPrices p = metals[currencyKey] ??
+            final MetalPrices p = allMetals[metalKey]?[currencyKey] ??
                 MetalPrices(
                   market: 0,
                   buy: 0,
@@ -169,8 +172,9 @@ class ProductWidget extends StatelessWidget {
                         children: [
                           SizedBox(height: 6.h),
                           LiveChartIcon(
-                            tabIndex: tabIndex,
-                            onTap: () {
+                      tabIndex: tabIndex,
+                      metalKey: metalKey,
+                      onTap: () {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -495,12 +499,14 @@ class ProductWidget extends StatelessWidget {
 
 class LiveChartIcon extends StatefulWidget {
   final int tabIndex; // 0 => USD, 1 => EGP
+  final String metalKey; // XAU / XAG
   final double size;
   final VoidCallback onTap;
 
   const LiveChartIcon({
     super.key,
     required this.tabIndex,
+    required this.metalKey,
     required this.onTap,
     this.size = 26,
   });
@@ -520,15 +526,15 @@ class _LiveChartIconState extends State<LiveChartIcon> {
       // ✅ اسمع فقط لما buy بتاع العملة دي يتغير
       listenWhen: (prev, curr) {
         if (prev is! LivePriceLive || curr is! LivePriceLive) return false;
-        final prevBuy = prev.metals[key]?.buy;
-        final currBuy = curr.metals[key]?.buy;
+        final prevBuy = prev.metals[widget.metalKey]?[key]?.buy;
+        final currBuy = curr.metals[widget.metalKey]?[key]?.buy;
         if (prevBuy == null || currBuy == null) return false;
         return prevBuy != currBuy;
       },
       listener: (context, state) {
         if (state is! LivePriceLive) return;
 
-        final p = state.metals[key];
+        final p = state.metals[widget.metalKey]?[key];
         if (p == null) return;
 
         final next = p.buy;

@@ -74,8 +74,8 @@ class _WalletScreenState extends State<WalletScreen> {
       final liveCubit = context.read<LivePriceCubit>();
 
       _walletCubit.calculateTotals(
-        liveUsdPrice: liveCubit.metals['USD']?.buy ?? 0,
-        liveEgpPrice: liveCubit.metals['EGP']?.buy ?? 0,
+        liveUsdPrice: liveCubit.metals['XAU']?['USD']?.buy ?? 0,
+        liveEgpPrice: liveCubit.metals['XAU']?['EGP']?.buy ?? 0,
       );
     });
 
@@ -106,8 +106,8 @@ class _WalletScreenState extends State<WalletScreen> {
       BlocBuilder<LivePriceCubit, LivePriceState>(
         builder: (context, state) {
           final bool hasLive = state is LivePriceLive;
-          final double liveUsd = hasLive ? (state.metals['USD']?.buy ?? 0).toDouble() : 0.0;
-          final double liveEgp = hasLive ? (state.metals['EGP']?.buy ?? 0).toDouble() : 0.0;
+          final double liveUsd = hasLive ? (state.metals['XAU']?['USD']?.buy ?? 0).toDouble() : 0.0;
+          final double liveEgp = hasLive ? (state.metals['XAU']?['EGP']?.buy ?? 0).toDouble() : 0.0;
           final cubit = WalletCubit.get(context);
           cubit.calculateTotals(
             liveUsdPrice: liveUsd,

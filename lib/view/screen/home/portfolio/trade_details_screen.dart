@@ -70,9 +70,11 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
         builder: (context, liveState) {
           // ✅ العملة حسب category index (0 => USD, 1 => EGP)
           final String currencyKey = trade.currency ?? "USD";
+          // ✅ تحديد نوع المعدن
+          final String metalKey = (trade.metal ?? 'XAU').toUpperCase();
           MetalPrices? mp;
           if (liveState is LivePriceLive) {
-            mp = liveState.metals[currencyKey];
+            mp = liveState.metals[metalKey]?[currencyKey];
           }
 
           final double livePrice =

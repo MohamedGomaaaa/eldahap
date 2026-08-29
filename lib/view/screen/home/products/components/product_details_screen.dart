@@ -75,12 +75,15 @@ class ProductDetailsScreen extends StatelessWidget {
                           // ✅ العملة حسب category index (0 => USD, 1 => EGP)
                           final String currencyKey = product.currency ?? "USD";
 
+                          // ✅ تحديد نوع المعدن من المنتج
+                          final String metalKey = (product.symbol?.split("/")[0] ?? 'XAU').toUpperCase();
+
                           // (tabIndex == 0) ? 'USD' : 'EGP';
 
                           MetalPrices? mp;
                           if (liveState is LivePriceLive) {
-                            // ✅ هات سعر العملة من السوكت
-                            mp = liveState.metals[currencyKey];
+                            // ✅ هات سعر المعدن/العملة من السوكت
+                            mp = liveState.metals[metalKey]?[currencyKey];
                           }
 
                           // ✅ سعر الجرام لايف

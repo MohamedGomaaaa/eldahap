@@ -62,10 +62,12 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
       color: AppColors.background,
       child: BlocBuilder<LivePriceCubit, LivePriceState>(
         builder: (context, state) {
-          final metals = _metalsFromState(state);
+          final allMetals = _metalsFromState(state);
 
           final key = selectedCurrency.toUpperCase();
-          final MetalPrices p = metals[key] ??
+
+          // ✅ Gold (XAU)
+          final MetalPrices goldP = allMetals['XAU']?[key] ??
               MetalPrices(
                 market: 0,
                 buy: 0,
@@ -74,20 +76,35 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                 timestamp: '',
               );
 
-          const ounceTitle = 'Ounce';
-          const gramTitle = 'Gram';
+          final goldGramBuy = goldP.buy;
+          final goldGramSell = goldP.sell;
+          final goldOunceBuy = goldGramBuy * LocaleKeys.ounceFactor;
+          final goldOunceSell = goldGramSell * LocaleKeys.ounceFactor;
 
-          final gramBuy = p.buy;
-          final gramSell = p.sell;
+          final goldRows = <_MetalRow>[
+            _MetalRow(name: 'Ounce', buy: goldOunceBuy, sell: goldOunceSell),
+            _MetalRow(name: 'Gram', buy: goldGramBuy, sell: goldGramSell),
 
-          final ounceBuy = gramBuy * LocaleKeys.ounceFactor;
-          final ounceSell = gramSell * LocaleKeys.ounceFactor;
+          ];
 
-          final rows = <_MetalRow>[
-            _MetalRow(name: ounceTitle, buy: ounceBuy, sell: ounceSell),
-            _MetalRow(name: gramTitle, buy: gramBuy, sell: gramSell),
-            _MetalRow(name: gramTitle, buy: gramBuy, sell: gramSell),
-            _MetalRow(name: gramTitle, buy: gramBuy, sell: gramSell),
+          // ✅ Silver (XAG)
+          final MetalPrices silverP = allMetals['XAG']?[key] ??
+              MetalPrices(
+                market: 0,
+                buy: 0,
+                sell: 0,
+                currency: key,
+                timestamp: '',
+              );
+
+          final silverGramBuy = silverP.buy;
+          final silverGramSell = silverP.sell;
+          final silverOunceBuy = silverGramBuy * LocaleKeys.ounceFactor;
+          final silverOunceSell = silverGramSell * LocaleKeys.ounceFactor;
+
+          final silverRows = <_MetalRow>[
+            _MetalRow(name: 'Ounce', buy: silverOunceBuy, sell: silverOunceSell),
+            _MetalRow(name: 'Gram', buy: silverGramBuy, sell: silverGramSell),
           ];
 
           return Column(
@@ -191,68 +208,41 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                   ],
                 ),
               ),
-              const SizedBox(height: 20),
+              // ✅ Gold (XAU) Label
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  'Gold (XAU)',
+                  style: TextStyle(
+                    color: AppColors.yellow2,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
               Column(
-                children: rows.map((m) {
-                  return Container(
-                    margin: const EdgeInsets.only(bottom: 6, left: 4, right: 4),
-                    padding: const EdgeInsets.all(16),
-                    decoration: BoxDecoration(
-                      color: AppColors.grey,
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          flex: 2,
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 12),
-                            child: Text(
-                              m.name,
-                              style: const TextStyle(
-                                color: AppColors.yellow2,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
-                              ),
-                            ),
-                          ),
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Center(
-                            child: LivePriceText(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 10),
-                              price: m.buy,
-                              fontSize: 14,
-                              decimals: 2,
-                              fakeMinDelta: 0.01,
-                              fakeMaxDelta: 0.05,
-                              fakeTickEvery: const Duration(milliseconds: 900),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          width: 8.w,
-                        ),
-                        Expanded(
-                          flex: 2,
-                          child: Center(
-                            child: LivePriceText(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 4, vertical: 10),
-                              fontSize: 14,
-                              price: m.sell,
-                              decimals: 2,
-                              fakeMinDelta: 0.01,
-                              fakeMaxDelta: 0.05,
-                              fakeTickEvery: const Duration(milliseconds: 900),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
+                children: goldRows.map((m) {
+                  return _buildMetalRow(m);
+                }).toList(),
+              ),
+              const SizedBox(height: 16),
+              // ✅ Silver (XAG) Label
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+                alignment: Alignment.centerLeft,
+                child: const Text(
+                  'Silver (XAG)',
+                  style: TextStyle(
+                    color: Colors.white70,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ),
+              ),
+              Column(
+                children: silverRows.map((m) {
+                  return _buildMetalRow(m);
                 }).toList(),
               ),
             ],
@@ -262,9 +252,71 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
     );
   }
 
-  Map<String, MetalPrices> _metalsFromState(LivePriceState state) {
+  Map<String, Map<String, MetalPrices>> _metalsFromState(LivePriceState state) {
     if (state is LivePriceLive) return state.metals;
     return const {};
+  }
+
+  Widget _buildMetalRow(_MetalRow m) {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 6, left: 4, right: 4),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        color: AppColors.grey,
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 2,
+            child: Padding(
+              padding: const EdgeInsets.only(left: 12),
+              child: Text(
+                m.name,
+                style: const TextStyle(
+                  color: AppColors.yellow2,
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+            ),
+          ),
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: LivePriceText(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 4, vertical: 10),
+                price: m.buy,
+                fontSize: 14,
+                decimals: 2,
+                fakeMinDelta: 0.01,
+                fakeMaxDelta: 0.05,
+                fakeTickEvery: const Duration(milliseconds: 900),
+              ),
+            ),
+          ),
+          SizedBox(
+            width: 8.w,
+          ),
+          Expanded(
+            flex: 2,
+            child: Center(
+              child: LivePriceText(
+                padding: const EdgeInsets.symmetric(
+                    horizontal: 4, vertical: 10),
+                fontSize: 14,
+                price: m.sell,
+                decimals: 2,
+                fakeMinDelta: 0.01,
+                fakeMaxDelta: 0.05,
+                fakeTickEvery: const Duration(milliseconds: 900),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 }
 

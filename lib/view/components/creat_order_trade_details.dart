@@ -42,9 +42,11 @@ class _CreatTradeOrderDetailsState extends State<CreatTradeOrderDetails> {
       builder: (context, liveState) {
         // ✅ العملة حسب category index (0 => USD, 1 => EGP)
         final String currencyKey = widget.tradeOrOrder.currency ?? "USD";
+        // ✅ تحديد نوع المعدن
+        final String metalKey = (widget.tradeOrOrder.metal ?? 'XAU').toUpperCase();
         MetalPrices? mp;
         if (liveState is LivePriceLive) {
-          mp = liveState.metals[currencyKey];
+          mp = liveState.metals[metalKey]?[currencyKey];
         }
 
         final double livePrice =
@@ -392,7 +394,7 @@ class _CreatTradeOrderDetailsState extends State<CreatTradeOrderDetails> {
           isOrder == true
               ? const SizedBox()
               : Text(
-                  "${Methods.removeTrailingZeros(isOrder ? widget.tradeOrOrder.openPrice! : widget.tradeOrOrder.openPrice!)} "
+                  "${Methods.removeTrailingZeros(widget.tradeOrOrder.openPrice!)} "
                   "${Methods.getCurrencyText2(widget.tradeOrOrder.currency)}",
                   style: Theme.of(context).textTheme.headlineSmall?.copyWith(
                         color: AppColors.white,
