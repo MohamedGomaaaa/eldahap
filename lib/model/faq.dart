@@ -10,13 +10,14 @@ class FAQ {
     id = json['id'];
     question = json['question'];
     answer = json['answer'];
+    isExpanded = false;
   }
 
-  Map<String, dynamic> toJson() {
-    final Map<String, dynamic> data = <String, dynamic>{};
-    data['id'] = id;
-    data['question'] = question;
-    data['answer'] = answer;
-    return data;
-  }
+  // Map<String, dynamic> toJson() {
+  //   final Map<String, dynamic> data = <String, dynamic>{};
+  //   data['id'] = id;
+  //   data['question'] = question;
+  //   data['answer'] = answer;
+  //   return data;
+  // }
 }
