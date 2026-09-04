@@ -16,21 +16,7 @@ import 'dart:io';
 
 
 
-import 'package:bloc/bloc.dart';
-import 'package:easy_localization/easy_localization.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_inappwebview/flutter_inappwebview.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:official_gold/view_model/data/local/shared_helper.dart';
-import 'package:flutter/foundation.dart';
-import 'view_model/cubit/observer.dart';
-import 'l10n/localization.dart';
-import 'my_app.dart';
-import 'dart:async';
-import 'dart:io';
 
-/// token 227|0uXa77GZ3DjN2jLWr5UnDseKwSxV8h9ztijLWUJ74d9bfac4
-// https://officialgold.site/api/
 
 void main() {
   runZonedGuarded(() async {
