@@ -7,7 +7,7 @@
 
 
     <application
-        android:label="official_gold"
+        android:label="offiicial_gold"
         android:name="${applicationName}"
         android:icon="@mipmap/launcher_icon">
         android:usesCleartextTraffic="true"
