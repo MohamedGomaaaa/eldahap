@@ -1,3 +1,5 @@
+import 'package:official_gold/services/theme/dark_theme.dart';
+import 'package:official_gold/utils/app_color.dart';
 import 'package:official_gold/view_model/cubit/auth_cubit/auth_cubit.dart';
 import 'package:official_gold/view_model/cubit/home_cubit/home_cubit.dart';
 import 'package:official_gold/view_model/cubit/layout_cubit/layout_cubit.dart';
@@ -5,9 +7,9 @@ import 'package:official_gold/view_model/cubit/live_price_cubit/live_cubit.dart'
 import 'package:official_gold/view_model/cubit/product_cubit/product_cubit.dart';
 import 'package:official_gold/view_model/cubit/ticket_cubit/ticket_cubit.dart';
 import 'package:official_gold/view_model/cubit/trades_cubit/trades_cubit.dart';
-import 'package:official_gold/view_model/utils/colors.dart';
+
 import 'package:easy_localization/easy_localization.dart';
-import 'view_model/theme/dark_theme.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';

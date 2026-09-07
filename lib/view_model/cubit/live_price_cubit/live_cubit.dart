@@ -2,9 +2,10 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../model/metal_price_model.dart';
 import '../../../model/live_price_model.dart';
-import '../../data/local/shared_helper.dart';
-import '../../data/local/shared_keys.dart';
-import '../../utils/socket.dart';
+
+import '../../../services/shared_preference/shared_helper.dart';
+import '../../../services/shared_preference/shared_keys.dart';
+import '../../../services/socket/socket.dart';
 import 'live_states.dart';
 import 'dart:convert';
 import 'dart:async';

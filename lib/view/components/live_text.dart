@@ -1,9 +1,10 @@
 
-import 'package:official_gold/view_model/utils/text_style.dart';
-import '../../view_model/utils/colors.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:math';
+
+import '../../utils/app_color.dart';
+import '../../utils/text_style.dart';
 
 
 class LivePriceText extends StatefulWidget {

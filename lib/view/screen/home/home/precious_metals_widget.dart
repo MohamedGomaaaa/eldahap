@@ -2,11 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-import '../../../../l10n/locale_keys.g.dart';
 import '../../../../model/metal_price_model.dart';
+import '../../../../services/translation/locale_keys.g.dart';
+import '../../../../utils/app_color.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
-import '../../../../view_model/utils/colors.dart';
 import '../../../components/live_status_text.dart';
 import '../../../components/live_text.dart';
 

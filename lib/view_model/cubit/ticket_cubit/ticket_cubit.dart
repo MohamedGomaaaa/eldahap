@@ -4,7 +4,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../model/ticket.dart';
 import '../../../model/ticket.dart' as ticket;
-import '../../data/network/repos/ticket_repository.dart';
+
+import '../../repos/ticket_repository.dart';
 part 'ticket_state.dart';
 
 

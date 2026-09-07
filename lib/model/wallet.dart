@@ -1,5 +1,6 @@
 
-import '../view_model/utils/common_method.dart';
+
+import '../utils/common_method.dart';
 
 class Wallet {
   bool? success;

@@ -7,16 +7,19 @@ import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:official_gold/view_model/utils/colors.dart';
-import 'package:official_gold/view_model/utils/common_method.dart';
 
+
+import '../../../model/payment_methods_model.dart';
 import '../../../model/trade_order_model.dart';
-import '../../../view_model/data/local/shared_helper.dart';
-import '../../../view_model/data/local/shared_keys.dart';
-import '../../../view_model/data/network/end_points.dart';
-import '../../../view_model/utils/toast.dart';
+
+import '../../../services/end_points/end_points.dart';
+import '../../../services/shared_preference/shared_helper.dart';
+import '../../../services/shared_preference/shared_keys.dart';
+import '../../../utils/app_color.dart';
+import '../../../utils/common_method.dart';
+import '../../../utils/toast.dart';
 import '../../components/app_loader.dart';
-import 'models/payment_methods_model.dart';
+
 
 // 1. Model for API Response
 class PageModel {

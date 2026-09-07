@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/view/screen/home/home/home_screen.dart';
-import 'package:official_gold/view/screen/home/portfolio/portfolio_all_trades_orders_screen.dart';
-import 'package:official_gold/view/screen/home/products/products_screen.dart';
-import 'package:official_gold/view_model/cubit/live_price_cubit/live_cubit.dart';
 
-import '../../../view/screen/home/charts/charts.dart';
-import '../../../view/screen/home/product_chart/product_chart_screen.dart';
-import '../../../view/screen/home/profile/tawk_chat/tawk_chat_screen.dart';
-import '../../../view/screen/home/profile/wallet/wallet_screen.dart';
+import '../../../view/screen/chart_screen/product_chart_screen.dart';
+import '../../../view/screen/portfolio/portfolio_all_trades_orders_screen.dart';
+import '../../../view/screen/products/products_screen.dart';
+import '../../../view/screen/profile/wallet/wallet_screen.dart';
 
 part 'layout_state.dart';
 

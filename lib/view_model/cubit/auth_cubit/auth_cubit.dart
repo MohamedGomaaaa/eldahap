@@ -3,12 +3,17 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/model/user.dart';
 import 'package:official_gold/view/components/app_loader.dart';
-import 'package:official_gold/view_model/data/local/shared_helper.dart';
-import 'package:official_gold/view_model/data/local/shared_keys.dart';
-import 'package:official_gold/view_model/data/network/repos/authentication_repository.dart';
-import 'package:official_gold/view_model/utils/toast.dart';
 
-part 'auth_state.dart';
+import '../../../services/shared_preference/shared_helper.dart';
+import '../../../services/shared_preference/shared_keys.dart';
+import '../../../utils/toast.dart';
+import '../../repos/authentication_repository.dart';
+import 'auth_state.dart';
+
+
+
+
+
 
 class AuthCubit extends Cubit<AuthState> {
   AuthCubit() : super(AuthInitial());

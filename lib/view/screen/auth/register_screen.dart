@@ -3,13 +3,15 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:official_gold/l10n/locale_keys.g.dart';
-import 'package:official_gold/view_model/utils/assets.dart';
-import 'package:official_gold/view_model/utils/colors.dart';
-import 'package:official_gold/view_model/utils/navigation.dart';
+
+import '../../../services/translation/locale_keys.g.dart';
+import '../../../utils/app_assets.dart';
+import '../../../utils/app_color.dart';
+import '../../../utils/navigation.dart';
+import '../../../utils/toast.dart';
+import '../../../utils/validator.dart';
 import '../../../view_model/cubit/auth_cubit/auth_cubit.dart';
-import '../../../view_model/utils/toast.dart';
-import '../../../view_model/utils/validator.dart';
+import '../../../view_model/cubit/auth_cubit/auth_state.dart';
 import '../create_nav_bar/layout_screen.dart';
 import 'creat_country_phone.dart';
 import 'forget_password_screen.dart';
@@ -17,24 +19,7 @@ import 'forget_password_screen.dart';
 
 
 
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:flutter_svg/flutter_svg.dart';
-import 'package:easy_localization/easy_localization.dart';
 
-// import your files...
-// import 'auth_cubit.dart';
-// import 'auth_state.dart';
-// import 'app_assets.dart';
-// import 'app_colors.dart';
-// import 'locale_keys.g.dart';
-// import 'navigation.dart';
-// import 'layout_screen.dart';
-// import 'forget_password_screen.dart';
-// import 'validator.dart';
-// import 'toast.dart';
-// import 'creat_country_code_field.dart';
 
 class RegisterScreen extends StatelessWidget {
   const RegisterScreen({super.key});

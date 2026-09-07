@@ -1,4 +1,5 @@
-import 'package:official_gold/view_model/utils/app_constant.dart';
+
+import '../utils/app_constant.dart';
 
 class Setting {
   bool? success;

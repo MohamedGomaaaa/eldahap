@@ -2,11 +2,13 @@ import 'dart:async';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:official_gold/view_model/data/network/repos/trades_repository.dart';
+
 import '../../../model/commission_rate_model.dart';
 import '../../../model/trade_order_group.dart';
 import '../../../model/metal_price_model.dart';
-import '../../utils/common_method.dart';
+import '../../../utils/common_method.dart';
+import '../../repos/trades_repository.dart';
+
 part 'trades_state.dart';
 
 class TradesCubit extends Cubit<TradesState> {

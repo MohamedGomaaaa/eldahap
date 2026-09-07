@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:official_gold/view_model/utils/colors.dart';
+
 import 'package:shimmer/shimmer.dart';
+
+import '../../utils/app_color.dart';
 
 class ShimmerWidget extends StatelessWidget {
   final Color? baseColor;

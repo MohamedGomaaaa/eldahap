@@ -3,45 +3,25 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:official_gold/view_model/data/network/repos/wallet_repository.dart';
-import 'package:official_gold/view_model/utils/app_constant.dart';
+
 import '../../../model/report_2.dart';
 import '../../../model/trade_order_model.dart';
 import '../../../model/transaction_model.dart';
 import '../../../model/metal_price_model.dart';
-import '../../utils/common_method.dart';
-import '../../utils/toast.dart';
-import '../live_price_cubit/live_cubit.dart';
-import '../live_price_cubit/live_states.dart';
+import '../../../utils/app_constant.dart';
+import '../../../utils/common_method.dart';
+import '../../../utils/toast.dart';
+import '../../repos/wallet_repository.dart';
+
 part 'wallet_state.dart';
 
 class WalletCubit extends Cubit<WalletState> {
   WalletCubit() : super(WalletInitial());
   static WalletCubit get(context) => BlocProvider.of<WalletCubit>(context);
-  //
-  // final LivePriceCubit livePriceCubit;
-  // StreamSubscription? _livePriceSubscription;
-  //
-  // WalletCubit({
-  //   required this.livePriceCubit,
-  // }) : super(WalletInitial()) {
-  //   _livePriceSubscription = livePriceCubit.stream.listen((state) {
-  //     if (state is LivePriceLive) {
-  //       calculateTotals(
-  //         liveUsdPrice: state.metals['USD']?.buy ?? 0,
-  //         liveEgpPrice: state.metals['EGP']?.buy ?? 0,
-  //       );
-  //     }
-  //   });
-  // }
-  //
-  // @override
-  // Future<void> close() {
-  //   _livePriceSubscription?.cancel();
-  //   return super.close();
-  // }
 
-//////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
   TransactionModel? transactionModel;
   List<TransactionData> allTransactions = []; // Store all transactions
   bool isLoadingMoreTransactions = false;

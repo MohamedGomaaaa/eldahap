@@ -4,18 +4,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:official_gold/l10n/locale_keys.g.dart';
+
 import 'package:official_gold/view/screen/home/home/news/news_screen.dart';
 import 'package:official_gold/view/screen/home/home/precious_metals_widget.dart';
 import 'package:official_gold/view_model/cubit/home_cubit/home_cubit.dart';
 import 'package:official_gold/view_model/cubit/wallet_cubit/wallet_cubit.dart';
-import 'package:official_gold/view_model/utils/assets.dart';
-import 'package:official_gold/view_model/utils/navigation.dart';
+
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../../../services/translation/locale_keys.g.dart';
+import '../../../../utils/app_assets.dart';
+import '../../../../utils/app_color.dart';
+import '../../../../utils/navigation.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
-import '../../../../view_model/utils/colors.dart';
-import '../../../../view_model/utils/common_method.dart';
+
 import '../../../components/shimmer_widget.dart';
 import '../../../components/svg_widget.dart';
 

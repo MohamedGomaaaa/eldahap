@@ -7,9 +7,10 @@ import 'package:intl_phone_field/intl_phone_field.dart';
 import 'package:intl_phone_field/phone_number.dart';
 import 'package:intl_phone_field/countries.dart';
 
-import '../../../view_model/utils/colors.dart';
-import '../../../view_model/utils/text_style.dart';
-import '../../../view_model/utils/validator.dart';
+import '../../../utils/app_color.dart';
+import '../../../utils/text_style.dart';
+import '../../../utils/validator.dart';
+
 
 class CreatCountryCodeField extends StatelessWidget {
   final FutureOr<String?> Function(PhoneNumber?)? validator;

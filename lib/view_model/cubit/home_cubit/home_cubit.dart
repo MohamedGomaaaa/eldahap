@@ -6,9 +6,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:official_gold/model/faq.dart';
 import 'package:official_gold/model/slider.dart' as slider;
 import 'package:official_gold/model/user.dart';
-import 'package:official_gold/view_model/data/network/repos/home_repository.dart';
 
 import '../../../model/news_model.dart';
+import '../../repos/home_repository.dart';
 
 part 'home_state.dart';
 
@@ -87,7 +87,7 @@ class HomeCubit extends Cubit<HomeState> {
     emit(GetProfileLoadingState());
     await HomeRepository().profile().then((value) {
       user.value = value;
-      print("user home= ${user.value.toJson()}");
+
       fillControllers();
       emit(GetProfileSuccessState(user.value));
     }).catchError((error) {

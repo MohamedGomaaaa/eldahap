@@ -1,6 +1,12 @@
-part of 'auth_cubit.dart';
 
-@immutable
+
+
+
+
+
+
+import '../../../model/user.dart';
+
 sealed class AuthState {}
 
 final class AuthInitial extends AuthState {}

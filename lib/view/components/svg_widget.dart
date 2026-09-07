@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:official_gold/view_model/utils/colors.dart';
+
+import '../../utils/app_color.dart';
 
 class SvgWidget extends StatelessWidget {
   final String assetName;

@@ -2,15 +2,27 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:official_gold/l10n/locale_keys.g.dart';
 import 'package:official_gold/view/screen/auth/login_screen.dart';
 import 'package:official_gold/view/screen/auth/register_screen.dart';
-import 'package:official_gold/view_model/utils/assets.dart';
-import 'package:official_gold/view_model/utils/colors.dart';
+import 'dart:async';
 
+import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:intl_phone_field/country_picker_dialog.dart';
+import 'package:intl_phone_field/intl_phone_field.dart';
+import 'package:intl_phone_field/phone_number.dart';
+import 'package:intl_phone_field/countries.dart';
+
+import 'package:easy_localization/easy_localization.dart';
+
+
+import '../../../services/translation/locale_keys.g.dart';
+import '../../../utils/app_assets.dart';
+import '../../../utils/app_color.dart';
+import '../../../utils/navigation.dart';
+import '../../../utils/text_style.dart';
+import '../../../utils/toast.dart';
 import '../../../view_model/cubit/auth_cubit/auth_cubit.dart';
-import '../../../view_model/utils/navigation.dart';
-import '../../../view_model/utils/toast.dart';
 import 'code_password_screen.dart';
 
 class ForgetPasswordScreen extends StatelessWidget {

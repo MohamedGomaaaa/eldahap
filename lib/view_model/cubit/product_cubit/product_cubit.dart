@@ -4,13 +4,14 @@ import 'dart:developer';
 import 'package:dio/dio.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:official_gold/view_model/data/network/dio_helper.dart';
-import 'package:official_gold/view_model/data/network/end_points.dart';
-import 'package:official_gold/view_model/data/network/repos/product_repository.dart';
 
 import '../../../model/category.dart';
 import '../../../model/product.dart';
-import '../../utils/toast.dart';
+import '../../../services/dio_helper/dio_helper.dart';
+import '../../../services/end_points/end_points.dart';
+import '../../../utils/toast.dart';
+import '../../repos/product_repository.dart';
+
 
 part 'product_state.dart';
 

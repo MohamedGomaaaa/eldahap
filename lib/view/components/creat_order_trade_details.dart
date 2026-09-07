@@ -6,9 +6,10 @@ import '../../../../model/metal_price_model.dart';
 import '../../../../model/trade_order_model.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
-import '../../../../view_model/utils/colors.dart';
-import '../../../../view_model/utils/common_method.dart';
-import '../../l10n/locale_keys.g.dart';
+
+import '../../services/translation/locale_keys.g.dart';
+import '../../utils/app_color.dart';
+import '../../utils/common_method.dart';
 import '../../view_model/cubit/trades_cubit/trades_cubit.dart';
 import 'live_status_text.dart';
 import 'live_text.dart';

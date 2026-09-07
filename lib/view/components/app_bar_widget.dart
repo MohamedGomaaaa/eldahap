@@ -3,13 +3,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../model/user.dart';
+import '../../utils/app_assets.dart';
+import '../../utils/app_color.dart';
+import '../../utils/navigation.dart';
 import '../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
-import '../../view_model/utils/assets.dart';
-import '../../view_model/utils/colors.dart';
-import '../../view_model/utils/common_method.dart';
-import '../../view_model/utils/navigation.dart';
-import '../screen/home/profile/profile_screen/profile_screen.dart';
+
+import '../screen/profile/profile_screen/profile_screen.dart';
 import 'svg_widget.dart';
 
 
@@ -23,9 +23,8 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../model/user.dart';
 import '../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
-import '../../view_model/utils/assets.dart';
-import '../../view_model/utils/colors.dart';
-import '../../view_model/utils/navigation.dart';
+
+
 import 'svg_widget.dart';
 
 
