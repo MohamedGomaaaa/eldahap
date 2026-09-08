@@ -8,10 +8,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import '../../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 
 import '../../../../../model/payment_methods_model.dart';
+import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
 import '../../../../../utils/common_method.dart';
-import '../../../static_pages/static_page_screen.dart';
 class BankDetailsPage extends StatefulWidget {
   final double amount;
   final PaymentMethod paymentMethod;

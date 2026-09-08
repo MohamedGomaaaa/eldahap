@@ -17,9 +17,6 @@ import '../create_nav_bar/layout_screen.dart';
 
 import 'forget_password_screen.dart';
 
-
-
-
 class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
 
@@ -42,18 +39,20 @@ class LoginScreen extends StatelessWidget {
                       start: 12.w,
                       end: 12.w,
                       top: 12.h,
-                      bottom: 0,
+                      bottom: 12.h,
                     ),
                     child: Column(
                       children: [
                         Expanded(
                           child: Container(
+                            margin:  EdgeInsets.only(bottom: 20.h),
                             padding: EdgeInsets.all(12.sp),
                             decoration: BoxDecoration(
-                              borderRadius: BorderRadiusDirectional.only(
-                                topStart: Radius.circular(20.r),
-                                topEnd: Radius.circular(20.r),
-                              ),
+                              borderRadius: BorderRadius.circular(20.r),
+                              // borderRadius: BorderRadiusDirectional.only(
+                              //   topStart: Radius.circular(20.r),
+                              //   topEnd: Radius.circular(20.r),
+                              // ),
                               border: Border.all(
                                 color: AppColors.yellowBorder,
                                 width: 1.w,
@@ -67,7 +66,6 @@ class LoginScreen extends StatelessWidget {
                                     SizedBox(height: 20.h),
                                     SvgPicture.asset(AppAssets.logo),
                                     SizedBox(height: 40.h),
-
                                     TextFormField(
                                       controller: cubit.email,
                                       textInputAction: TextInputAction.next,
@@ -83,7 +81,6 @@ class LoginScreen extends StatelessWidget {
                                       },
                                     ),
                                     SizedBox(height: 12.h),
-
                                     TextFormField(
                                       controller: cubit.password,
                                       decoration: InputDecoration(
@@ -97,21 +94,21 @@ class LoginScreen extends StatelessWidget {
                                         return null;
                                       },
                                     ),
-
                                     Align(
-                                      alignment: AlignmentDirectional.centerStart,
+                                      alignment:
+                                          AlignmentDirectional.centerStart,
                                       child: TextButton(
                                         onPressed: isLoading
                                             ? null
                                             : () {
-                                          Navigation.push(context, const ForgetPasswordScreen());
-                                        },
-                                        child: Text(LocaleKeys.forgetYourPassword.tr()),
+                                                Navigation.push(context,
+                                                    const ForgetPasswordScreen());
+                                              },
+                                        child: Text(
+                                            LocaleKeys.forgetYourPassword.tr()),
                                       ),
                                     ),
-
                                     SizedBox(height: 40.h),
-
                                     SizedBox(
                                       width: 200.w,
                                       height: 40.h,
@@ -119,43 +116,50 @@ class LoginScreen extends StatelessWidget {
                                         onPressed: isLoading
                                             ? null
                                             : () async {
+                                                FocusScope.of(context)
+                                                    .unfocus();
+                                                final ok = cubit
+                                                        .formKey.currentState
+                                                        ?.validate() ??
+                                                    false;
+                                                if (!ok) return;
 
+                                                await cubit.login();
 
-                                          FocusScope.of(context).unfocus();
-                                          final ok = cubit.formKey.currentState?.validate() ?? false;
-                                          if (!ok) return;
-
-                                          await cubit.login();
-
-                                          Navigation.pushAndRemoveUntil(
-                                            context,
-                                            const LayoutScreen(),
-                                          );
-                                        },
+                                                Navigation.pushAndRemoveUntil(
+                                                  context,
+                                                  const LayoutScreen(),
+                                                );
+                                              },
                                         child: Text(
                                           LocaleKeys.login.tr(),
-                                          style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                            fontSize: 16.sp,
-                                            color: AppColors.white,
-                                          ),
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .titleLarge
+                                              ?.copyWith(
+                                                fontSize: 16.sp,
+                                                color: AppColors.white,
+                                              ),
                                         ),
                                       ),
                                     ),
-
                                     SizedBox(height: 12.h),
-
                                     TextButton(
                                       onPressed: isLoading
                                           ? null
                                           : () {
-                                        Navigation.push(context, const RegisterScreen());
-                                      },
+                                              Navigation.push(context,
+                                                  const RegisterScreen());
+                                            },
                                       child: Text(
                                         LocaleKeys.registerNow.tr(),
-                                        style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                                          fontSize: 18.sp,
-                                          color: AppColors.yellow,
-                                        ),
+                                        style: Theme.of(context)
+                                            .textTheme
+                                            .titleLarge
+                                            ?.copyWith(
+                                              fontSize: 18.sp,
+                                              color: AppColors.yellow,
+                                            ),
                                       ),
                                     ),
                                   ],
@@ -179,7 +183,6 @@ class LoginScreen extends StatelessWidget {
     );
   }
 }
-
 
 // class LoginScreen extends StatelessWidget {
 //   const LoginScreen({super.key});
@@ -373,8 +376,8 @@ class _FullScreenAuthLoading extends StatelessWidget {
                 Text(
                   LocaleKeys.loading.tr(),
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    color: AppColors.yellow,
-                  ),
+                        color: AppColors.yellow,
+                      ),
                 ),
               ],
             ),
@@ -384,26 +387,6 @@ class _FullScreenAuthLoading extends StatelessWidget {
     );
   }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 // class LoginScreen extends StatelessWidget {
 //   const LoginScreen({super.key});

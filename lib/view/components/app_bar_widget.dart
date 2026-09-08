@@ -6,15 +6,12 @@ import '../../model/user.dart';
 import '../../utils/app_assets.dart';
 import '../../utils/app_color.dart';
 import '../../utils/navigation.dart';
+import '../../utils/text_style.dart';
 import '../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 
 import '../screen/profile/profile_screen/profile_screen.dart';
 import 'svg_widget.dart';
-
-
-
-
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -24,16 +21,7 @@ import '../../model/user.dart';
 import '../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 
-
 import 'svg_widget.dart';
-
-
-
-
-
-
-
-
 
 ///////////////////////////////////////////////////////  edit by eng gomaa
 class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
@@ -62,14 +50,10 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
 
       titleSpacing: 16.w, // optional
       title: InkWell(
-
-
         splashColor: Colors.transparent,
         highlightColor: Colors.transparent,
-        hoverColor:  Colors.transparent,
-        focusColor:  Colors.transparent,
-
-
+        hoverColor: Colors.transparent,
+        focusColor: Colors.transparent,
         onTap: () => Navigation.push(context, const ProfileScreen()),
         child: Padding(
           // ✅ مساحة عشان الشكل مايبقاش لازق فوق/تحت
@@ -93,8 +77,9 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                   Positioned(
                     top: 27.h,
                     child: Container(
-
-                      padding: EdgeInsets.symmetric(horizontal: 6.w,),
+                      padding: EdgeInsets.symmetric(
+                        horizontal: 6.w,
+                      ),
                       decoration: BoxDecoration(
                         color: AppColors.blueColor,
                         borderRadius: BorderRadius.circular(5.r),
@@ -103,47 +88,44 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
                         valueListenable: HomeCubit.get(context).user,
                         builder: (context, user, _) {
                           return Text(
-
-                             user.mode ?? '',
+                            user.mode ?? '',
                             textAlign: TextAlign.center,
-                            style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                              color: AppColors.white,
-                              fontWeight: FontWeight.w500,
-                              fontSize: 13.sp,
-                            ),
+                            style:
+                                Theme.of(context).textTheme.bodyLarge?.copyWith(
+                                      color: AppColors.white,
+                                      fontWeight: FontWeight.w500,
+                                      fontSize: 13.sp,
+                                    ),
                           );
                         },
                       ),
                     ),
                   ),
                 ],
-              ),const SizedBox(width: 5,),
-
-
-
+              ),
+              const SizedBox(
+                width: 5,
+              ),
 
               BlocBuilder<HomeCubit, HomeState>(
-                buildWhen: (previous, current) => current is GetProfileSuccessState,
+                buildWhen: (previous, current) =>
+                    current is GetProfileSuccessState,
                 builder: (context, state) {
                   // جلب بيانات المستخدم مباشرة من الـ Cubit بشكل آمن
                   final user = HomeCubit.get(context).user.value;
                   return Text(
-                    user.email==null ||user.name==null?"":
-                    "Welcome ${user.name ?? ''}\n${user.email}",
-                    style: Theme.of(context).textTheme.headlineSmall,
-                    textAlign: TextAlign.start,
+                    user.email == null || user.name == null
+                        ? ""
+                        : "Welcome ${user.name ?? ''}\n${user.email}",
+                    style: MainTitle.display5(context).copyWith(
+                      fontSize: 13.sp
+                    )
+
+                    // Theme.of(context).textTheme.headlineSmall,
+                    // textAlign: TextAlign.start,
                   );
                 },
               ),
-
-
-
-
-
-
-
-
-
 
               // if (showBalance) ...[
               //   SizedBox(width: 12.w),
@@ -174,128 +156,3 @@ class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
   Size get preferredSize => Size(double.infinity, height.h);
 }
 /////////////////////////////////////////////////////////////////////////////////////////// old code
-
-
-
-
-
-
-
-
-
-
-
-
-// class AppBarCustom extends StatelessWidget implements PreferredSizeWidget {
-//   final bool showBalance;
-//
-//   final List<Widget>? actions;
-//
-//   const AppBarCustom({this.showBalance = false, this.actions, super.key});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return AppBar(
-//       centerTitle: false,
-//       backgroundColor: AppColors.transparent,
-//       surfaceTintColor: AppColors.transparent,
-//       title: InkWell(
-//         onTap: () {
-//           Navigation.push(context, const ProfileScreen());
-//         },
-//         child: Container(
-//           child: Row(
-//             children: [
-//            Stack(
-//
-//              alignment: Alignment.bottomCenter,
-//              children: [
-//                InkWell(
-//                  onTap: () {
-//                    Navigation.push(context, const ProfileScreen());
-//                  },
-//                  child: CircleAvatar(
-//                    backgroundColor: AppColors.textYellow,
-//                    radius: 22.r,
-//                    child: CircleAvatar(
-//                      backgroundColor: AppColors.background,
-//                      radius: 20.r,
-//                      child: const SvgWidget(
-//                        assetName: AppAssets.face,
-//                      ),
-//                    ),
-//                  ),
-//                ),
-//
-//
-//
-//                Positioned(
-//                  child: Container(
-//
-//                    width: 50,height: 16.h,
-//
-//                    decoration: BoxDecoration(
-//                      color: AppColors.blueColor,
-//                      borderRadius: BorderRadius.circular(4.r),
-//                    ),
-//                    child: ValueListenableBuilder<User>(
-//                      valueListenable: HomeCubit.get(context).user,
-//                      builder: (context, user, _) {
-//                        return InkWell(
-//                            onTap: () {
-//                              Navigation.push(context, const ProfileScreen());
-//                            },
-//                            child:
-//                            Center(
-//                              child: Text(
-//
-//                                user.mode ?? '',
-//                                textAlign: TextAlign.center,
-//
-//                                style:
-//                                Theme.of(context).textTheme.bodyLarge?.copyWith(
-//
-//                                  color: AppColors.white,
-//                                  fontWeight: FontWeight.w500,
-//                                  fontSize: 13.sp,
-//                                ),
-//                              ),
-//                            )
-//                        );
-//                      },
-//                    ),
-//                  ),
-//                )
-//
-//              ],
-//            ),
-//               if (showBalance) ...[
-//                 SizedBox(
-//                   width: 12.w,
-//                 ),
-//                 BlocBuilder<WalletCubit, WalletState>(
-//                   buildWhen: (previous, current) {
-//                     return current is GetWalletSuccessState ||
-//                         current is GetWalletLoadingState ||
-//                         current is GetWalletErrorState;
-//                   },
-//                   builder: (context, state) {
-//                     return Text(
-//                       '\$${WalletCubit.get(context).wallet}',
-//                       style: Theme.of(context).textTheme.headlineSmall,
-//                     );
-//                   },
-//                 ),
-//               ],
-//             ],
-//           ),
-//         ),
-//       ),
-//       actions: actions,
-//     );
-//   }
-//
-//   @override
-//   // TODO: implement preferredSize
-//   Size get preferredSize => Size(double.infinity, 70.h);
-// }

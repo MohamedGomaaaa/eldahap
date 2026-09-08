@@ -118,7 +118,7 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                       'Precious Metals',
                       style: TextStyle(
                         color: AppColors.yellow2,
-                        fontSize: 24,
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -175,12 +175,13 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                         child: Center(child: LiveStatusText()),
                       ),
                     ),
+
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         child: Center(
                           child: Text(
-                            'Buy',
+                            'Sell',
                             style: TextStyle(
                               color: AppColors.yellow2,
                               fontSize: 14,
@@ -190,12 +191,14 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
                         ),
                       ),
                     ),
+
+
                     Expanded(
                       child: Padding(
                         padding: EdgeInsets.symmetric(vertical: 12),
                         child: Center(
                           child: Text(
-                            'Sell',
+                            'Buy',
                             style: TextStyle(
                               color: AppColors.yellow2,
                               fontSize: 14,
@@ -281,14 +284,17 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
               ),
             ),
           ),
+
+
+
           Expanded(
             flex: 2,
             child: Center(
               child: LivePriceText(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 4, vertical: 10),
-                price: m.buy,
                 fontSize: 14,
+                price: m.sell,
                 decimals: 2,
                 fakeMinDelta: 0.01,
                 fakeMaxDelta: 0.05,
@@ -305,8 +311,8 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
               child: LivePriceText(
                 padding: const EdgeInsets.symmetric(
                     horizontal: 4, vertical: 10),
+                price: m.buy,
                 fontSize: 14,
-                price: m.sell,
                 decimals: 2,
                 fakeMinDelta: 0.01,
                 fakeMaxDelta: 0.05,
@@ -314,6 +320,13 @@ class _PreciousMetalsWidgetState extends State<PreciousMetalsWidget>
               ),
             ),
           ),
+
+
+
+
+
+
+
         ],
       ),
     );

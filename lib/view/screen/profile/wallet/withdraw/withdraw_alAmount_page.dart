@@ -9,6 +9,7 @@ import '../../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
 import '../../../../../utils/common_method.dart';
+import '../../../../../utils/text_style.dart';
 import '../../../../../utils/validator.dart';
 
 class WithdrawalAmountPage extends StatefulWidget {
@@ -162,7 +163,14 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
                 },
               ),
 
-              const SizedBox(height: 16),
+              Container(
+                  margin:const EdgeInsets.only(bottom: 16,top: 10,left: 10),
+                  child: Text("Withdrawal fees : 3 \$",style: MainTitle.display5(context).copyWith(
+                   color: AppColors.greyText,
+
+
+                  ),)),
+
 
               const Spacer(),
 

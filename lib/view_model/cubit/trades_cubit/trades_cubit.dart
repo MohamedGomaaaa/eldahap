@@ -47,39 +47,74 @@ class TradesCubit extends Cubit<TradesState> {
   // trades list
   List<GroupOfTradesOrOrders> groupOfTradesOrOrders = [];
   bool isTradesRefreshing = false;
+   Future<void> getTradess({bool showShimmer = true}) async {
+     if (showShimmer) {
+       emit(GetTradesLoadingState());
+     } else {
+       isTradesRefreshing = true;
+       emit(TradesRefreshingState());
+     }
 
-  Future<void> getTradess({bool showShimmer = true}) async {
-    if (showShimmer) {
-      emit(GetTradesLoadingState());
-    } else {
-      isTradesRefreshing = true;
-      emit(TradesRefreshingState());
-    }
+     try {
+       final res = await TradesRepository().tradess();
+       groupOfTradesOrOrders = res.groupOfTradesOrOrders ?? [];
 
-    try {
-      final res = await TradesRepository().tradess();
-      groupOfTradesOrOrders = res.groupOfTradesOrOrders ?? [];
+       isTradesRefreshing = false;
+       print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get trades");
 
+       // ✅ الحل: حماية من الإيرور لو المستخدم قفل الشاشة قبل ما الـ API يخلص
+       if (isClosed) return;
+       emit(GetTradesSuccessState());
 
+     } on DioException catch (error) {
+       isTradesRefreshing = false;
+       debugPrint('Error: ${error.response?.data}');
 
+       // ✅ حماية هنا كمان
+       if (isClosed) return;
+       emit(GetTradesErrorState());
 
+     } catch (error) {
+       isTradesRefreshing = false;
+       debugPrint('Error: $error');
 
-
-
-
-      isTradesRefreshing = false;
-      print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get trades");
-      emit(GetTradesSuccessState());
-    } on DioException catch (error) {
-      isTradesRefreshing = false;
-      debugPrint('Error: ${error.response?.data}');
-      emit(GetTradesErrorState());
-    } catch (error) {
-      isTradesRefreshing = false;
-      debugPrint('Error: $error');
-      emit(GetTradesErrorState());
-    }
-  }
+       // ✅ وهنا كمان
+       if (isClosed) return;
+       emit(GetTradesErrorState());
+     }
+   }
+  // Future<void> getTradess({bool showShimmer = true}) async {
+  //   if (showShimmer) {
+  //     emit(GetTradesLoadingState());
+  //   } else {
+  //     isTradesRefreshing = true;
+  //     emit(TradesRefreshingState());
+  //   }
+  //
+  //   try {
+  //     final res = await TradesRepository().tradess();
+  //     groupOfTradesOrOrders = res.groupOfTradesOrOrders ?? [];
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //
+  //     isTradesRefreshing = false;
+  //     print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> get trades");
+  //     emit(GetTradesSuccessState());
+  //   } on DioException catch (error) {
+  //     isTradesRefreshing = false;
+  //     debugPrint('Error: ${error.response?.data}');
+  //     emit(GetTradesErrorState());
+  //   } catch (error) {
+  //     isTradesRefreshing = false;
+  //     debugPrint('Error: $error');
+  //     emit(GetTradesErrorState());
+  //   }
+  // }
 
   ///////////////////////////////////////////////////////////////////////////////// get Orderss
   // orders list

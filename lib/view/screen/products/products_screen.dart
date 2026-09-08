@@ -48,8 +48,7 @@ class ProductsScreen extends StatelessWidget {
                         ),
                       ),
 ////////////////////////////////////////////////////////////////////////////////////////////    TabBar
-                      child:
-                      BlocBuilder<ProductCubit, ProductState>(
+                      child: BlocBuilder<ProductCubit, ProductState>(
                         buildWhen: (previous, current) {
                           return current is GetCategoriesLoadingState ||
                               current is GetCategoriesSuccessState ||
@@ -59,37 +58,44 @@ class ProductsScreen extends StatelessWidget {
                           final productCubit = ProductCubit.get(context);
                           return TabBar(
                             isScrollable: true, // ✅ Now scrollable
-                             tabAlignment: TabAlignment.center, // ✅ This removes the automatic padding
-                            padding: EdgeInsets.zero, // ⬅️ يزيل padding حول الـ TabBar
-                            labelPadding: const EdgeInsets.symmetric(horizontal: 12), // فقط بين التبويبات
-                            indicatorPadding: EdgeInsets.zero, // ⬅️ يزيل padding من المؤشر نفسه
-                            labelStyle:  TextStyle(
+                            tabAlignment: TabAlignment
+                                .center, // ✅ This removes the automatic padding
+                            padding: EdgeInsets
+                                .zero, // ⬅️ يزيل padding حول الـ TabBar
+                            labelPadding: const EdgeInsets.symmetric(
+                                horizontal: 12), // فقط بين التبويبات
+                            indicatorPadding: EdgeInsets
+                                .zero, // ⬅️ يزيل padding من المؤشر نفسه
+                            labelStyle: TextStyle(
                               fontFamily: GoogleFonts.cairo().fontFamily,
                               fontSize: 16,
                               fontWeight: FontWeight.bold,
                             ),
-                            unselectedLabelStyle:  TextStyle(
+                            unselectedLabelStyle: TextStyle(
                               fontFamily: GoogleFonts.cairo().fontFamily,
                               fontSize: 14,
                             ),
-                            tabs: productCubit.categories.map(
+                            tabs: productCubit.categories
+                                .map(
                                   (e) => Tab(
-                                child: Align(
-                                  alignment: Alignment.center,
-                                  child: Text(
-                                    e.name ?? '',
-                                    style: const TextStyle(
-                                      fontSize: 14,
-                                      overflow: TextOverflow.visible,
+                                    child: Align(
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        e.name ?? '',
+                                        style: const TextStyle(
+                                          fontSize: 14,
+                                          overflow: TextOverflow.visible,
+                                        ),
+                                        softWrap: false,
+                                      ),
                                     ),
-                                    softWrap: false,
                                   ),
-                                ),
-                              ),
-                            ).toList(),
+                                )
+                                .toList(),
                             onTap: (index) {
-                              print(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>> ${productCubit.categories[index].name} >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
-                              productCubit.getProductsByCategoryId(categoryId: productCubit.categories[index].id!);
+                              print(
+                                  ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> send type to socket >>>>>>>>>> ${productCubit.categories[index].name} >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
+                              // productCubit.getProductsByCategoryId(categoryId: productCubit.categories[index].id!);
                             },
                           );
                         },
@@ -99,14 +105,19 @@ class ProductsScreen extends StatelessWidget {
                     Expanded(
                       child: BlocBuilder<ProductCubit, ProductState>(
                         buildWhen: (previous, current) =>
-                        current is GetCategoriesSuccessState,
+                            current is GetCategoriesSuccessState,
                         builder: (context, state) {
                           final cubit = ProductCubit.get(context);
                           return TabBarView(
                             physics: const BouncingScrollPhysics(),
                             children: List.generate(
-                               cubit.categories.length, /// مظبوطه
-                                  (index) => ProductsOfCategoryScreen(index: index, categoryId:  cubit.categories[index].id!,),
+                              cubit.categories.length,
+
+                              /// مظبوطه
+                              (index) => ProductsOfCategoryScreen(
+                                index: index,
+                                categoryId: cubit.categories[index].id!,
+                              ),
                             ),
                           );
                         },

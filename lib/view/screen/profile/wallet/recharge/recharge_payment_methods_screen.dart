@@ -7,11 +7,11 @@ import 'package:official_gold/view/screen/profile/wallet/recharge/recharge_confi
 
 
 import '../../../../../model/payment_data.dart';
+import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
 import '../../../../../utils/common_method.dart';
 import '../../../../../utils/navigation.dart';
-import '../../../static_pages/static_page_screen.dart';
 
 class RechargePaymentMethodsScreen extends StatefulWidget {
   final double amount;

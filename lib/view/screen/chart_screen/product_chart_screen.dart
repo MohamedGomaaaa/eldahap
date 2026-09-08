@@ -34,6 +34,7 @@ class TradingViewPage extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: AppColors.black,
+      appBar: AppBar(),
       body: SafeArea(
         child: FutureBuilder<String>(
           future: rootBundle.loadString(getFilePath()),

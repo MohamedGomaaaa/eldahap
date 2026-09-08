@@ -2,7 +2,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
-
 import '../../../../../model/user.dart';
 import '../../../../../view_model/cubit/home_cubit/home_cubit.dart';
 import '../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
@@ -11,11 +10,13 @@ import '../../../../services/shared_preference/shared_helper.dart';
 import '../../../../services/translation/locale_keys.g.dart';
 import '../../../../utils/app_assets.dart';
 import '../../../../utils/app_color.dart';
+import '../../../../utils/app_constant.dart';
 import '../../../../utils/navigation.dart';
 import '../../../components/profile_tile_widget.dart';
 
 import '../../auth/login_screen.dart';
-import '../../static_pages/static_page_screen.dart';
+import '../../static_pages/old_static_page_screen.dart';
+import '../../static_pages/static_page.dart';
 import '../faq/faq_screen.dart';
 import '../my_account/my_account_screen.dart';
 import '../reports/reports_screen.dart';
@@ -71,7 +72,10 @@ class ProfileScreen extends StatelessWidget {
                       )),
                 );
               },
-            ),const SizedBox(height: 3,),
+            ),
+            const SizedBox(
+              height: 3,
+            ),
             Text(
               LocaleKeys.profile.tr(),
               textAlign: TextAlign.center,
@@ -109,17 +113,6 @@ class ProfileScreen extends StatelessWidget {
               },
             ),
 
-
-
-
-
-
-
-
-
-
-
-
             ProfileTileWidget(
               title: LocaleKeys.settings.tr(),
               assetName: AppAssets.settings,
@@ -127,13 +120,6 @@ class ProfileScreen extends StatelessWidget {
                 Navigation.push(context, const SettingsScreen());
               },
             ),
-
-
-
-
-
-
-
 
             //
             // ValueListenableBuilder<User>(
@@ -153,25 +139,6 @@ class ProfileScreen extends StatelessWidget {
             //     );
             //   },
             // ),
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
             ProfileTileWidget(
               title: LocaleKeys.reports.tr(),
@@ -205,11 +172,20 @@ class ProfileScreen extends StatelessWidget {
                 color: AppColors.textYellow,
               ),
               onTap: () {
+                // Navigation.push(
+                //     context,
+                //     const OldStaticPageScreen(
+                //       pageId: 6,
+                //     ));
+
                 Navigation.push(
-                    context,
-                    const StaticPageScreen(
-                      pageId: 6,
-                    ));
+                  context,
+                  CommonArticleScreen(
+                    title: LocaleKeys.privacyPolicy.tr(),
+                    articleText: AppConstant
+                        .privacyPolicyText, // استدعاء النص من ملف الثوابت
+                  ),
+                );
               },
             ),
             ProfileTileWidget(
@@ -221,10 +197,19 @@ class ProfileScreen extends StatelessWidget {
               ),
               onTap: () {
                 Navigation.push(
-                    context,
-                    const StaticPageScreen(
-                      pageId: 5,
-                    ));
+                  context,
+                  CommonArticleScreen(
+                    title: LocaleKeys.termsAndConditions.tr(),
+                    articleText: AppConstant
+                        .termsOfUseText, // استدعاء النص من ملف الثوابت
+                  ),
+                );
+
+                // Navigation.push(
+                //     context,
+                //     const OldStaticPageScreen(
+                //       pageId: 5,
+                //     ));
               },
             ),
             ProfileTileWidget(
@@ -235,10 +220,18 @@ class ProfileScreen extends StatelessWidget {
               ),
               onTap: () {
                 Navigation.push(
-                    context,
-                    const StaticPageScreen(
-                      pageId: 7,
-                    ));
+                  context,
+                  CommonArticleScreen(
+                    title: LocaleKeys.aboutUs.tr(),
+                    articleText:
+                        AppConstant.aboutUsText, // استدعاء النص من ملف الثوابت
+                  ),
+                );
+                // Navigation.push(
+                //     context,
+                //     const OldStaticPageScreen(
+                //       pageId: 7,
+                //     ));
               },
             ),
 

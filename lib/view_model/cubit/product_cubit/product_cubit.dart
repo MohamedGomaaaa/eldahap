@@ -12,7 +12,6 @@ import '../../../services/end_points/end_points.dart';
 import '../../../utils/toast.dart';
 import '../../repos/product_repository.dart';
 
-
 part 'product_state.dart';
 
 class ProductCubit extends Cubit<ProductState> {
@@ -130,16 +129,26 @@ class ProductCubit extends Cubit<ProductState> {
   }
 
   List<Category> categories = [];
-
   Future<void> getCategories() async {
     emit(GetCategoriesLoadingState());
     await ProductRepository().categories().then((value) {
+
+      // ✅ الحل لمنع مسح المنتجات عند تحديث الكاتيجوري
+      if (categories.isNotEmpty) {
+        for (var newCat in value) {
+          final oldCatIndex = categories.indexWhere((c) => c.id == newCat.id);
+          if (oldCatIndex != -1) {
+            newCat.products = categories[oldCatIndex].products;
+          }
+        }
+      }
+
       categories = value;
 
-      // debugPrint(
-      //     '<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<>>: ${categories.length}');
+      if (isClosed) return; // حماية من خطأ Bad state
       emit(GetCategoriesSuccessState(categories));
     }).catchError((error) {
+      if (isClosed) return; // حماية من خطأ Bad state
       if (error is DioException) {
         debugPrint(
             'Error on Get Categories: ${error.response?.data?.toString()}');
@@ -150,36 +159,32 @@ class ProductCubit extends Cubit<ProductState> {
     });
   }
 
-
-
-
-
-
-
-
-
-
   Future<void> getProductsByCategoryId({required int categoryId}) async {
-    if (state is GetProductsLoadingState) return;
-print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< getProductsByCategoryId ");
-    // ✅ دور على index بتاع الكاتيجوري من الـ id
+    // ✅ تم إيقاف سطر الـ return لكي نسمح لأكثر من تابة بالتحميل معاً
+    // if (state is GetProductsLoadingState) return;
+
+    print(
+        "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< getProductsByCategoryId ");
     final int idx = categories.indexWhere((c) => (c.id ?? 0) == categoryId);
 
     if (idx == -1) {
+      if (isClosed) return;
       emit(GetProductsErrorState(msg: "Category not found: $categoryId"));
       return;
     }
 
     emit(GetProductsLoadingState());
 
-    await ProductRepository()
-        .products(categoryId: categoryId)
-        .then((value) {
+    await ProductRepository().products(categoryId: categoryId).then((value) {
       categories[idx].products = value;
+
+      if (isClosed) return; // حماية من خطأ Bad state
       emit(GetProductsSuccessState(categories));
     }).catchError((error) {
+      if (isClosed) return; // حماية من خطأ Bad state
       if (error is DioException) {
-        debugPrint('Error on Get Products: ${error.response?.data?.toString()}');
+        debugPrint(
+            'Error on Get Products: ${error.response?.data?.toString()}');
         Toast.showError(
           msg: error.response?.data?.toString() ?? 'Error on Get Products',
         );
@@ -187,8 +192,51 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       emit(GetProductsErrorState(msg: error.toString()));
     });
   }
-
-
+  // Future<void> getCategories() async {
+  //   emit(GetCategoriesLoadingState());
+  //   await ProductRepository().categories().then((value) {
+  //     categories = value;
+  //
+  //     emit(GetCategoriesSuccessState(categories));
+  //   }).catchError((error) {
+  //     if (error is DioException) {
+  //       debugPrint(
+  //           'Error on Get Categories: ${error.response?.data?.toString()}');
+  //       Toast.showError(
+  //           msg: error.response?.data?.toString() ?? 'Error on Get Categories');
+  //     }
+  //     emit(GetCategoriesErrorState(msg: error.toString()));
+  //   });
+  // }
+  //
+  // Future<void> getProductsByCategoryId({required int categoryId}) async {
+  //
+  //   print(
+  //       "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<< getProductsByCategoryId ");
+  //   // ✅ دور على index بتاع الكاتيجوري من الـ id
+  //   final int idx = categories.indexWhere((c) => (c.id ?? 0) == categoryId);
+  //
+  //   if (idx == -1) {
+  //     emit(GetProductsErrorState(msg: "Category not found: $categoryId"));
+  //     return;
+  //   }
+  //
+  //   emit(GetProductsLoadingState());
+  //
+  //   await ProductRepository().products(categoryId: categoryId).then((value) {
+  //     categories[idx].products = value;
+  //     emit(GetProductsSuccessState(categories));
+  //   }).catchError((error) {
+  //     if (error is DioException) {
+  //       debugPrint(
+  //           'Error on Get Products: ${error.response?.data?.toString()}');
+  //       Toast.showError(
+  //         msg: error.response?.data?.toString() ?? 'Error on Get Products',
+  //       );
+  //     }
+  //     emit(GetProductsErrorState(msg: error.toString()));
+  //   });
+  // }
 
   // Future<void> getProductsByCategoryId(int index) async {
   //   if (state is GetProductsLoadingState) return;
@@ -214,45 +262,12 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
   //
   //
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
   Future<void> makeOrder(
-      {required Product product, required double livePrice}) async
-  {
+      {required Product product, required double livePrice}) async {
     emit(MakeOrderLoadingState());
 
     final payload = <String, dynamic>{
       "product_id": product.id,
-
       "metal": product.symbol?.split("/")[0] ?? 'XAU',
       "currency": product.currency ?? 'USD',
       "open_price": livePrice,
@@ -294,8 +309,7 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     required Map<String, dynamic> data,
     String tag = '🟦 ORDER PAYLOAD',
     String? path, // optional: endpoint path
-  })
-  {
+  }) {
     final buffer = StringBuffer();
 
     buffer.writeln('==================== $tag ====================');
@@ -371,10 +385,6 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     debugPrint(buffer.toString());
   }
 
-
-
-
-
   void resetEditToggles() {
     stopLoss = false;
     takeProfit = false;
@@ -385,11 +395,8 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
     emit(ResetControllersState());
   }
 
-
-
   Future<void> makeOrderOld(
-      {required Product product, required double livePrice}) async
-  {
+      {required Product product, required double livePrice}) async {
     emit(MakeOrderLoadingState());
     await DioHelper.post(
       path: EndPoints.orderStore,
@@ -448,6 +455,4 @@ print("<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
       throw error;
     });
   }
-
-
 }

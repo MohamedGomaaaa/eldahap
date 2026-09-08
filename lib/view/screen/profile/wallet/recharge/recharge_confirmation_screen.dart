@@ -9,11 +9,11 @@ import 'package:image_picker/image_picker.dart';
 import '../../../../../model/payment_data.dart';
 
 import '../../../../../model/recharge_data.dart';
+import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
 import '../../../../../utils/common_method.dart';
 import '../../../../components/app_loader.dart';
-import '../../../static_pages/static_page_screen.dart';
 
 class RechargeConfirmationScreen extends StatefulWidget {
   final double amount;

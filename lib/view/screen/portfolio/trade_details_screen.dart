@@ -13,6 +13,7 @@ import '../../../../view_model/cubit/live_price_cubit/live_cubit.dart';
 import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 
 
+import '../../../services/app_service/app_service.dart';
 import '../../../services/translation/locale_keys.g.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/navigation.dart';
@@ -21,7 +22,7 @@ import '../../../utils/validator.dart';
 import '../../../view_model/cubit/product_cubit/product_cubit.dart';
 import '../../components/creat_order_trade_details.dart';
 import '../create_nav_bar/layout_screen.dart';
-import '../static_pages/static_page_screen.dart';
+import '../static_pages/old_static_page_screen.dart';
 
 
 
@@ -560,6 +561,10 @@ class _TradeDetailsScreenState extends State<TradeDetailsScreen> {
           ),
           SizedBox(height: 12.sp),
 ///////////////////////////////////////////////////////////////////////////////////////////////////////// button sell  deliveryData
+
+         trade. currency=="USD"?const SizedBox():
+
+
           SizedBox(
             width: double.infinity,
             height: 40.h,
@@ -629,6 +634,9 @@ void confirmBottomSheet(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
+
+
+
             SizedBox(
               width: double.infinity,
               child: ElevatedButton(
@@ -647,6 +655,17 @@ void confirmBottomSheet(
                 ),
               ),
             ),
+
+
+
+
+
+
+
+
+
+
+
             const SizedBox(height: 12),
             SizedBox(
               width: double.infinity,

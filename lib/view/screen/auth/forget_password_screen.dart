@@ -4,23 +4,12 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:official_gold/view/screen/auth/login_screen.dart';
 import 'package:official_gold/view/screen/auth/register_screen.dart';
-import 'dart:async';
-
-import 'package:flutter/material.dart';
-import 'package:flutter_screenutil/flutter_screenutil.dart';
-import 'package:intl_phone_field/country_picker_dialog.dart';
-import 'package:intl_phone_field/intl_phone_field.dart';
-import 'package:intl_phone_field/phone_number.dart';
-import 'package:intl_phone_field/countries.dart';
-
-import 'package:easy_localization/easy_localization.dart';
-
 
 import '../../../services/translation/locale_keys.g.dart';
 import '../../../utils/app_assets.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/navigation.dart';
-import '../../../utils/text_style.dart';
+
 import '../../../utils/toast.dart';
 import '../../../view_model/cubit/auth_cubit/auth_cubit.dart';
 import 'code_password_screen.dart';
@@ -37,7 +26,7 @@ class ForgetPasswordScreen extends StatelessWidget {
           padding: EdgeInsetsDirectional.only(
             start: 12.w,
             end: 12.w,
-            top: 12.h,
+            top: 2.h,
             bottom: 0,
           ),
           child: Column(
@@ -49,16 +38,18 @@ class ForgetPasswordScreen extends StatelessWidget {
                     ),
               ),
               SizedBox(
-                height: 20.h,
+                height: 10.h,
               ),
               Expanded(
                 child: Container(
+                  margin:  EdgeInsets.only(bottom: 20.h),
                   padding: EdgeInsets.all(12.sp),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadiusDirectional.only(
-                      topStart: Radius.circular(20.r),
-                      topEnd: Radius.circular(20.r),
-                    ),
+                    borderRadius: BorderRadius.circular(20.r),
+                    // borderRadius: BorderRadiusDirectional.only(
+                    //   topStart: Radius.circular(20.r),
+                    //   topEnd: Radius.circular(20.r),
+                    // ),
                     border: Border.all(
                       color: AppColors.yellowBorder,
                       width: 1.w,

@@ -12,8 +12,8 @@ import '../../../../view_model/cubit/live_price_cubit/live_states.dart';
 
 import '../../../../view_model/cubit/order_cubit/order_cubit.dart';
 import '../../../../view_model/cubit/order_cubit/order_state.dart';
-import '../../../../view_model/cubit/trades_cubit/trades_cubit.dart';
 
+import '../../../services/app_service/app_service.dart';
 import '../../../services/translation/locale_keys.g.dart';
 import '../../../utils/app_color.dart';
 import '../../../utils/navigation.dart';
@@ -23,7 +23,6 @@ import '../../components/app_loader.dart';
 import '../../components/creat_order_trade_details.dart';
 import '../../components/shimmer_widget.dart';
 import '../create_nav_bar/layout_screen.dart';
-import '../static_pages/static_page_screen.dart';
 
 
 
@@ -586,7 +585,7 @@ class _OrderDetailsScreenState extends State<OrderDetailsScreen> {
           child: Text(
             'Save Changes',
             style: TextStyle(
-              color: AppColors.black,
+              color: AppColors.white,
               fontSize: 16.sp,
               fontWeight: FontWeight.bold,
             ),

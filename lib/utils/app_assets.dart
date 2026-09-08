@@ -34,7 +34,17 @@ class AppAssets {
   static const String newsImage = 'assets/images/news_image.jpeg';
   static const String forexTrading = 'assets/images/forex_trading.jpeg';
   static const String tradingChart = 'assets/images/Trading-Chart.png';
-
+  static const String static = 'assets/images/static.jpeg';
   /// Developers Lottie
   static const String developers = 'assets/lottie/developer.json';
+
+
+
+
+
+
+
+
+
+
 }

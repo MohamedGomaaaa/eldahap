@@ -413,15 +413,12 @@ class ProductDetailsScreen extends StatelessWidget {
                                                             r'^\d+\.?\d{0,2}'),
                                                       ),
                                                     ],
-                                                    validator: (value) {
-                                                      if ((value == null ||
-                                                          value
-                                                              .trim()
-                                                              .isEmpty)) {
-                                                        return "Filed is required";
-                                                      }
-                                                      return null;
-                                                    },
+                                                    validator:
+                                                        (value) =>
+                                                        Validator
+                                                            .validateQuantity(
+                                                          value: value,
+                                                        ),
                                                     onTapOutside: (_) {
                                                       FocusScope.of(context)
                                                           .unfocus();

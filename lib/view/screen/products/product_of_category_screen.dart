@@ -9,16 +9,13 @@ import '../../../../model/product.dart';
 import '../../../../view_model/cubit/product_cubit/product_cubit.dart';
 
 import '../../../services/translation/locale_keys.g.dart';
+import '../../../utils/app_color.dart';
 import '../../components/live_status_text.dart';
 import 'components/product_widget.dart';
 
 class ProductsOfCategoryScreen extends StatefulWidget {
   final int index;
   final int categoryId;
-
-
-
-
 
   const ProductsOfCategoryScreen({
     required this.index,
@@ -37,10 +34,10 @@ class _ProductsOfCategoryScreenState extends State<ProductsOfCategoryScreen> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    // ✅ تتنادي مرة واحدة بس
     if (!_loadedOnce) {
       _loadedOnce = true;
-      ProductCubit.get(context).getProductsByCategoryId(categoryId:widget.categoryId);
+      // استدعاء الدالة لجلب المنتجات
+      ProductCubit.get(context).getProductsByCategoryId(categoryId: widget.categoryId);
     }
   }
 
@@ -48,159 +45,73 @@ class _ProductsOfCategoryScreenState extends State<ProductsOfCategoryScreen> {
   Widget build(BuildContext context) {
     return BlocProvider.value(
       value: ProductCubit.get(context),
-      child: ListView(
-        padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 12.sp),
-        children: [
-          Container(
-            margin: EdgeInsets.symmetric(horizontal: 8.w),
-            child: const LiveStatusText(),
-          ),
-          SizedBox(height: 12.h),
+      // ✅ 1. إضافة RefreshIndicator هنا
+      child: RefreshIndicator(
+        color: AppColors.yellow,
+        onRefresh: () async {
+          // استدعاء الدالة عند السحب لأسفل
+          await ProductCubit.get(context).getProductsByCategoryId(categoryId: widget.categoryId);
+        },
+        child: ListView(
+          // ✅ 2. إضافة AlwaysScrollable عشان يشتغل الريفريش لو مفيش منتجات
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 12.sp),
+          children: [
+            Container(
+              margin: EdgeInsets.symmetric(horizontal: 8.w),
+              child: const LiveStatusText(),
+            ),
+            SizedBox(height: 12.h),
 
-          BlocBuilder<ProductCubit, ProductState>(
-            buildWhen: (previous, current) =>
-            current is GetProductsSuccessState ||
-                current is GetProductsLoadingState,
-            builder: (context, state) {
-              final cubit = ProductCubit.get(context);
+            // ✅ 3. إزالة buildWhen عشان يتفاعل مع كل الحالات بشكل سليم
+            BlocBuilder<ProductCubit, ProductState>(
+              builder: (context, state) {
+                final cubit = ProductCubit.get(context);
+                final productsList = cubit.categories[widget.index].products;
 
-              return Visibility(
-                visible: state is GetProductsSuccessState,
-                replacement: ShimmerWidget(
-                  child: ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index2) => ProductWidget(
-                      product: Product(),
-                      category: Category(),
-                      tabIndex: widget.index, // ✅ USD لو 0, EGP لو 1
+                // هنعرض الشيمر فقط لو بيحمل واللستة فاضية بالفعل
+                final isLoading = state is GetProductsLoadingState ;
+
+                return Visibility(
+                  visible: !isLoading, // ✅ 4. تعديل شرط الظهور
+                  replacement: ShimmerWidget(
+                    child: ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index2) => ProductWidget(
+                        product: Product(),
+                        category: Category(),
+                        tabIndex: widget.index,
+                      ),
+                      separatorBuilder: (context, index) => SizedBox(height: 12.h),
+                      itemCount: 5,
                     ),
-                    separatorBuilder: (context, index) => SizedBox(height: 12.h),
-                    itemCount: 5,
                   ),
-                ),
-                child: cubit.categories[widget.index].products.isEmpty
-                    ? Center(
-                  child: Padding(
-                    padding: EdgeInsets.only(top: 0.3.sh),
-                    child: Text(LocaleKeys.noProductsFound.tr()),
+                  child: productsList.isEmpty && state is GetProductsSuccessState
+                      ? Center(
+                    child: Padding(
+                      padding: EdgeInsets.only(top: 0.3.sh),
+                      child: Text(LocaleKeys.noProductsFound.tr()),
+                    ),
+                  )
+                      : ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: productsList.length,
+                    shrinkWrap: true,
+                    separatorBuilder: (context, index) =>
+                        SizedBox(height: 12.h),
+                    itemBuilder: (context, index2) => ProductWidget(
+                      product: productsList[index2],
+                      category: cubit.categories[widget.index],
+                      tabIndex: widget.index,
+                    ),
                   ),
-                )
-                    : ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: cubit.categories[widget.index].products.length,
-                  shrinkWrap: true,
-                  separatorBuilder: (context, index) =>
-                      SizedBox(height: 12.h),
-                  itemBuilder: (context, index2) => ProductWidget(
-                    product: cubit.categories[widget.index].products[index2],
-                    category: cubit.categories[widget.index],
-                    tabIndex: widget.index, // ✅ USD لو 0, EGP لو 1
-                  ),
-                ),
-              );
-            },
-          ),
-        ],
+                );
+              },
+            ),
+          ],
+        ),
       ),
     );
   }
 }
-
-// class ProductsOfCategoryScreen extends StatefulWidget {
-//   final int index;
-//   const ProductsOfCategoryScreen({required this.index, super.key});
-//
-//   @override
-//   State<ProductsOfCategoryScreen> createState() =>
-//       _ProductsOfCategoryScreenState();
-// }
-//
-// class _ProductsOfCategoryScreenState extends State<ProductsOfCategoryScreen> {
-//   bool _loadedOnce = false;
-//
-//   @override
-//   void didChangeDependencies() {
-//     super.didChangeDependencies();
-//     // ✅ تتنادي مرة واحدة بس
-//     if (!_loadedOnce) {
-//       _loadedOnce = true;
-//       ProductCubit.get(context).getProducts(widget.index);
-//     }
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return BlocProvider.value(
-//       value: ProductCubit.get(context),
-//       child: ListView(
-//         padding: EdgeInsets.symmetric(vertical: 12.sp, horizontal: 12.sp),
-//         children: [
-//           Container(
-//             margin: EdgeInsets.symmetric(horizontal: 8.w),
-//             child: const LiveStatusText(),
-//           ),
-//           SizedBox(height: 12.h),
-//
-//           BlocBuilder<ProductCubit, ProductState>(
-//             buildWhen: (previous, current) =>
-//             current is GetProductsSuccessState ||
-//                 current is GetProductsLoadingState,
-//             builder: (context, state) {
-//               final cubit = ProductCubit.get(context);
-//
-//               return Visibility(
-//                 visible: state is GetProductsSuccessState,
-//                 replacement: ShimmerWidget(
-//                   child: ListView.separated(
-//                     physics: const NeverScrollableScrollPhysics(),
-//                     shrinkWrap: true,
-//                     itemBuilder: (context, index2) => ProductWidget(
-//                       product: Product(),
-//                       category: Category(),
-//                       tabIndex: widget.index, // ✅ USD لو 0, EGP لو 1
-//                     ),
-//                     separatorBuilder: (context, index) => SizedBox(height: 12.h),
-//                     itemCount: 5,
-//                   ),
-//                 ),
-//                 child: cubit.categories[widget.index].products.isEmpty
-//                     ? Center(
-//                   child: Padding(
-//                     padding: EdgeInsets.only(top: 0.3.sh),
-//                     child: Text(LocaleKeys.noProductsFound.tr()),
-//                   ),
-//                 )
-//                     : ListView.separated(
-//                   physics: const NeverScrollableScrollPhysics(),
-//                   itemCount:
-//                   cubit.categories[widget.index].products.length,
-//                   shrinkWrap: true,
-//                   separatorBuilder: (context, index) =>
-//                       SizedBox(height: 12.h),
-//                   itemBuilder: (context, index2) => ProductWidget(
-//                     product:
-//                     cubit.categories[widget.index].products[index2],
-//                     category: cubit.categories[widget.index],
-//                     tabIndex: widget.index, // ✅ USD لو 0, EGP لو 1
-//                   ),
-//                 ),
-//               );
-//             },
-//           ),
-//         ],
-//       ),
-//     );
-//   }
-// }
-
-
-
-
-
-
-
-
-
-
-

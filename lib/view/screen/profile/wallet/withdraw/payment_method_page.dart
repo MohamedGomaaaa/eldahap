@@ -5,10 +5,10 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../model/payment_methods_model.dart';
 
+import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
 import '../../../../../utils/common_method.dart';
-import '../../../static_pages/static_page_screen.dart';
 import 'bank_details_page.dart';
 
 class PaymentMethodPage extends StatefulWidget {

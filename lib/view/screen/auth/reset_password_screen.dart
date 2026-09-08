@@ -42,7 +42,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           padding: EdgeInsetsDirectional.only(
             start: 12.w,
             end: 12.w,
-            top: 12.h,
+            top: 2.h,
             bottom: 0,
           ),
           child: Column(
@@ -54,16 +54,18 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 ),
               ),
               SizedBox(
-                height: 20.h,
+                height: 10.h,
               ),
               Expanded(
                 child: Container(
+                  margin:  EdgeInsets.only(bottom: 20.h),
                   padding: EdgeInsets.all(12.sp),
                   decoration: BoxDecoration(
-                    borderRadius: BorderRadiusDirectional.only(
-                      topStart: Radius.circular(20.r),
-                      topEnd: Radius.circular(20.r),
-                    ),
+                    borderRadius: BorderRadius.circular(20.r),
+                    // borderRadius: BorderRadiusDirectional.only(
+                    //   topStart: Radius.circular(20.r),
+                    //   topEnd: Radius.circular(20.r),
+                    // ),
                     border: Border.all(
                       color: AppColors.yellowBorder,
                       width: 1.w,

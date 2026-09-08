@@ -24,7 +24,6 @@ import '../../../../utils/validator.dart';
 import '../../../components/live_status_text.dart';
 import '../../../components/live_text.dart';
 
-
 class WalletScreen extends StatefulWidget {
   final bool comingFromNavBar;
 
@@ -95,71 +94,71 @@ class _WalletScreenState extends State<WalletScreen> {
             livePrices: livePrices,
           );
           return Column(
-                        children: [
-          Center(
-            child: Container(
-              margin:  EdgeInsets.only(bottom: 15,top: 5.h),
-              child: const LiveStatusText(),
-            ),
-          ),
-    
-          Expanded(
-            child: SingleChildScrollView(
-            controller: _scrollController,
-            physics: const AlwaysScrollableScrollPhysics(),
-              child: Stack(
-                children: [
-                  AbsorbPointer(
-                    absorbing: !hasLive,
-                    child: RefreshIndicator(
-                      onRefresh: () async {
-                        await WalletCubit.get(context).initializeWalletData();
-                        await WalletCubit.get(context).getTradess2();
-                      },
-                      backgroundColor: AppColors.yellow2,
-                      color: AppColors.white,
-                      child: SingleChildScrollView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        // controller: _scrollController,
-                        // physics: const AlwaysScrollableScrollPhysics(),
-                        padding: EdgeInsets.all(16.sp),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-              //////////////////////////////////////////////////////////////////////////////////// Total Portfolio
-                            // _buildPortfolioSection(),
-                            // SizedBox(height: 20.h),
-              ///////////////////////////////////////////////////////////////////////////////////// Balance Cards
-                            _buildBalanceCards(hasLive),
-              //////////////////////////////////////////////////////////////////////////////////// Action Buttons
-                            _buildActionButtons(),
-                            SizedBox(height: 25.h),
-              ////////////////////////////////////////////////////////////////// // Recent Transactions Header
-                            _buildTransactionsHeader(),
-                            SizedBox(height: 15.h),
-                            ///////////////////////////////////////////////////////////////////////////////////// Transaction List
-                            _buildTransactionsList(),
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                  if (!hasLive)
-                    Positioned.fill(
-                      child: IgnorePointer(
-                        ignoring: true, // مجرد لون فقط
-                        child: Container(
-                          color: Colors.grey
-                              .withOpacity(0.3), // غير النسبة براحتك
-                        ),
-                      ),
-                    ),
-                ],
+            children: [
+              Center(
+                child: Container(
+                  margin: EdgeInsets.only(bottom: 15, top: 5.h),
+                  child: const LiveStatusText(),
+                ),
               ),
-            ),
-          ),
-                        ],
-                      );
+              Expanded(
+                child: SingleChildScrollView(
+                  controller: _scrollController,
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  child: Stack(
+                    children: [
+                      AbsorbPointer(
+                        absorbing: !hasLive,
+                        child: RefreshIndicator(
+                          onRefresh: () async {
+                            await WalletCubit.get(context)
+                                .initializeWalletData();
+                            await WalletCubit.get(context).getTradess2();
+                          },
+                          backgroundColor: AppColors.yellow2,
+                          color: AppColors.white,
+                          child: SingleChildScrollView(
+                            physics: const NeverScrollableScrollPhysics(),
+                            // controller: _scrollController,
+                            // physics: const AlwaysScrollableScrollPhysics(),
+                            padding: EdgeInsets.all(16.sp),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                //////////////////////////////////////////////////////////////////////////////////// Total Portfolio
+                                // _buildPortfolioSection(),
+                                // SizedBox(height: 20.h),
+                                ///////////////////////////////////////////////////////////////////////////////////// Balance Cards
+                                _buildBalanceCards(hasLive),
+                                //////////////////////////////////////////////////////////////////////////////////// Action Buttons
+                                _buildActionButtons(),
+                                SizedBox(height: 25.h),
+                                ////////////////////////////////////////////////////////////////// // Recent Transactions Header
+                                _buildTransactionsHeader(),
+                                SizedBox(height: 15.h),
+                                ///////////////////////////////////////////////////////////////////////////////////// Transaction List
+                                _buildTransactionsList(),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                      if (!hasLive)
+                        Positioned.fill(
+                          child: IgnorePointer(
+                            ignoring: true, // مجرد لون فقط
+                            child: Container(
+                              color: Colors.grey
+                                  .withOpacity(0.3), // غير النسبة براحتك
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+              ),
+            ],
+          );
         },
       ),
     );
@@ -170,8 +169,7 @@ class _WalletScreenState extends State<WalletScreen> {
       {required IconData icon,
       required String title,
       required Widget livePnlWalletBalance,
-      required Widget testWidget})
-  {
+      required Widget testWidget}) {
     return Container(
       padding: EdgeInsets.all(16.sp),
       decoration: BoxDecoration(
@@ -245,7 +243,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         ? const SizedBox()
                         : testWidget(
                             totalPnl: cubit.cachedUsdTotal,
-                            ),
+                          ),
                   ),
                 ),
                 SizedBox(width: 12.w),
@@ -255,7 +253,7 @@ class _WalletScreenState extends State<WalletScreen> {
                         ? const SizedBox()
                         : testWidget(
                             totalPnl: cubit.cachedEgpTotal,
-                        ),
+                          ),
                     icon: Icons.account_balance,
                     title: LocaleKeys.egyBalance.tr(),
                     livePnlWalletBalance: !hasLive
@@ -326,29 +324,24 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget testWidget({required num totalPnl}) {
-    return
-        Container(
-          margin: const EdgeInsets.only(top: 3),
-          child: Row(
-
-            children: [
-              Expanded(
-                child: Text(
-
-                     "total pnl : ${Methods.removeTrailingZeros(totalPnl)}",
-                  textAlign: TextAlign.center,
-                  overflow: TextOverflow.ellipsis,
-                    style: MainTitle.display5(context).copyWith(
-                        color: totalPnl > 0 ? AppColors.blueColor : AppColors.redColor,
-                    fontSize: 13
-                    ),
-
-                  ),
-              ),
-            ],
-
-                ),
-        );
+    return Container(
+      margin: const EdgeInsets.only(top: 3),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              Methods.removeTrailingZeros(totalPnl),
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              style: MainTitle.display5(context).copyWith(
+                  color:
+                      totalPnl > 0 ? AppColors.blueColor : AppColors.redColor,
+                  fontSize: 13),
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
   // convert Amount Sheet
@@ -454,7 +447,8 @@ class _WalletScreenState extends State<WalletScreen> {
                           await Navigator.push(
                             context,
                             MaterialPageRoute(
-                                builder: (context) => const WithdrawalAmountPage()),
+                                builder: (context) =>
+                                    const WithdrawalAmountPage()),
                           );
                           final cubit = WalletCubit.get(context);
                           cubit.getTransactions(refresh: true);
@@ -469,8 +463,7 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _actionButton(IconData icon, String label,
-      {required VoidCallback onTap})
-  {
+      {required VoidCallback onTap}) {
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -703,8 +696,7 @@ class _WalletScreenState extends State<WalletScreen> {
     required Color iconBgColor,
     required String dateTime,
     required bool isPositive,
-  })
-  {
+  }) {
     return InkWell(
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
@@ -745,8 +737,8 @@ class _WalletScreenState extends State<WalletScreen> {
                     children: [
                       Text(
                         title,
-                        style: TextStyle(
-                          color: amountColor,
+                        style:const TextStyle(
+                          color: AppColors.yellow,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
                         ),
@@ -775,28 +767,24 @@ class _WalletScreenState extends State<WalletScreen> {
                           children: [
 ///////////////////////////////////////// _transaction Type
                             Flexible(
-                              child: Container(
-                                child: Text(
-                                  "( $type )",
-                                  style: TextStyle(
-                                      color: amountColor,
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 13,
-                                      overflow: TextOverflow.ellipsis),
-                                  overflow: TextOverflow.ellipsis,
-                                ),
+                              child: Text(
+                                "( $type )",
+                                style: const TextStyle(
+                                    color: AppColors.yellow,
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 13,
+                                    overflow: TextOverflow.ellipsis),
+                                overflow: TextOverflow.ellipsis,
                               ),
                             ),
                             SizedBox(width: 8.w),
 ///////////////////////////////////////// status is Approved
-                            Container(
-                              child: Text(
-                                status,
-                                style: TextStyle(
-                                    color: statusColor,
-                                    fontSize: 12,
-                                    fontWeight: FontWeight.w500),
-                              ),
+                            Text(
+                              status,
+                              style: const TextStyle(
+                                  color: AppColors.yellow,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500),
                             ),
 
 ///////////////////////////////////////// mode
@@ -817,8 +805,8 @@ class _WalletScreenState extends State<WalletScreen> {
                       ///////////////////////////////////////// date
                       Text(
                         dateTime,
-                        style: TextStyle(
-                          color: amountColor,
+                        style: const TextStyle(
+                       color: AppColors.yellow,
                           fontSize: 12,
                         ),
                       ),

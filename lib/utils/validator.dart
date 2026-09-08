@@ -166,38 +166,71 @@ class Validator {
 
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Quantity
 
+  // static String? validateQuantity({
+  //   required String? value,
+  //   required num finalPrice, // ✅ السعر النهائي (الإجمالي)
+  //   required num walletBalance, // ✅ رصيد المحفظة
+  //   bool requiredField = false,
+  // })
+  // {
+  //
+  //
+  //   // null or empty
+  //   if (value == null || value.trim().isEmpty) {
+  //     return requiredField ? "please_fill_field" : null;
+  //   }
+  //
+  //   // parse number
+  //   final num? entered = num.tryParse(value.trim());
+  //   if (entered == null) {
+  //     return "invalid_number";
+  //   }
+  //
+  //   // optional: quantity لازم تكون > 0
+  //   if (entered <= 0) {
+  //     return "quantity_must_be_greater_than_zero";
+  //   }
+  //
+  //   // ✅ لو السعر النهائي أكبر من المحفظة -> error
+  //   // if (finalPrice > walletBalance) {
+  //   //   return "insufficient_wallet_balance";
+  //   // }
+  //
+  //   return null;
+  // }
   static String? validateQuantity({
     required String? value,
-    required num finalPrice, // ✅ السعر النهائي (الإجمالي)
-    required num walletBalance, // ✅ رصيد المحفظة
-    bool requiredField = false,
+
   }) {
-    ////////////////////////////////// finalPrice=  live *quantity*weight
 
-    // null or empty
+    // 1. التأكد إن الحقل مش فاضي
     if (value == null || value.trim().isEmpty) {
-      return requiredField ? "please_fill_field" : null;
+      return  "please_fill_field" ;
     }
 
-    // parse number
-    final num? entered = num.tryParse(value.trim());
-    if (entered == null) {
-      return "invalid_number";
+    String trimmedValue = value.trim();
+
+    // 2. ✅ التعديل الجديد: استخدام Regex لرفض أي شيء غير الأرقام الصحيحة
+    // (r'^\d+$') معناه: الحقل لازم يتكون من أرقام فقط (من 0 لـ 9) بدون أي نقط أو علامات
+    if (!RegExp(r'^\d+$').hasMatch(trimmedValue)) {
+      return "invalid_number_no_decimal_allowed"; // أو أي رسالة تناسبك زي "لا يمكن إدخال كسور"
     }
 
-    // optional: quantity لازم تكون > 0
+    // طالما عدى من الـ Regex، إذن هو رقم صحيح 100% ونقدر نحوله بأمان
+    final int entered = int.parse(trimmedValue);
+
+    // 3. الكمية لازم تكون أكبر من صفر
     if (entered <= 0) {
       return "quantity_must_be_greater_than_zero";
     }
 
-    // ✅ لو السعر النهائي أكبر من المحفظة -> error
+    // 4. ✅ لو السعر النهائي أكبر من المحفظة -> error
     // if (finalPrice > walletBalance) {
     //   return "insufficient_wallet_balance";
     // }
 
     return null;
   }
-
 // ////////////////////////////////////////////////////////////////////////////////////////////////////// validate Email
   static String? validateEmail({required String? value}) {
     if (value == null || value.trim().isEmpty) {
@@ -312,5 +345,13 @@ class Validator {
     // }
 
     return null;
+  }
+
+
+  static String checkString(String? value) {
+    if (value == null || value.trim().isEmpty) {
+      return "null Bec Client Not Enter this data";
+    }
+    return value;
   }
 }
