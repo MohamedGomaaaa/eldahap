@@ -168,9 +168,10 @@ class _WalletScreenState extends State<WalletScreen> {
   Widget _balanceCard(
       {required IconData icon,
       required String title,
-      required Widget livePnlWalletBalance,
+      required Widget livePriceWidget,
       required Widget testWidget}) {
     return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
       padding: EdgeInsets.all(16.sp),
       decoration: BoxDecoration(
         color: AppColors.backgroundGrey,
@@ -187,10 +188,8 @@ class _WalletScreenState extends State<WalletScreen> {
             style: const TextStyle(color: AppColors.greyText, fontSize: 14),
           ),
           SizedBox(height: 6.h),
-          livePnlWalletBalance,
-          SizedBox(height: 6.h),
+          livePriceWidget,
           testWidget,
-          SizedBox(height: 6.h),
         ],
       ),
     );
@@ -217,29 +216,28 @@ class _WalletScreenState extends State<WalletScreen> {
                   child: _balanceCard(
                     icon: Icons.account_balance_wallet_outlined,
                     title: LocaleKeys.dollarBalance.tr(),
-                    livePnlWalletBalance: !hasLive
+                    livePriceWidget: !hasLive
                         ? const SizedBox()
-                        :
-                        // cubit.usdTradesPrices.isEmpty
-                        //     ? Text(
-                        //         Methods.removeTrailingZeros(displayUsd),
-                        //         style: WhiteTitle.display5(context),
-                        //       )
-                        //     :
-                        LivePriceText(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 10),
-                            fontSize: 14,
-                            price: !hasLive
-                                ? 0
-                                : double.parse(displayUsd
-                                    .toString()), // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالدولار
-                            decimals: 2,
-                            fakeMinDelta: 0.01,
-                            fakeMaxDelta: 0.05,
-                            fakeTickEvery: const Duration(milliseconds: 900),
-                          ),
-                    testWidget: !hasLive
+                        : cubit.usdTrades.isEmpty
+                            ? Text(
+                                Methods.removeTrailingZeros(displayUsd),
+                                style: WhiteTitle.display5(context),
+                              )
+                            : LivePriceText(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 10),
+                                fontSize: 14,
+                                price: !hasLive
+                                    ? 0
+                                    : double.parse(displayUsd
+                                        .toString()), // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالدولار
+                                decimals: 2,
+                                fakeMinDelta: 0.01,
+                                fakeMaxDelta: 0.05,
+                                fakeTickEvery:
+                                    const Duration(milliseconds: 900),
+                              ),
+                    testWidget: !hasLive || cubit.usdTrades.isEmpty
                         ? const SizedBox()
                         : testWidget(
                             totalPnl: cubit.cachedUsdTotal,
@@ -249,34 +247,33 @@ class _WalletScreenState extends State<WalletScreen> {
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _balanceCard(
-                    testWidget: !hasLive
+                    icon: Icons.account_balance,
+                    title: LocaleKeys.egyBalance.tr(),
+                    livePriceWidget: !hasLive
+                        ? const SizedBox()
+                        : cubit.egpTrades.isEmpty
+                            ? Text(
+                                Methods.removeTrailingZeros(displayEgp),
+                                style: WhiteTitle.display5(context),
+                              )
+                            : LivePriceText(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 4, vertical: 10),
+                                fontSize: 14,
+                                price: !hasLive
+                                    ? 0
+                                    : double.parse(displayEgp.toString()),
+                                // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالجنيه
+                                decimals: 2,
+                                fakeMinDelta: 0.01,
+                                fakeMaxDelta: 0.05,
+                                fakeTickEvery:
+                                    const Duration(milliseconds: 900),
+                              ),
+                    testWidget: !hasLive || cubit.egpTrades.isEmpty
                         ? const SizedBox()
                         : testWidget(
                             totalPnl: cubit.cachedEgpTotal,
-                          ),
-                    icon: Icons.account_balance,
-                    title: LocaleKeys.egyBalance.tr(),
-                    livePnlWalletBalance: !hasLive
-                        ? const SizedBox()
-                        :
-                        // cubit.egpTradesPrices.isEmpty
-                        //     ? Text(
-                        //         Methods.removeTrailingZeros(displayEgp),
-                        //         style: WhiteTitle.display5(context),
-                        //       )
-                        //     :
-                        LivePriceText(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 4, vertical: 10),
-                            fontSize: 14,
-                            price: !hasLive
-                                ? 0
-                                : double.parse(displayEgp.toString()),
-                            // ✅ يعرض الإجمالي التراكمي المحدث من التايمر بالجنيه
-                            decimals: 2,
-                            fakeMinDelta: 0.01,
-                            fakeMaxDelta: 0.05,
-                            fakeTickEvery: const Duration(milliseconds: 900),
                           ),
                   ),
                 ),
@@ -737,7 +734,7 @@ class _WalletScreenState extends State<WalletScreen> {
                     children: [
                       Text(
                         title,
-                        style:const TextStyle(
+                        style: const TextStyle(
                           color: AppColors.yellow,
                           fontWeight: FontWeight.w600,
                           fontSize: 14,
@@ -806,7 +803,7 @@ class _WalletScreenState extends State<WalletScreen> {
                       Text(
                         dateTime,
                         style: const TextStyle(
-                       color: AppColors.yellow,
+                          color: AppColors.yellow,
                           fontSize: 12,
                         ),
                       ),

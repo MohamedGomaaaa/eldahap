@@ -58,7 +58,8 @@ class WalletCubit extends Cubit<WalletState> {
 
   Future<void> convertCurrency({
     required num amount,
-  }) async {
+  }) async
+  {
     emit(ConvertCurrencyLoadingState());
 
     try {

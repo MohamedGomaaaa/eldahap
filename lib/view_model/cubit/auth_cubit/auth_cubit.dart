@@ -87,35 +87,118 @@ String countryCode="+20";
       throw error;
     });
   }
-
   Future<Response?> forgetPassword(BuildContext context) async {
-    AppLoader.showLoader(context, const ValueKey("forgetPassword"));
-    print("object..... ${emailForgetPassword.text} .....");
-    var res;
-    await AuthRepository()
-        .forgetPassword(emailForgetPassword.text)
-        .then((value) {
-      res = value;
-      print("object>>>>>>>>>>>> value : ${value} ,  data = ${value?.data}");
-      AppLoader.closeLoader(context, const ValueKey("forgetPassword"));
-      return value;
-    }).catchError((error) {
-      if (error is DioException) {
-        debugPrint(error.response?.data?.toString());
-        Toast.showError(
-            msg: error.response?.data?['errors']
-                    .toString()
-                    .replaceAll('{', '')
-                    .replaceAll('}', '')
-                    .replaceAll('[', '')
-                    .replaceAll(']', '') ??
-                'Error on Login');
-        AppLoader.closeLoader(context, const ValueKey("forgetPassword"));
+    const loaderKey = ValueKey("forgetPassword");
+
+    AppLoader.showLoader(context, loaderKey);
+
+    try {
+      final emailValue = emailForgetPassword.text.trim();
+
+      debugPrint("Forget Password Email: $emailValue");
+
+      final response = await AuthRepository().forgetPassword(emailValue);
+
+      debugPrint(
+        "Forget Password Response Type: ${response?.data.runtimeType}",
+      );
+      debugPrint(
+        "Forget Password Response Data: ${response?.data}",
+      );
+
+      return response;
+    } on DioException catch (error, stackTrace) {
+      final dynamic data = error.response?.data;
+
+      debugPrint(
+        "Forget Password Dio status: ${error.response?.statusCode}",
+      );
+      debugPrint("Forget Password Dio data: $data");
+      debugPrint("$stackTrace");
+
+      String message = "حدث خطأ أثناء إرسال كود استعادة كلمة المرور";
+
+      if (data is Map) {
+        if (data["message"] != null) {
+          message = data["message"].toString();
+        } else if (data["errors"] != null) {
+          final dynamic errors = data["errors"];
+
+          if (errors is Map) {
+            final List<String> messages = [];
+
+            errors.forEach((key, value) {
+              if (value is List) {
+                messages.addAll(
+                  value.map((item) => item.toString()),
+                );
+              } else if (value != null) {
+                messages.add(value.toString());
+              }
+            });
+
+            if (messages.isNotEmpty) {
+              message = messages.join("\n");
+            }
+          } else {
+            message = errors.toString();
+          }
+        }
       }
-      throw error;
-    });
-    return res;
+
+      if (context.mounted) {
+        Toast.showError(msg: message);
+      }
+
+      return null;
+    } catch (error, stackTrace) {
+      debugPrint("Forget Password Error: $error");
+      debugPrint("$stackTrace");
+
+      if (context.mounted) {
+        Toast.showError(
+          msg: "حدث خطأ غير متوقع، حاول مرة أخرى",
+        );
+      }
+
+      return null;
+    } finally {
+      if (context.mounted) {
+        AppLoader.closeLoader(
+          context,
+          loaderKey,
+        );
+      }
+    }
   }
+  // Future<Response?> forgetPassword(BuildContext context) async {
+  //   AppLoader.showLoader(context, const ValueKey("forgetPassword"));
+  //   print("object..... ${emailForgetPassword.text} .....");
+  //   var res;
+  //   await AuthRepository()
+  //       .forgetPassword(emailForgetPassword.text)
+  //       .then((value) {
+  //     res = value;
+  //     print("object>>>>>>>>>>>> value : ${value} ,  data = ${value?.data}");
+  //     AppLoader.closeLoader(context, const ValueKey("forgetPassword"));
+  //     return value;
+  //   }).catchError((error) {
+  //     if (error is DioException) {
+  //       debugPrint(error.response?.data?.toString());
+  //       Toast.showError(
+  //           msg: error.response?.data?['errors']
+  //                   .toString()
+  //                   .replaceAll('{', '')
+  //                   .replaceAll('}', '')
+  //                   .replaceAll('[', '')
+  //                   .replaceAll(']', '') ??
+  //               'Error on Login');
+  //       AppLoader.closeLoader(context, const ValueKey("forgetPassword"));
+  //     }
+  //     throw error;
+  //   });
+  //   return res;
+  // }
 
   Future<Response?> verifyResetOtp(BuildContext context) async {
     AppLoader.showLoader(context, const ValueKey("verifyResetOtp"));

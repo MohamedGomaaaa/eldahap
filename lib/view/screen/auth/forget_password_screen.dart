@@ -19,7 +19,8 @@ class ForgetPasswordScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(     appBar: AppBar(),
+    return Scaffold(
+      appBar: AppBar(),
       body: SafeArea(
         bottom: false,
         child: Padding(
@@ -42,7 +43,7 @@ class ForgetPasswordScreen extends StatelessWidget {
               ),
               Expanded(
                 child: Container(
-                  margin:  EdgeInsets.only(bottom: 20.h),
+                  margin: EdgeInsets.only(bottom: 20.h),
                   padding: EdgeInsets.all(12.sp),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(20.r),
@@ -70,21 +71,21 @@ class ForgetPasswordScreen extends StatelessWidget {
                             height: 40.h,
                           ),
                           TextFormField(
-                            controller: AuthCubit.get(context).emailForgetPassword,
-                            decoration: InputDecoration(
-                              hintText: LocaleKeys.email.tr(),
-                            ),
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return LocaleKeys.pleaseEnterYourEmail.tr();
-                              }
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
-                                  .hasMatch(value)) {
-                                return LocaleKeys.pleaseEnterAValidEmail.tr();
-                              }
-                              return null;
-                            }
-                          ),
+                              controller:
+                                  AuthCubit.get(context).emailForgetPassword,
+                              decoration: InputDecoration(
+                                hintText: LocaleKeys.email.tr(),
+                              ),
+                              validator: (value) {
+                                if (value == null || value.isEmpty) {
+                                  return LocaleKeys.pleaseEnterYourEmail.tr();
+                                }
+                                if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$')
+                                    .hasMatch(value)) {
+                                  return LocaleKeys.pleaseEnterAValidEmail.tr();
+                                }
+                                return null;
+                              }),
                           SizedBox(
                             height: 8.h,
                           ),
@@ -101,30 +102,103 @@ class ForgetPasswordScreen extends StatelessWidget {
                             width: 200.w,
                             height: 40.h,
                             child: ElevatedButton(
-                              onPressed: () {FocusScope.of(context).unfocus();
-                                if(!AuthCubit.get(context).formKeyForgetPassword.currentState!.validate()){
+                              // onPressed: () {FocusScope.of(context).unfocus();
+                              //   if(!AuthCubit.get(context).formKeyForgetPassword.currentState!.validate()){
+                              //     return;
+                              //   }else{
+                              //     AuthCubit.get(context).forgetPassword(context).then((value){
+                              //
+                              //       print("object ..... sent ..... ${AuthCubit.get(context).emailForgetPassword.text} .....}");
+                              //       print("object ${value?.data["success"]}");
+                              //       print("object ${value?.data["message"]}");
+                              //
+                              //       if(value?.data["success"] ?? false){
+                              //         // Toast.showMsg(msg: value?.data["message"]);
+                              //
+                              //
+                              //         // Navigation.push(context,  CodePasswordScreen(debugOtp:value?.data["debug_otp"].toString()));
+                              //
+                              //
+                              //
+                              //
+                              //
+                              //       }else{
+                              //         ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              //           content: Text(value?.data["message"] ?? LocaleKeys.pleaseEnterTheCode.tr()),
+                              //           backgroundColor: Colors.red,
+                              //         ));
+                              //       }
+                              //     });
+                              //   }
+                              // },
+
+                              onPressed: () async {
+                                FocusScope.of(context).unfocus();
+
+                                final authCubit = AuthCubit.get(context);
+
+                                final bool isValid =
+                                    authCubit.formKeyForgetPassword.currentState?.validate() ?? false;
+
+                                if (!isValid) return;
+
+                                final response = await authCubit.forgetPassword(context);
+
+                                if (!context.mounted) return;
+
+                                // الـ Cubit تعامل مع الخطأ بالفعل
+                                if (response == null) return;
+
+                                final dynamic data = response.data;
+
+                                debugPrint("Forget response type: ${data.runtimeType}");
+                                debugPrint("Forget response: $data");
+
+                                if (data is! Map) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("استجابة غير صحيحة من السيرفر"),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
                                   return;
-                                }else{
-                                  AuthCubit.get(context).forgetPassword(context).then((value){
+                                }
 
-                                    print("object ..... sent ..... ${AuthCubit.get(context).emailForgetPassword.text} .....}");
-                                    print("object ${value?.data["success"]}");
-                                    if(value?.data["success"] ?? false){
-                                      Toast.showMsg(msg: value?.data["message"]);
+                                final bool success = data["success"] == true;
 
-                                      Navigation.push(context,  CodePasswordScreen(debugOtp:value?.data["debug_otp"].toString()));
-                                    }else{
-                                      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-                                        content: Text(value?.data["message"] ?? LocaleKeys.pleaseEnterTheCode.tr()),
-                                        backgroundColor: Colors.red,
-                                      ));
-                                    }
-                                  });
+                                final String message =
+                                    data["message"]?.toString() ??
+                                        LocaleKeys.pleaseEnterTheCode.tr();
+
+                                if (success) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message),
+                                      backgroundColor: Colors.green,
+                                    ),
+                                  );
+
+                                  Navigation.push(
+                                    context,
+                                    CodePasswordScreen(
+                                      debugOtp: data["debug_otp"]?.toString(),
+                                    ),
+                                  );
+                                } else {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    SnackBar(
+                                      content: Text(message),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
                                 }
                               },
                               child: Text(
                                 LocaleKeys.send.tr(),
-                                style: Theme.of(context).textTheme.titleLarge?.copyWith(
+                                style: Theme.of(context)
+                                    .textTheme
+                                    .titleLarge
+                                    ?.copyWith(
                                       fontSize: 16.sp,
                                       color: AppColors.white,
                                     ),
@@ -136,19 +210,22 @@ class ForgetPasswordScreen extends StatelessWidget {
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigation.pushAndRemoveUntil(context, const LoginScreen());
+                              Navigation.pushAndRemoveUntil(
+                                  context, const LoginScreen());
                             },
                             child: Text(
                               LocaleKeys.login.tr(),
                               style: Theme.of(context)
                                   .textTheme
                                   .titleLarge
-                                  ?.copyWith(fontSize: 18.sp, color: AppColors.yellow),
+                                  ?.copyWith(
+                                      fontSize: 18.sp, color: AppColors.yellow),
                             ),
                           ),
                           TextButton(
                             onPressed: () {
-                              Navigation.pushAndRemoveUntil(context, const RegisterScreen());
+                              Navigation.pushAndRemoveUntil(
+                                  context, const RegisterScreen());
                             },
                             child: Text(
                               LocaleKeys.registerNow.tr(),
