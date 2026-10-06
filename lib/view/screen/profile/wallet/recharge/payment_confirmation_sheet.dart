@@ -90,19 +90,28 @@ class PaymentConfirmationSheet extends StatelessWidget {
             ),
           ),
           SizedBox(height: 30.h),
-          SizedBox(
+          Container(
+
             width: double.infinity,
+            height: 50,
             child: ElevatedButton(
+
+
+
               onPressed: onConfirm,
+
+
+
+
               style: ElevatedButton.styleFrom(
                 backgroundColor: AppColors.yellow,
-                padding: EdgeInsets.symmetric(vertical: 16.h),
                 shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(12.r),
+                  borderRadius: BorderRadius.circular(12),
                 ),
+                elevation: 0,
               ),
               child: Text(
-                LocaleKeys.proceed_payment.tr(),
+                LocaleKeys.proceed_payment.tr(), // "استمرار"
                 style: const TextStyle(
                   color: AppColors.white,
                   fontSize: 16,
@@ -111,6 +120,36 @@ class PaymentConfirmationSheet extends StatelessWidget {
               ),
             ),
           ),
+
+          // SizedBox(
+          //   height: 50,
+          //   width: double.infinity,
+          //   child: ElevatedButton(
+          //     onPressed: onConfirm,
+          //     style: ElevatedButton.styleFrom(
+          //       backgroundColor: AppColors.yellow,
+          //       padding: EdgeInsets.symmetric(vertical: 16.h),
+          //       shape: RoundedRectangleBorder(
+          //         borderRadius: BorderRadius.circular(12.r),
+          //       ),
+          //     ),
+          //     child: Text(
+          //       LocaleKeys.proceed_payment.tr(),
+          //       style: const TextStyle(
+          //         color: AppColors.white,
+          //         fontSize: 16,
+          //         fontWeight: FontWeight.w600,
+          //       ),
+          //     ),
+          //   ),
+          // ),
+
+
+
+
+
+
+
           SizedBox(height: 10.h),
           TextButton(
             onPressed: () => Navigator.pop(context),

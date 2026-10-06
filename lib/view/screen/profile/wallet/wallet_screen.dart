@@ -164,36 +164,7 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Balance Card Widget
-  Widget _balanceCard(
-      {required IconData icon,
-      required String title,
-      required Widget livePriceWidget,
-      required Widget testWidget}) {
-    return Container(
-      margin: const EdgeInsets.symmetric(vertical: 6),
-      padding: EdgeInsets.all(16.sp),
-      decoration: BoxDecoration(
-        color: AppColors.backgroundGrey,
-        border: Border.all(color: AppColors.yellowBorder),
-        borderRadius: BorderRadius.circular(12.r),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Icon(icon, color: AppColors.yellow, size: 28.sp),
-          SizedBox(height: 8.h),
-          Text(
-            title,
-            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
-          ),
-          SizedBox(height: 6.h),
-          livePriceWidget,
-          testWidget,
-        ],
-      ),
-    );
-  }
+
 
   // Balance Cards Section
   Widget _buildBalanceCards(bool hasLive) {
@@ -205,8 +176,10 @@ class _WalletScreenState extends State<WalletScreen> {
 
         // ✅ استخدام القيمة الإجمالية التراكمية إذا كانت أكبر من صفر، وإلا استخدام قيمة المحفظة العادية
 
-        final displayUsd = cubit.cachedUsdTotal + cubit.walletDollar;
-        final displayEgp = cubit.cachedEgpTotal + cubit.walletEgp;
+        // final displayUsd = cubit.cachedUsdTotal + cubit.walletDollar+cubit.totalUsdOpenTrades;
+        // final displayEgp = cubit.cachedEgpTotal + cubit.walletEgp+cubit.totalEgpOpenTrades;
+        final displayUsd = cubit.equityUsd;
+        final displayEgp = cubit.equityEgp;
 
         return Column(
           children: [
@@ -214,8 +187,10 @@ class _WalletScreenState extends State<WalletScreen> {
               children: [
                 Expanded(
                   child: _balanceCard(
+
+                    title2:Methods.removeTrailingZeros(cubit.walletDollar ),
                     icon: Icons.account_balance_wallet_outlined,
-                    title: LocaleKeys.dollarBalance.tr(),
+                    title: "Usd-Equity",
                     livePriceWidget: !hasLive
                         ? const SizedBox()
                         : cubit.usdTrades.isEmpty
@@ -238,17 +213,24 @@ class _WalletScreenState extends State<WalletScreen> {
                                     const Duration(milliseconds: 900),
                               ),
                     testWidget: !hasLive || cubit.usdTrades.isEmpty
-                        ? const SizedBox()
+                        ?  const Padding(
+                      padding: EdgeInsets.all(8.0),
+                      child: Text("    ",),
+                    )
                         : testWidget(
                             totalPnl: cubit.cachedUsdTotal,
                           ),
+
+
+
                   ),
                 ),
                 SizedBox(width: 12.w),
                 Expanded(
                   child: _balanceCard(
+                    title2:Methods.removeTrailingZeros(cubit.walletEgp ),
                     icon: Icons.account_balance,
-                    title: LocaleKeys.egyBalance.tr(),
+                    title: "Egy-Equity",
                     livePriceWidget: !hasLive
                         ? const SizedBox()
                         : cubit.egpTrades.isEmpty
@@ -271,7 +253,10 @@ class _WalletScreenState extends State<WalletScreen> {
                                     const Duration(milliseconds: 900),
                               ),
                     testWidget: !hasLive || cubit.egpTrades.isEmpty
-                        ? const SizedBox()
+                        ? const Padding(
+                          padding: EdgeInsets.all(8.0),
+                          child: Text("    ",),
+                        )
                         : testWidget(
                             totalPnl: cubit.cachedEgpTotal,
                           ),
@@ -279,8 +264,13 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ],
             ),
+
+
+
+
+
 //////////////////////////////////////////////////////////////////////////////////////// convert button
-            Container(
+           Container(
               margin: const EdgeInsets.only(top: 20),
               child: isLoading
                   ? const CircularProgressIndicator(color: AppColors.yellow)
@@ -291,8 +281,8 @@ class _WalletScreenState extends State<WalletScreen> {
                           context: context,
                           isScrollControlled: true,
                           builder: (context) => convertAmountSheet(
-                            context,
-                            cubit.walletDollar,
+                           context: context,
+                          balance:   cubit.equityUsd,
                           ),
                         );
 
@@ -342,7 +332,8 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   // convert Amount Sheet
-  Widget convertAmountSheet(BuildContext context, num walletDollar) {
+  Widget convertAmountSheet({ required BuildContext context,required num balance})
+  {
     final TextEditingController controller = TextEditingController();
 
     return Padding(
@@ -361,8 +352,21 @@ class _WalletScreenState extends State<WalletScreen> {
               controller: controller,
               keyboardType: TextInputType.number,
               validator: (value) {
-                return Validator.validateAmount(
-                    value: value, walletDollar: walletDollar);
+
+
+
+                return Validator.validateWithdrawalAmount(
+                  value: value,
+                  walletBalance: balance,
+                  currency: "Dollar",
+                );
+
+
+
+
+
+
+
               },
               decoration: InputDecoration(
                 hintText: "enter amount",
@@ -377,12 +381,18 @@ class _WalletScreenState extends State<WalletScreen> {
             ),
             const SizedBox(height: 20),
             SizedBox(
-              width: double.infinity,
+              width: 120.w,
               child: ElevatedButton(
                 onPressed: () {
+
+
                   if (_formKey.currentState!.validate()) {
                     final amount = num.parse(controller.text.trim());
                     Navigator.pop(context, amount);
+
+
+
+
                   }
                 },
                 child: const Text(
@@ -395,13 +405,51 @@ class _WalletScreenState extends State<WalletScreen> {
                 ),
               ),
             ),
-            const SizedBox(height: 20),
+            const SizedBox(height: 60),
           ],
         ),
       ),
     );
   }
-
+  // /Balance Card Widget
+  Widget _balanceCard(
+      {required IconData icon,
+        required String title,required String    title2 ,
+        required Widget livePriceWidget,
+        required Widget testWidget})
+  {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 6),
+      padding: EdgeInsets.all(16.sp),
+      decoration: BoxDecoration(
+        color: AppColors.backgroundGrey,
+        border: Border.all(color: AppColors.yellowBorder),
+        borderRadius: BorderRadius.circular(12.r),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          const Text(
+            "Balance",
+            style: TextStyle(color: AppColors.greyText, fontSize: 14),
+          ),
+  SizedBox(height: 6.h),
+          Text(
+            title2,
+            style: const TextStyle(color: AppColors.yellow, fontSize: 14),
+          ),
+          SizedBox(height: 6.h),
+          Text(
+            title,
+            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
+          ),
+          SizedBox(height: 6.h),
+          livePriceWidget,
+          testWidget,
+        ],
+      ),
+    );
+  }
   // Action Buttons Section
   Widget _buildActionButtons() {
     return ValueListenableBuilder<User>(
@@ -460,7 +508,8 @@ class _WalletScreenState extends State<WalletScreen> {
   }
 
   Widget _actionButton(IconData icon, String label,
-      {required VoidCallback onTap}) {
+      {required VoidCallback onTap})
+  {
     return Expanded(
       child: InkWell(
         onTap: onTap,
@@ -693,7 +742,8 @@ class _WalletScreenState extends State<WalletScreen> {
     required Color iconBgColor,
     required String dateTime,
     required bool isPositive,
-  }) {
+  })
+  {
     return InkWell(
       highlightColor: Colors.transparent,
       hoverColor: Colors.transparent,
@@ -1010,46 +1060,5 @@ class _WalletScreenState extends State<WalletScreen> {
     );
   }
 
-  // Portfolio Section
-  Widget _buildPortfolioSection() {
-    return Center(
-      child: Column(
-        children: [
-          Text(
-            LocaleKeys.currentBalance.tr().toUpperCase(),
-            style: const TextStyle(color: AppColors.greyText, fontSize: 14),
-          ),
-          SizedBox(height: 8.h),
-          BlocBuilder<WalletCubit, WalletState>(
-            buildWhen: (previous, current) {
-              return current is GetWalletSuccessState ||
-                  current is GetWalletLoadingState ||
-                  current is GetWalletErrorState;
-            },
-            builder: (context, state) {
-              if (state is GetWalletLoadingState) {
-                return const CircularProgressIndicator(
-                  color: AppColors.yellow,
-                );
-              }
-              if (state is GetWalletErrorState) {
-                return const Text(
-                  'Error loading balance',
-                  style: TextStyle(color: AppColors.red),
-                );
-              }
-              return Text(
-                '\$ ${WalletCubit.get(context).walletDollar.toStringAsFixed(2)}',
-                style: const TextStyle(
-                  fontSize: 34,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textYellow,
-                ),
-              );
-            },
-          ),
-        ],
-      ),
-    );
-  }
+
 }

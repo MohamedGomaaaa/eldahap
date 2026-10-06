@@ -373,7 +373,7 @@ class WalletCubit extends Cubit<WalletState> {
 
       usdTrades = result['usd_trades'] ?? [];
       egpTrades = result['egp_trades'] ?? [];
-
+       calculateOpenTradesTotals();
       cachedUsdTotal = 0.0;
       cachedEgpTotal = 0.0;
       // بمجرد جلب البيانات، يفضل استدعاء الحساب فوراً لتحديث الواجهة بناءً على آخر أسعار مخزنة
@@ -384,6 +384,43 @@ class WalletCubit extends Cubit<WalletState> {
     }
   }
 
+///////////////////////////////////////////////////////////////////////////////////////////////////////
+  /// اجمالي سعر شراء الثفقات
+  num totalUsdOpenTrades = 0.0;
+  num totalEgpOpenTrades = 0.0;
+
+  void calculateOpenTradesTotals() {
+    totalUsdOpenTrades = 0.0;
+    totalEgpOpenTrades = 0.0;
+
+    // USD Trades
+    for (final trade in usdTrades) {
+      final double openPrice = (trade.openPrice ?? 0).toDouble();
+      final double quantity = (trade.quantity ?? 1).toDouble();
+
+      totalUsdOpenTrades += openPrice * quantity;
+    }
+
+    // EGP Trades
+    for (final trade in egpTrades) {
+      final double openPrice = (trade.openPrice ?? 0).toDouble();
+      final double quantity = (trade.quantity ?? 1).toDouble();
+
+      totalEgpOpenTrades += openPrice * quantity;
+    }
+
+    debugPrint('================ OPEN TRADES =================');
+    debugPrint('USD Open Trades = $totalUsdOpenTrades');
+    debugPrint('EGP Open Trades = $totalEgpOpenTrades');
+    debugPrint('==============================================');
+  }
+
+  num get equityUsd =>
+      walletDollar + totalUsdOpenTrades + cachedUsdTotal;
+
+  num get equityEgp =>
+      walletEgp + totalEgpOpenTrades + cachedEgpTotal;
+///////////////////////////////////////////////////////////////////////////////////////////////////////
   num cachedUsdTotal = 0;
   num cachedEgpTotal = 0;
 
@@ -547,7 +584,9 @@ class WalletCubit extends Cubit<WalletState> {
     allTransactions.clear();
     isLoadingMoreTransactions = false;
     hasMoreTransactions = true;
-    currentTransactionPage = 1;
+    currentTransactionPage = 1;totalUsdOpenTrades = 0; num equity_usd=0 ;
+    num equity_egp=0;
+    totalEgpOpenTrades = 0;
     walletDollar = 0;
     walletEgp = 0;
     usdTrades.clear();

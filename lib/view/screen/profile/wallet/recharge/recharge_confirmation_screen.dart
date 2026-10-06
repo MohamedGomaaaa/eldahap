@@ -13,6 +13,7 @@ import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
 import '../../../../../utils/common_method.dart';
+import '../../../../../utils/text_style.dart';
 import '../../../../components/app_loader.dart';
 
 class RechargeConfirmationScreen extends StatefulWidget {
@@ -52,12 +53,12 @@ class _RechargeConfirmationScreenState
           children: [
             ListTile(
               leading: const Icon(Icons.camera_alt),
-              title: const Text("Camera"),
+              title:  Text("Camera",style: BlackTitle.display5(context),),
               onTap: () => Navigator.pop(context, ImageSource.camera),
             ),
             ListTile(
               leading: const Icon(Icons.photo),
-              title: const Text("Gallery"),
+              title:  Text("Gallery",style: BlackTitle.display5(context),),
               onTap: () => Navigator.pop(context, ImageSource.gallery),
             ),
           ],
@@ -84,7 +85,13 @@ class _RechargeConfirmationScreenState
     if (_formKey.currentState!.validate()) {
       if (_uploadedImage == null) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text(LocaleKeys.upload_file_label.tr())),
+          SnackBar(content: Center(child: Text(LocaleKeys.upload_file_label.tr(),
+          
+          
+          
+          style: MainTitle.display5(context)
+          
+          ))),
         );
         return;
       }
@@ -217,7 +224,7 @@ class _RechargeConfirmationScreenState
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      LocaleKeys.account_number.tr(),
+                     "${LocaleKeys.account_number.tr()}  ( ALEXBANK )",
                       style: const TextStyle(
                         color: AppColors.yellow,
                         fontSize: 16,
@@ -346,16 +353,19 @@ class _RechargeConfirmationScreenState
                 SizedBox(height: 24.h),
 
 /////////////////////////////////////////////////////////////////////////////////////////////////// Submit Button
-                SizedBox(
+
+                Container(
                   width: double.infinity,
+                  height: 50,
+                  margin: const EdgeInsets.only(bottom: 40),
                   child: ElevatedButton(
                     onPressed: _submit,
                     style: ElevatedButton.styleFrom(
                       backgroundColor: AppColors.yellow,
-                      padding: EdgeInsets.symmetric(vertical: 16.h),
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(12.r),
+                        borderRadius: BorderRadius.circular(12),
                       ),
+                      elevation: 0,
                     ),
                     child: Text(
                       LocaleKeys.send_button.tr(),
@@ -367,6 +377,30 @@ class _RechargeConfirmationScreenState
                     ),
                   ),
                 ),
+                SizedBox(height: 60.h,)
+
+//
+//                 SizedBox(
+//                   width: double.infinity,
+//                   child: ElevatedButton(
+//                     onPressed: _submit,
+//                     style: ElevatedButton.styleFrom(
+//                       backgroundColor: AppColors.yellow,
+//                       padding: EdgeInsets.symmetric(vertical: 16.h),
+//                       shape: RoundedRectangleBorder(
+//                         borderRadius: BorderRadius.circular(12.r),
+//                       ),
+//                     ),
+//                     child: Text(
+//                       LocaleKeys.send_button.tr(),
+//                       style: const TextStyle(
+//                         color: AppColors.white,
+//                         fontSize: 16,
+//                         fontWeight: FontWeight.w600,
+//                       ),
+//                     ),
+//                   ),
+//                 ),
               ],
             ),
           ),

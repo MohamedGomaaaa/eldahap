@@ -27,7 +27,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider.value(
-      value: HomeCubit.get(context)
+      value: HomeCubit.get(context)..printToken()
         ..getSliders()
         ..getNews()
         ..getProfile(),

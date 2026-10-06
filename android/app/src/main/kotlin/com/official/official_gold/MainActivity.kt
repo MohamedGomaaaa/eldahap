@@ -1,4 +1,4 @@
-package com.dd.official
+package com.dd.gold
 
 import io.flutter.embedding.android.FlutterActivity
 

@@ -5,7 +5,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:official_gold/view/screen/profile/wallet/recharge/payment_confirmation_sheet.dart';
 import 'package:official_gold/view/screen/profile/wallet/recharge/recharge_confirmation_screen.dart';
 
-
 import '../../../../../model/payment_data.dart';
 import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
@@ -28,16 +27,27 @@ class RechargePaymentMethodsScreen extends StatefulWidget {
 
 class _RechargePaymentMethodsScreenState
     extends State<RechargePaymentMethodsScreen> {
-
   bool isLoading = false;
 
   PaymentData? selectedPaymentData;
   List<PaymentData> paymentData = [];
 
   void _onContinue() {
-    if (selectedPaymentData != null) {
+    if (selectedPaymentData != null && selectedPaymentData!.isEnabled) {
       _showPaymentModal();
+    } else {
+      // Show error message
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Center(child: Text(LocaleKeys.choose_payment_method.tr())),
+          backgroundColor: Colors.red,
+        ),
+      );
     }
+
+    // if (selectedPaymentData != null) {
+    //   _showPaymentModal();
+    // }
   }
 
   void _showPaymentModal() {
@@ -97,8 +107,7 @@ class _RechargePaymentMethodsScreenState
             SnackBar(content: Text(response.message)),
           );
         }
-      })
-          .catchError((error) {
+      }).catchError((error) {
         setState(() {
           isLoading = false; // خلص التحميل مع Exception
         });
@@ -163,25 +172,51 @@ class _RechargePaymentMethodsScreenState
                   ),
             const Spacer(),
 ///////////////////////////////////////////////////////////////////////////////////////// continue button
-            SizedBox(
+//             Container(
+//               margin: const EdgeInsets.only(top: 20, bottom: 20),
+//               width: double.infinity,
+//               height: 50,
+//               child: ElevatedButton(
+//                 onPressed: selectedPaymentData != null &&
+//                         selectedPaymentData!.isEnabled
+//                     ? _onContinue
+//                     : null,
+//                 style: ElevatedButton.styleFrom(
+//                   backgroundColor: selectedPaymentData != null &&
+//                           selectedPaymentData!.isEnabled
+//                       ? AppColors.yellow
+//                       : AppColors.greyText,
+//                   padding: EdgeInsets.symmetric(vertical: 16.h),
+//                   shape: RoundedRectangleBorder(
+//                     borderRadius: BorderRadius.circular(12.r),
+//                   ),
+//                 ),
+//                 child: Text(
+//                   LocaleKeys.continue_text.tr(),
+//                   style: const TextStyle(
+//                     color: AppColors.white,
+//                     fontSize: 16,
+//                     fontWeight: FontWeight.w600,
+//                   ),
+//                 ),
+//               ),
+//             ),
+
+            Container(
+              margin: const EdgeInsets.only(top: 20, bottom: 20),
               width: double.infinity,
+              height: 50,
               child: ElevatedButton(
-                onPressed: selectedPaymentData != null &&
-                        selectedPaymentData!.isEnabled
-                    ? _onContinue
-                    : null,
+                onPressed: _onContinue,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: selectedPaymentData != null &&
-                          selectedPaymentData!.isEnabled
-                      ? AppColors.yellow
-                      : AppColors.greyText,
-                  padding: EdgeInsets.symmetric(vertical: 16.h),
+                  backgroundColor: AppColors.yellow,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12.r),
+                    borderRadius: BorderRadius.circular(12),
                   ),
+                  elevation: 0,
                 ),
                 child: Text(
-                  LocaleKeys.continue_text.tr(),
+                  LocaleKeys.continueKey.tr(), // "استمرار"
                   style: const TextStyle(
                     color: AppColors.white,
                     fontSize: 16,
@@ -190,6 +225,8 @@ class _RechargePaymentMethodsScreenState
                 ),
               ),
             ),
+
+            SizedBox(height: 60.h),
           ],
         ),
       ),

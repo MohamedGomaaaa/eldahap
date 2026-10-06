@@ -3,7 +3,6 @@ import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_inappwebview/flutter_inappwebview.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
-
 import 'package:flutter/foundation.dart';
 import 'package:official_gold/services/shared_preference/shared_helper.dart';
 import 'package:official_gold/services/translation/localization.dart';
@@ -68,7 +67,7 @@ void main() {
 }
 
 
-
+/// dart run flutter_launcher_icons
 // void main() {
 //   runZonedGuarded(() async {
 //     WidgetsFlutterBinding.ensureInitialized();
@@ -108,3 +107,4 @@ void main() {
 //     debugPrint('🔴 Unhandled zone error: $error');
 //   });
 // }
+// dart run flutter_launcher_icons

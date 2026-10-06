@@ -1,16 +1,18 @@
 
 
+import 'dart:ui' as ui;
+
 import 'package:easy_localization/easy_localization.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 import '../../../../../../view_model/cubit/wallet_cubit/wallet_cubit.dart';
-
 import '../../../../../model/payment_methods_model.dart';
 import '../../../../../services/app_service/app_service.dart';
 import '../../../../../services/translation/locale_keys.g.dart';
 import '../../../../../utils/app_color.dart';
+
 import '../../../../../utils/common_method.dart';
 class BankDetailsPage extends StatefulWidget {
   final double amount;
@@ -436,7 +438,7 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                  Text(
-                  '${LocaleKeys.amount.tr()}:',
+                  LocaleKeys.amount.tr(),
                   style: const TextStyle(
                     color: AppColors.yellow,
                     fontSize: 14,
@@ -667,15 +669,17 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
 /////////////////////////////////////////////////////////////////////////////////////////// //// Additional info
                 Container(
                   margin: EdgeInsets.only(top: 10.h,bottom: 50.h),
-                  padding: const EdgeInsets.all(16),
+                  padding:  EdgeInsets.all(16),
                   decoration: BoxDecoration(
                     color: AppColors.backgroundGrey2,
                     borderRadius: BorderRadius.circular(8),
                     border: Border.all(color: AppColors.lightGrey.withOpacity(0.3)),
                   ),
-                  child: const Column(
+                  child:  const Column(
+
                     children: [
                       Row(
+                        textDirection: ui.TextDirection.rtl,
                         children: [
                           Icon(
                             Icons.info_outline,
@@ -693,11 +697,13 @@ class _BankDetailsPageState extends State<BankDetailsPage> {
                           ),
                         ],
                       ),
+
                       SizedBox(height: 8),
                       Text(
                         '• سيتم معالجة طلب السحب خلال 3-5 أيام عمل\n'
                             '• تأكد من صحة بيانات الحساب البنكي\n'
-                            '• سيتم إشعارك عند اكتمال العملية',
+                            '• سيتم إشعارك عند اكتمال العملية',  textDirection: ui.TextDirection.rtl,
+                        textAlign: TextAlign.right,
                         style: TextStyle(
                           color: AppColors.greyText,
                           fontSize: 12,

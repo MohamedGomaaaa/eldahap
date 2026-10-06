@@ -1,10 +1,21 @@
 class AppAssets {
 
   /// PNG
-  static const String logoPng = 'assets/icons/logo.png';
+  static const String logoPng ='assets/icons/logo_2.png';// 'assets/icons/logo.png';
 
   /// SVG
-  static const String logo = 'assets/svg/logo.svg';
+  static const String logo = 'assets/svg/gold.svg';// 'assets/svg/logo.svg';
+
+
+
+
+
+
+
+
+
+
+
   static const String home = 'assets/svg/home.svg';
   static const String chart = 'assets/svg/chart.svg';
   static const String products = 'assets/svg/products.svg';

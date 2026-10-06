@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:upgrader/upgrader.dart';
 import 'view/screen/splash/splash_screen.dart';
 import 'view_model/cubit/wallet_cubit/wallet_cubit.dart';
 
@@ -125,19 +126,37 @@ class _MyAppState extends State<MyApp> with WidgetsBindingObserver {
             themeMode: ThemeMode.light,
             home: child,
             navigatorKey: navKey,
+
             builder: (context, child) {
               final t = Theme.of(context);
-              return ColoredBox(
-                color: t.scaffoldBackgroundColor,
-                child: Theme(
-                  data: t,
-                  child: DefaultTextStyle(
-                    style: t.textTheme.bodyMedium ?? const TextStyle(),
-                    child: child ?? const SizedBox.shrink(),
+
+              return UpgradeAlert( // تغليف الـ App بالكامل بـ UpgradeAlert
+                navigatorKey: navKey, // ✅ استخدام الـ navKey اللي موجود عندك
+                child: ColoredBox(
+                  color: t.scaffoldBackgroundColor,
+                  child: Theme(
+                    data: t,
+                    child: DefaultTextStyle(
+                      style: t.textTheme.bodyMedium ?? const TextStyle(),
+                      child: child ?? const SizedBox.shrink(),
+                    ),
                   ),
                 ),
               );
             },
+            // builder: (context, child) {
+            //   final t = Theme.of(context);
+            //   return ColoredBox(
+            //     color: t.scaffoldBackgroundColor,
+            //     child: Theme(
+            //       data: t,
+            //       child: DefaultTextStyle(
+            //         style: t.textTheme.bodyMedium ?? const TextStyle(),
+            //         child: child ?? const SizedBox.shrink(),
+            //       ),
+            //     ),
+            //   );
+            // },
           );
         },
         child: const SplashScreen(),

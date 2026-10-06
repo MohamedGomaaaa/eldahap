@@ -8,6 +8,8 @@ import 'package:official_gold/model/slider.dart' as slider;
 import 'package:official_gold/model/user.dart';
 
 import '../../../model/news_model.dart';
+import '../../../services/shared_preference/shared_helper.dart';
+import '../../../services/shared_preference/shared_keys.dart';
 import '../../repos/home_repository.dart';
 
 part 'home_state.dart';
@@ -19,7 +21,10 @@ class HomeCubit extends Cubit<HomeState> {
 
 
 
-
+void printToken(){
+  print(
+      ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> ${SharedHelper.get(SharedKeys.token)}");
+}
 
 
 

@@ -48,11 +48,12 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
           ),
         ),
       );
-    } else {
+    }
+    else {
       // Show error message
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(LocaleKeys.choose_payment_method.tr()),
+          content: Center(child: Text(LocaleKeys.choose_payment_method.tr())),
           backgroundColor: Colors.red,
         ),
       );
@@ -187,7 +188,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            "you will pay ${Methods.removeTrailingZeros(widget.amount)} ${widget.currency} for successful payment",
+            "you will withDraw ${Methods.removeTrailingZeros(widget.amount)} ${widget.currency} for successful payment",
             style: const TextStyle(
               color: AppColors.textYellow,
               fontSize: 14,
@@ -285,6 +286,7 @@ class _PaymentMethodPageState extends State<PaymentMethodPage> {
                 ),
               ),
             ),
+            SizedBox(height:60.h)
           ],
         ),
       ),

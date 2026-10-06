@@ -163,16 +163,20 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
               ),
  ////////////////////////////////////////////////////////////////////////////////////////////////////////// Button
               const Spacer(),
-              SizedBox(
+
+
+              Container(
                 width: double.infinity,
+                height: 50,
+                margin: const EdgeInsets.only(bottom: 40),
                 child: ElevatedButton(
                   onPressed: _onContinue,
                   style: ElevatedButton.styleFrom(
                     backgroundColor: AppColors.yellow,
-                    padding: EdgeInsets.symmetric(vertical: 10.h),
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(12.r),
+                      borderRadius: BorderRadius.circular(12),
                     ),
+                    elevation: 0,
                   ),
                   child: Text(
                     LocaleKeys.continueKey.tr(),
@@ -184,7 +188,31 @@ class _RechargeAmountScreenState extends State<RechargeAmountScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 30),
+              SizedBox(height: 60.h,)
+
+
+              // SizedBox(
+              //   width: double.infinity,
+              //   child: ElevatedButton(
+              //     onPressed: _onContinue,
+              //     style: ElevatedButton.styleFrom(
+              //       backgroundColor: AppColors.yellow,
+              //       padding: EdgeInsets.symmetric(vertical: 10.h),
+              //       shape: RoundedRectangleBorder(
+              //         borderRadius: BorderRadius.circular(12.r),
+              //       ),
+              //     ),
+              //     child: Text(
+              //       LocaleKeys.continueKey.tr(),
+              //       style: const TextStyle(
+              //         color: AppColors.white,
+              //         fontSize: 16,
+              //         fontWeight: FontWeight.w600,
+              //       ),
+              //     ),
+              //   ),
+              // ),
+              // const SizedBox(height: 30),
             ],
           ),
         ),

@@ -28,10 +28,17 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
   num balanceDollar = 0;
   num balanceEgp = 0;
 
+
+  // final displayUsd = cubit.cachedUsdTotal + cubit.walletDollar+cubit.totalUsdOpenTrades;
+  // final displayEgp = cubit.cachedEgpTotal + cubit.walletEgp+cubit.totalEgpOpenTrades;
+  //
+
+   late WalletCubit cubit;
   @override
   void initState() {
-    balanceDollar = WalletCubit.get(context).walletDollar;
-    balanceEgp = WalletCubit.get(context).walletEgp;
+    cubit=WalletCubit.get(context);
+    balanceDollar =cubit.equityUsd;
+    balanceEgp = cubit.equityEgp;
 
     super.initState();
   }
@@ -200,6 +207,7 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
                   ),
                 ),
               ),
+              SizedBox(height: 60.h,)
             ],
           ),
         ),
@@ -264,8 +272,9 @@ class _WithdrawalAmountPageState extends State<WithdrawalAmountPage> {
     return BlocBuilder<WalletCubit, WalletState>(
       builder: (context, state) {
         final cubit = WalletCubit.get(context);
-        final displayUsd = cubit.cachedUsdTotal + cubit.walletDollar;
-        final displayEgp = cubit.cachedEgpTotal + cubit.walletEgp;
+
+        final displayUsd = cubit.cachedUsdTotal + cubit.walletDollar+cubit.totalUsdOpenTrades;
+        final displayEgp = cubit.cachedEgpTotal + cubit.walletEgp+cubit.totalEgpOpenTrades;
         return Container(
           margin: const EdgeInsets.only(top: 20, bottom: 20),
           child: Row(
