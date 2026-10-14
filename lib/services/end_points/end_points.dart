@@ -1,6 +1,5 @@
 class EndPoints {
   static const String baseUrl = 'https://officialgold.site/api/' ;
-      //'https://zaid.ramadona.com/api/';
   static const String login = 'auth/login';
   static const String register = 'auth/register';
   static const String forgotPassword = 'auth/forgot-password';
