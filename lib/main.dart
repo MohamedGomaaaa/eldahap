@@ -66,7 +66,6 @@ void main() {
   });
 }
 
-
 /// dart run flutter_launcher_icons
 // void main() {
 //   runZonedGuarded(() async {

@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import '../../../model/live_price_model.dart';
+import '../end_points/end_points.dart';
 
 class LivePriceSocketService {
   LivePriceSocketService._();
@@ -26,7 +27,7 @@ class LivePriceSocketService {
       'wss://ws.officialgold.site/app/newGoldKey2026?protocol=7&client=js&version=8.4.0&flash=false';
 
   // ✅ Origin لازم
-  final String origin = 'https://officialgold.site';
+  final String origin =EndPoints.orBaseUrl;// 'https://officialgold.site';
 
   // ✅ Channel ثابت
   final String channel = 'gold-price';
